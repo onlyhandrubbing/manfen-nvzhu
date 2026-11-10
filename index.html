@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>滿分女主 匹配成功</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Huninn&family=Fraunces:ital,opsz,wght@1,9..144,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* 牛奶白底、蜜桃粉主色、奶油黃點綴；圓潤字體、圓角膠囊按鈕，像韓系小飾品店的 IG */
+  --milk: #fffaf7;
+  --blush: #ffe4e6;
+  --peach: #f48ca0;
+  --peach-deep: #d9607a;
+  --butter: #ffe9a8;
+  --cocoa: #4a3238;
+  --soft: #9a8288;
+  --line: #f6dfe2;
+  --font: "Huninn", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --num: "Fraunces", Georgia, serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { background: var(--milk); }
+body {
+  margin: 0; color: var(--cocoa); font-family: var(--font); font-size: 15.5px; line-height: 1.75;
+  background:
+    radial-gradient(420px 320px at 100% -40px, #ffe1e7 0, transparent 70%),
+    radial-gradient(360px 300px at -60px 260px, #fff1c9 0, transparent 70%),
+    var(--milk);
+  min-height: 100%;
+}
+main { max-width: 480px; margin: 0 auto; padding: 22px 18px 70px; }
+h1, h2 { margin: 0; font-weight: 400; text-wrap: balance; }
+h1 { font-size: 2.05rem; line-height: 1.3; letter-spacing: .01em; }
+h2 { font-size: 1.32rem; line-height: 1.45; }
+p { margin: 0; }
+.hidden { display: none !important; }
+section { display: grid; gap: 18px; animation: rise .45s ease both; }
+@keyframes rise { from { opacity: .001; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.soft { color: var(--soft); font-size: .86rem; }
+.sparkle { display: inline-block; width: 18px; height: 18px; vertical-align: -2px; }
+
+.top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 26px; }
+.brand { font-family: var(--num); font-style: italic; font-size: 1.15rem; color: var(--peach-deep); }
+.ig { font-size: .8rem; color: var(--soft); background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; }
+
+.hero h1 em { font-style: normal; background: linear-gradient(transparent 62%, var(--butter) 62%); padding: 0 2px; }
+.ladder { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.ladder li { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 10px 2px 8px; text-align: center; display: grid; gap: 1px; }
+.ladder li:last-child { background: var(--peach); border-color: var(--peach); color: #fff; }
+.ladder li:last-child span { color: #fff; opacity: .9; }
+.ladder b { font-family: var(--num); font-style: italic; font-weight: 600; font-size: 1.15rem; line-height: 1.2; }
+.ladder span { font-size: .68rem; color: var(--soft); }
+
+/* 上傳：透明的 input 直接蓋在按鈕上，手機點哪裡都會開相機 */
+.upload { position: relative; display: grid; justify-items: center; gap: 6px; text-align: center; background: #fff; border-radius: 28px; padding: 26px 18px 24px; box-shadow: 0 10px 30px -12px rgba(217, 96, 122, .35); overflow: hidden; }
+.upload input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2; font-size: 0; }
+.upload .cam { width: 64px; height: 64px; border-radius: 50%; background: var(--blush); display: grid; place-items: center; }
+.upload b { font-weight: 400; font-size: 1.15rem; }
+.pillbtn { display: inline-block; background: var(--peach); color: #fff; border-radius: 999px; padding: 11px 26px; font-size: 1rem; box-shadow: 0 6px 16px -6px var(--peach-deep); }
+.upload:focus-within { outline: 3px solid var(--butter); outline-offset: 3px; }
+.tips { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.tips span { font-size: .76rem; background: var(--milk); border-radius: 999px; padding: 2px 10px; color: var(--soft); }
+.status { background: var(--butter); border-radius: 16px; padding: 10px 14px; font-size: .92rem; }
+
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+.go { justify-self: stretch; background: var(--peach); color: #fff; border-radius: 999px; padding: 14px 24px; font-size: 1.05rem; box-shadow: 0 8px 18px -8px var(--peach-deep); transition: transform .12s; }
+.go:active { transform: scale(.97); }
+.link { color: var(--soft); font-size: .86rem; text-decoration: underline; text-underline-offset: 4px; justify-self: center; }
+button:focus-visible { outline: 3px solid var(--butter); outline-offset: 3px; }
+
+/* 拱門照片框 */
+.arch { justify-self: center; width: min(70%, 260px); aspect-ratio: 3 / 4; border-radius: 999px 999px 28px 28px; overflow: hidden; border: 6px solid #fff; box-shadow: 0 14px 34px -14px rgba(217, 96, 122, .5); position: relative; background: var(--blush); }
+.arch canvas { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bubble { background: #fff; border-radius: 22px 22px 22px 6px; padding: 14px 16px; box-shadow: 0 6px 20px -12px rgba(74, 50, 56, .3); }
+
+.qhead { display: grid; gap: 10px; }
+.track { height: 8px; border-radius: 99px; background: #fff; overflow: hidden; border: 1px solid var(--line); }
+.track i { display: block; height: 100%; width: 0; border-radius: 99px; background: linear-gradient(90deg, var(--peach), #ffb4a2); transition: width .35s ease; }
+.counter { font-family: var(--num); font-style: italic; color: var(--peach-deep); font-size: 1rem; }
+.choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.choices button { background: #fff; border-radius: 22px; padding: 16px 12px; display: grid; justify-items: center; gap: 6px; text-align: center; font-size: 1rem; border: 2px solid transparent; box-shadow: 0 4px 14px -10px rgba(74, 50, 56, .35); transition: transform .12s, border-color .12s; }
+.choices button:active { transform: scale(.97); }
+.choices button:hover { border-color: var(--blush); }
+.choices button small { display: block; color: var(--soft); font-size: .76rem; line-height: 1.5; margin-top: 2px; }
+.choices svg { width: 56px; height: 56px; }
+.choices.pieces svg { width: 100%; height: auto; max-width: 140px; }
+.choices.one { grid-template-columns: 1fr; }
+.choices.one button { justify-items: start; text-align: left; padding: 16px 18px; }
+
+/* 對答案 */
+.scorecard { background: #fff; border-radius: 30px; padding: 22px; display: grid; justify-items: center; gap: 8px; box-shadow: 0 14px 34px -16px rgba(217, 96, 122, .45); }
+#ring { --p: 0; width: 148px; height: 148px; border-radius: 50%; display: grid; place-items: center; transition: --p 1.2s ease;
+  background: conic-gradient(var(--peach) calc(var(--p) * 1%), var(--blush) 0); }
+@property --p { syntax: "<number>"; inherits: true; initial-value: 0; }
+#ring div { width: 118px; height: 118px; border-radius: 50%; background: #fff; display: grid; place-items: center; align-content: center; }
+#ring b { font-family: var(--num); font-style: italic; font-weight: 600; font-size: 2.9rem; line-height: 1; color: var(--peach-deep); }
+#ring small { font-size: .72rem; color: var(--soft); }
+#scoreWord { font-size: 1.1rem; }
+
+.sheet { display: grid; gap: 10px; }
+.pair { background: #fff; border-radius: 20px; padding: 12px 14px; display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center; }
+.sheet.in .pair { animation: rise .4s ease both; animation-delay: var(--d); }
+.pair .k { grid-column: 1 / -1; font-size: .74rem; color: var(--soft); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.two small { display: block; font-size: .68rem; color: var(--soft); line-height: 1.3; }
+.two .me { color: var(--peach-deep); }
+.stamp { font-size: .74rem; border-radius: 999px; padding: 4px 10px; white-space: nowrap; }
+.stamp.ok { background: var(--peach); color: #fff; }
+.stamp.near { background: var(--butter); }
+.stamp.miss { background: var(--milk); color: var(--soft); }
+
+/* 票券 */
+.ticket { position: relative; background: linear-gradient(135deg, #ffd6dc, #ffe9c8); border-radius: 24px; padding: 20px 22px; display: grid; gap: 6px; }
+.ticket::before, .ticket::after { content: ""; position: absolute; top: 50%; width: 22px; height: 22px; margin-top: -11px; border-radius: 50%; background: var(--milk); }
+.ticket::before { left: -11px; } .ticket::after { right: -11px; }
+.ticket .off { font-family: var(--num); font-style: italic; font-weight: 600; font-size: 2.2rem; line-height: 1.1; color: var(--peach-deep); }
+.ticket code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 1.05rem; letter-spacing: .08em; background: rgba(255,255,255,.7); border: 1.5px dashed var(--peach); border-radius: 12px; padding: 8px 12px; justify-self: start; word-break: break-all; }
+.ticket .copy { justify-self: start; background: #fff; border-radius: 999px; padding: 6px 16px; font-size: .86rem; }
+
+.picks { display: grid; gap: 10px; }
+.pick { background: #fff; border-radius: 22px; padding: 10px; display: grid; grid-template-columns: 84px 1fr; gap: 12px; align-items: center; }
+.pick svg, .pick img { width: 84px; height: 84px; border-radius: 18px; object-fit: cover; display: block; }
+.pick .nm { font-size: 1.02rem; }
+.pick .why { color: var(--soft); font-size: .78rem; line-height: 1.55; }
+.pick .pr { font-variant-numeric: tabular-nums; margin-top: 2px; }
+.pick .pr s { color: var(--soft); font-size: .8rem; margin-right: 6px; }
+.pick .pr b { font-weight: 400; color: var(--peach-deep); }
+.sign { background: var(--blush); border-radius: 22px; padding: 16px 18px; display: grid; gap: 6px; }
+.sign span { font-family: var(--num); font-style: italic; color: var(--peach-deep); justify-self: end; }
+
+input[type=text] { font: inherit; width: 100%; border: 2px solid var(--line); border-radius: 16px; padding: 12px 14px; background: #fff; font-family: ui-monospace, Menlo, Consolas, monospace; }
+footer { margin-top: 56px; text-align: center; }
+footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
+@media (prefers-reduced-motion: reduce) { section, .sheet.in .pair { animation: none; } #ring, .track i, .go, .choices button { transition: none; } }
+.tease { justify-self: start; background: var(--butter); border-radius: 18px 18px 18px 4px; padding: 6px 14px; font-size: .88rem; animation: pop .35s ease both; }
+@keyframes pop { from { transform: scale(.8); opacity: .001; } to { transform: none; opacity: 1; } }
+.two .me.cover { background: var(--blush); color: var(--peach-deep); border-radius: 14px; text-align: center; display: grid; place-items: center; font-size: .86rem; padding: 6px; min-height: 44px; }
+.two .me.open { animation: pop .3s ease both; }
+.pair .stamp { visibility: hidden; }
+.pair.done .stamp { visibility: visible; animation: pop .3s ease both; }
+.persona { display: grid; justify-items: center; gap: 2px; margin-top: 6px; text-align: center; }
+.persona small { color: var(--soft); font-size: .75rem; }
+.persona b { font-weight: 400; font-size: 1.5rem; color: var(--peach-deep); }
+.persona span { font-size: .86rem; color: var(--soft); max-width: 30ch; }
+.tryon { width: min(80%, 300px); }
+.pick { cursor: pointer; border: 2px solid transparent; text-align: left; }
+.pick.on { border-color: var(--peach); }
+.go.ghost { background: #fff; color: var(--peach-deep); box-shadow: none; border: 2px solid var(--blush); }
+.choices.three { grid-template-columns: 1fr 1fr 1fr; }
+@media (prefers-reduced-motion: reduce) { .tease, .two .me.open, .pair.done .stamp { animation: none; } }
+.left { display: inline-block; font-size: .72rem; color: #fff; background: var(--peach-deep); border-radius: 999px; padding: 0 9px; margin-top: 3px; }
+.friend { background: #fff; border-radius: 26px; padding: 20px; display: grid; gap: 12px; }
+.friend code { font-size: .78rem; word-break: break-all; background: var(--milk); border-radius: 12px; padding: 8px 10px; }
+.friend .copy { justify-self: start; background: var(--blush); border-radius: 999px; padding: 6px 16px; font-size: .86rem; }
+.vs { display: flex; align-items: center; gap: 22px; }
+.vs div { display: grid; justify-items: center; }
+.vs small { color: var(--soft); font-size: .78rem; }
+.vs b { font-family: var(--num); font-style: italic; font-weight: 600; font-size: 2.6rem; color: var(--peach-deep); line-height: 1.1; }
+.vs span { font-family: var(--num); font-style: italic; color: var(--soft); }
+.gift { background: var(--butter); border-radius: 14px; padding: 8px 12px; font-size: .95rem; }
+.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 50; overflow: hidden; }
+.confetti i { position: absolute; top: -20px; width: 9px; height: 14px; border-radius: 3px; animation: fall linear forwards; }
+@keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+@media (prefers-reduced-motion: reduce) { .confetti { display: none; } }
+</style>
+</head>
+<body>
+<main>
+<div class="top"><span class="brand" id="shopName">xiaori</span><span class="ig" id="shopIg">@xiaori.jewelry</span></div>
+
+<section id="open" class="hero">
+  <h1>你覺得你<br><em>適合什麼</em>？</h1>
+  <p>拍一張正臉給我，我先偷偷幫你看。換你說說覺得自己適合什麼，我們想得越像，折越多。</p>
+  <div class="upload">
+    <input type="file" id="photoInput" accept="image/*" aria-label="拍一張正臉">
+    <span class="cam"><svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="#d9607a" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5a2.5 2.5 0 0 1 2.5-2.5h3l2-3h7l2 3h3a2.5 2.5 0 0 1 2.5 2.5v11a2.5 2.5 0 0 1-2.5 2.5h-17A2.5 2.5 0 0 1 4 21.5z"/><circle cx="15" cy="15.5" r="4.5"/></svg></span>
+    <b>拍一張正臉</b>
+    <div class="tips"><span>頭髮撥到耳後</span><span>站窗邊</span><span>不開濾鏡</span></div>
+    <span class="pillbtn">點我拍照</span>
+  </div>
+  <p id="status" class="status hidden"></p>
+  <p class="soft" style="text-align:center">照片不會上傳，只在你的手機裡看</p>
+  <button class="link" id="demo">點不開？先用範例臉試玩</button>
+</section>
+
+<section id="seen" class="hidden">
+  <div class="arch"><canvas id="canvas"></canvas></div>
+  <div class="bubble">好，我看完了！我已經有答案，但先不說。<br>換你回答，直覺選就好～</div>
+  <button class="go" id="start">換我回答</button>
+  <button class="link" id="again">換一張照片</button>
+</section>
+
+<section id="quiz" class="hidden">
+  <div class="tease hidden" id="tease"></div>
+  <div class="qhead"><span class="counter" id="counter"></span><div class="track"><i id="prog"></i></div></div>
+  <h2 id="qText"></h2>
+  <div id="qChoices" class="choices"></div>
+  <button class="link" id="back">上一題</button>
+</section>
+
+<section id="result" class="hidden">
+  <h2>來對答案</h2>
+  <p class="soft">一張一張翻開，看看我們想得像不像</p>
+  <div class="sheet" id="sheet"></div>
+  <button class="link" id="flipAll">全部翻開</button>
+  <div id="after" class="hidden" style="display:grid;gap:18px">
+    <div class="scorecard">
+      <div id="ring"><div><b id="scoreNum"></b><small>默契分數</small></div></div>
+      <span id="scoreWord"></span>
+      <div class="persona"><small>你是</small><b id="persona"></b><span id="personaLine"></span></div>
+    </div>
+    <div class="ticket" id="coupon">
+      <span id="couponLine"></span>
+      <code id="code"></code>
+      <span class="soft" id="couponHow"></span>
+      <button class="copy" id="copy">複製折扣碼</button>
+    </div>
+    <div id="tryWrap" class="hidden" style="display:grid;gap:10px">
+      <h2>戴上去看看</h2>
+      <div class="arch tryon"><canvas id="tryCanvas"></canvas></div>
+      <p class="soft" style="text-align:center">點下面的飾品換著戴</p>
+    </div>
+    <h2>我幫你挑的</h2>
+    <div class="picks" id="picks"></div>
+    <div class="sign" id="sign"></div>
+    <div class="friend" id="friendBox">
+      <h2>邀朋友來猜你</h2>
+      <p class="soft">朋友會回答「你覺得她是什麼臉型、眼睛…」，看看誰比較懂你，還是你最懂自己。</p>
+      <input type="text" id="nick" maxlength="12" placeholder="你的暱稱，例如：小美" aria-label="你的暱稱">
+      <button class="go" id="makeLink">產生邀請連結</button>
+      <div id="linkOut" class="hidden" style="display:grid;gap:8px">
+        <code id="linkText"></code>
+        <button class="copy" id="copyLink">複製連結，傳給朋友</button>
+      </div>
+    </div>
+    <button class="go ghost" id="replay">再玩一次</button>
+    <p class="soft" style="text-align:center">再玩折扣不會變，以第一次為準</p>
+  </div>
+</section>
+
+<section id="fIntro" class="hidden">
+  <h1><em id="fName1"></em><br>想知道你有多懂她</h1>
+  <p>她剛剛拍了一張正臉，我已經幫她看完了。換你猜猜看她長什麼樣子，看你和她本人誰猜得比較準。</p>
+  <button class="go" id="fStart">開始猜</button>
+</section>
+
+<section id="fResult" class="hidden">
+  <h2>來對答案</h2>
+  <div class="sheet" id="fSheet"></div>
+  <div class="scorecard">
+    <div class="vs"><div><small>你猜</small><b id="fScore"></b></div><span>vs</span><div><small id="fName2"></small><b id="fOwn"></b></div></div>
+    <span id="fWord"></span>
+  </div>
+  <div class="ticket">
+    <span class="soft">換你玩！</span>
+    <div class="off">拍一張正臉，看你多懂自己</div>
+    <button class="copy" id="fPlay">我也要玩</button>
+  </div>
+</section>
+
+<section id="verify" class="hidden">
+  <h2>驗證折扣碼</h2>
+  <input type="text" id="vIn" placeholder="JW-15-XXXX-XXXX" autocomplete="off" aria-label="折扣碼">
+  <button class="go" id="vBtn">驗證</button>
+  <p id="vOut"></p>
+  <button class="link" id="reset">清除這支手機的紀錄（測試用）</button>
+  <a href="#" class="link">回去</a>
+</section>
+
+<footer><a href="#verify">店家用</a></footer>
+</main>
+
+<script src="face-models.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.13/dist/face-api.js"></script>
+<script>
+/* ============ 店家設定 ============ */
+const SHOP = {
+  name: "滿分女主",
+  ig: "@xiaori.jewelry",
+  owner: "滿分女主",
+  perfectGift: "滿分加送一對珍珠耳針",  // 100 分彩蛋的禮物
+  order: "私訊 IG 或 LINE @xiaori 下單",
+  salt: "change-this-secret",
+  // 默契分數 → 整筆訂單折扣
+  ladder: [[100, 20], [80, 15], [60, 12], [40, 8], [0, 5]]
+};
+// 以下為範例商品。shape：stud 耳針 / hoop 圈圈 / drop 水滴 / long 長耳線 / geo 幾何 / pearl 珍珠
+//                     choker 頸鍊 / short 鎖骨鍊 / long_n 長鍊 / pendant 墜飾
+// stock 現貨數量（0 就不推薦、3 件以下會顯示「只剩 N 件」）；size 1 小巧 2 中 3 大；line：curve 柔和、straight 俐落；img 放實拍照片路徑
+const ITEMS = [
+  { id: "E01", type: "earring",  name: "金色水滴",       price: 590, shape: "drop",    metal: "gold",   size: 2, line: "curve",    clip: true, stock: 2 },
+  { id: "E02", type: "earring",  name: "銀色大圈",       price: 490, shape: "hoop",    metal: "silver", size: 3, line: "curve",    clip: false, stock: 5 },
+  { id: "E03", type: "earring",  name: "淡水珍珠耳針",   price: 390, shape: "pearl",   metal: "gold",   size: 1, line: "curve",    clip: true, stock: 8 },
+  { id: "E04", type: "earring",  name: "細長金屬耳線",   price: 650, shape: "long",    metal: "gold",   size: 3, line: "straight", clip: false, stock: 1 },
+  { id: "E05", type: "earring",  name: "玫瑰金小圈",     price: 450, shape: "hoop",    metal: "rose",   size: 1, line: "curve",    clip: true, stock: 3 },
+  { id: "E06", type: "earring",  name: "菱形耳夾",       price: 720, shape: "geo",     metal: "gold",   size: 2, line: "straight", clip: true, stock: 2 },
+  { id: "E07", type: "earring",  name: "銀色方塊耳針",   price: 320, shape: "stud",    metal: "silver", size: 1, line: "straight", clip: true, stock: 10 },
+  { id: "N01", type: "necklace", name: "極細金鎖骨鍊",   price: 790, shape: "short",   metal: "gold",   size: 1, line: "straight", stock: 4 },
+  { id: "N02", type: "necklace", name: "珍珠頸鍊",       price: 980, shape: "choker",  metal: "silver", size: 2, line: "curve", stock: 2 },
+  { id: "N03", type: "necklace", name: "長版 Y 字鍊",    price: 890, shape: "long_n",  metal: "gold",   size: 2, line: "straight", stock: 1 },
+  { id: "N04", type: "necklace", name: "銀色圓牌",       price: 690, shape: "pendant", metal: "silver", size: 3, line: "curve", stock: 6 },
+  { id: "N05", type: "necklace", name: "玫瑰金小愛心",   price: 560, shape: "pendant", metal: "rose",   size: 1, line: "curve", stock: 3 }
+];
+/* ================================== */
+
+const FACE = { oval: "鵝蛋臉", round: "圓臉", long: "長臉", square: "方臉", heart: "心形臉" };
+const NEAR = { oval: ["round", "long", "heart"], round: ["oval", "square"], long: ["oval", "square"], square: ["round", "long"], heart: ["oval"] };
+const VOL = { 1: "小巧精緻", 2: "剛剛好", 3: "大氣立體" };
+const LINE = { curve: "柔和圓潤", straight: "俐落有稜角" };
+const METAL = { gold: "金色", silver: "銀色", rose: "玫瑰金" };
+const FIT = {
+  oval:   { stud: .9, hoop: .9, drop: .9, long: .9, geo: .9, pearl: .9, choker: .9, short: .9, long_n: .9, pendant: .9 },
+  round:  { stud: .6, hoop: .35, drop: .95, long: 1, geo: .9, pearl: .5, choker: .35, short: .6, long_n: 1, pendant: .85 },
+  long:   { stud: .9, hoop: 1, drop: .5, long: .3, geo: .7, pearl: .95, choker: 1, short: .95, long_n: .35, pendant: .6 },
+  square: { stud: .6, hoop: 1, drop: .9, long: .7, geo: .35, pearl: .95, choker: .5, short: .7, long_n: .95, pendant: .9 },
+  heart:  { stud: .7, hoop: .7, drop: 1, long: .6, geo: .6, pearl: .8, choker: .95, short: 1, long_n: .5, pendant: .7 }
+};
+const FACE_NOTE = {
+  oval: "你的比例很平均，其實什麼都能戴，挑你自己喜歡的就對了。",
+  round: "你戴有長度的會很好看，會把臉的線條拉長。",
+  long: "你適合有寬度的款式，圈圈和珍珠會讓臉看起來更柔和。",
+  square: "你適合圓弧的線條，可以把下顎修飾得溫柔一點。",
+  heart: "你適合下面寬一點的款式，水滴型剛好平衡下巴。"
+};
+
+const $ = id => document.getElementById(id);
+const store = (k, v) => { try { if (v === undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } };
+const show = id => ["open", "seen", "quiz", "result", "verify", "fIntro", "fResult"].forEach(s => $(s).classList.toggle("hidden", s !== id));
+
+$("shopName").textContent = SHOP.name;
+$("shopIg").textContent = SHOP.ig;
+
+/* ---------- 線稿 ---------- */
+const INK = "#c9748a";
+const faceSvg = k => {
+  const d = {
+    oval: `<ellipse cx="26" cy="27" rx="15" ry="20"/>`,
+    round: `<circle cx="26" cy="27" r="18"/>`,
+    long: `<ellipse cx="26" cy="27" rx="12" ry="22"/>`,
+    square: `<path d="M10 10h32v26q0 10-10 12h-12q-10-2-10-12z"/>`,
+    heart: `<path d="M8 12q18-6 36 0q0 24-18 36q-18-12-18-36z"/>`
+  }[k];
+  return `<svg viewBox="0 0 52 52" aria-hidden="true" fill="none" stroke="${INK}" stroke-width="2.2" stroke-linejoin="round">${d}</svg>`;
+};
+function pieceSvg(it, big) {
+  const c = { gold: "#d4a53c", silver: "#9aa3b2", rose: "#e0959a" }[it.metal];
+  const bg = { gold: "#fff4d9", silver: "#eef1f8", rose: "#ffe9ea" }[it.metal];
+  const s = `fill="none" stroke="${c}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"`;
+  const g = {
+    stud: `<rect x="40" y="40" width="16" height="16" ${s}/>`,
+    hoop: `<circle cx="48" cy="54" r="${it.size === 3 ? 28 : 15}" ${s}/><path d="M48 18v8" ${s}/>`,
+    drop: `<circle cx="48" cy="22" r="4" ${s}/><path d="M48 30 C33 54 36 74 48 74 C60 74 63 54 48 30Z" ${s}/>`,
+    long: `<circle cx="48" cy="12" r="3" ${s}/><path d="M48 16V76M42 76h12" ${s}/><path d="M44 46h8" ${s}/>`,
+    geo: `<circle cx="48" cy="18" r="3" ${s}/><path d="M48 24 L66 50 L48 76 L30 50Z" ${s}/>`,
+    pearl: `<circle cx="48" cy="48" r="13" ${s}/><path d="M42 43q3-4 7-4" ${s}/>`,
+    choker: `<path d="M16 28 Q48 64 80 28" ${s}/>` + [1, 2, 3, 4, 5, 6, 7].map(i => { const t = i / 8, x = 16 + 64 * t, y = 28 + 72 * t * (1 - t); return `<circle cx="${x}" cy="${y}" r="4" ${s}/>`; }).join(""),
+    short: `<path d="M14 22 Q48 66 82 22" ${s}/><circle cx="48" cy="44" r="2.5" ${s}/>`,
+    long_n: `<path d="M16 14 Q48 50 80 14" ${s}/><path d="M48 32V78" ${s}/><circle cx="48" cy="81" r="3" ${s}/>`,
+    pendant: `<path d="M14 14 Q48 54 82 14" ${s}/>` + (it.size === 1 ? `<path d="M48 64c-10-7-10-15-4-15c3 0 4 3 4 3s1-3 4-3c6 0 6 8-4 15z" ${s}/>` : `<circle cx="48" cy="56" r="13" ${s}/>`)
+  }[it.shape];
+  if (big) return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">${g.replaceAll('stroke-width="3"', 'stroke-width="4"')}</svg>`;
+  if (it.img) return `<img src="${it.img}" alt="${it.name}">`;
+  return `<svg viewBox="0 0 96 96" role="img" aria-label="${it.name}"><rect width="96" height="96" rx="24" fill="${bg}"/><path d="M78 14l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#fff"/>${g}</svg>`;
+}
+
+/* ---------- 看臉（在手機上跑） ---------- */
+let mine = null, pts = null, answers = {}, qi = 0;
+let modelsReady = null;
+const loadModels = () => {
+  if (!window.faceapi) return Promise.reject(new Error("no faceapi"));
+  return modelsReady ||= Promise.all([faceapi.nets.tinyFaceDetector.loadFromUri("models"), faceapi.nets.faceLandmark68Net.loadFromUri("models")]);
+};
+const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+const EYES = { round: "圓圓大眼", long: "細長眼" };
+const BROW = { arch: "彎彎的", flat: "平平的" };
+const CHIN = { sharp: "尖尖的", round: "圓圓的", square: "有點方" };
+const AGE = { young: "比實際小", mid: "差不多", mature: "比實際成熟" };
+const LIPS = { 1: "薄薄的", 2: "剛剛好", 3: "厚厚的" };
+const ELEN = { short: "貼耳短款", mid: "微微垂墜", long: "長長垂墜" };
+const NLEN = { choker: "貼頸頸鍊", short: "鎖骨鍊", long_n: "長鍊" };
+
+function read(p, ctx) {
+  const W = dist(p[0], p[16]), J = dist(p[4], p[12]);
+  const brow = mid(p[19], p[24]);
+  const L = dist(p[8], brow) * 1.45;
+  const r = L / W, jw = J / W;
+  const face = r > 1.6 ? "long" : (jw > .84 && r < 1.5) ? "square" : jw < .72 ? "heart" : r < 1.32 ? "round" : "oval";
+  // 五官量感：眼睛和嘴巴相對臉寬
+  const eye = (dist(p[36], p[39]) + dist(p[42], p[45])) / 2 / W;
+  const v = (eye / .2) * .6 + (dist(p[48], p[54]) / W / .38) * .4;   // 一般約 1.0
+  const vol = v < .96 ? 1 : v > 1.05 ? 3 : 2;
+  // 眼型：眼睛高寬比
+  const open = ((dist(p[37], p[41]) + dist(p[38], p[40])) / 2) / dist(p[36], p[39]);
+  const eyes = open > .31 ? "round" : "long";
+  // 線條：下顎寬、眼型細長 → 俐落
+  const line = ((jw - .78) * 5 - (open - .3) * 6) > 0 ? "straight" : "curve";
+  // 眉毛：眉峰離眉頭眉尾連線多高
+  const arc = (a, b, c) => Math.abs((c.x - a.x) * (a.y - b.y) - (a.x - b.x) * (c.y - a.y)) / dist(a, c) / dist(a, c);
+  const brows = (arc(p[17], p[19], p[21]) + arc(p[22], p[24], p[26])) / 2 > .17 ? "arch" : "flat";
+  // 下巴：下巴尖端的角度
+  const v1 = [p[6].x - p[8].x, p[6].y - p[8].y], v2 = [p[10].x - p[8].x, p[10].y - p[8].y];
+  const ca = Math.acos((v1[0] * v2[0] + v1[1] * v2[1]) / Math.hypot(...v1) / Math.hypot(...v2)) * 180 / Math.PI;
+  const chin = jw > .84 ? "square" : ca < 138 ? "sharp" : "round";
+  // 年紀感：下半臉越短越顯小
+  const lower = dist(p[33], p[8]) / dist(brow, p[8]);
+  const age = lower < .47 ? "young" : lower > .53 ? "mature" : "mid";
+  const lt = dist(p[51], p[57]) / W;
+  const lips = lt < .085 ? 1 : lt > .115 ? 3 : 2;
+  const elen = { round: "long", heart: "mid", oval: "mid", square: "mid", long: "short" }[face];
+  const nlen = { round: "long_n", square: "long_n", oval: "short", long: "choker", heart: "choker" }[face];
+  // 膚色：取兩頰
+  const R = Math.max(3, Math.round(W * .05));
+  let rr = 0, gg = 0, bb = 0, n = 0;
+  [mid(p[3], p[31]), mid(p[13], p[35])].forEach(s => {
+    const d = ctx.getImageData(Math.round(s.x - R), Math.round(s.y - R), R * 2, R * 2).data;
+    for (let i = 0; i < d.length; i += 4) { rr += d[i]; gg += d[i + 1]; bb += d[i + 2]; n++; }
+  });
+  rr /= n; gg /= n; bb /= n;
+  const mx = Math.max(rr, gg, bb), mn = Math.min(rr, gg, bb);
+  let h = mx === mn ? 22 : mx === rr ? ((gg - bb) / (mx - mn)) * 60 : mx === gg ? (2 + (bb - rr) / (mx - mn)) * 60 : (4 + (rr - gg) / (mx - mn)) * 60;
+  if (h < 0) h += 360;
+  const metal = h > 25 ? "gold" : h < 17 ? "silver" : "rose";
+  const yaw = dist(p[30], p[0]) / dist(p[30], p[16]);
+  return { face, vol, line, metal, eyes, brows, chin, age, lips, elen, nlen, turned: yaw > 1.45 || yaw < 1 / 1.45 };
+}
+function note(msg) { $("status").textContent = msg; $("status").classList.remove("hidden"); }
+
+$("photoInput").addEventListener("change", async e => {
+  const f = e.target.files[0]; if (!f) return;
+  note("我看一下喔…");
+  const img = new Image(); img.src = URL.createObjectURL(f);
+  try { await img.decode(); } catch (err) { note("這張照片打不開，換一張試試。"); return; }
+  const c = $("canvas"), k = Math.min(1, 720 / Math.max(img.width, img.height));
+  c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+  const ctx = c.getContext("2d", { willReadFrequently: true });
+  ctx.drawImage(img, 0, 0, c.width, c.height);
+  try {
+    await loadModels();
+    const det = await faceapi.detectSingleFace(c, new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: .4 })).withFaceLandmarks();
+    if (!det) { note("我找不到你的臉耶，換一張正面一點、亮一點的。"); return; }
+    pts = det.landmarks.positions.map(q => ({ x: q.x, y: q.y }));
+    mine = read(pts, ctx);
+    if (mine.turned) { note("臉有點側到了，正對鏡頭再拍一張，我才看得準。"); mine = null; pts = null; return; }
+    $("status").classList.add("hidden");
+    show("seen");
+  } catch (err) {
+    note("你的手機好像跑不動，換個瀏覽器（Chrome 或 Safari）再試一次。");
+  }
+});
+$("demo").onclick = () => {
+  mine = { face: "oval", vol: 2, line: "curve", metal: "rose", eyes: "round", brows: "arch", chin: "round", age: "young", lips: 2, elen: "mid", nlen: "short", turned: false };
+  pts = null;
+  const c = $("canvas"); c.width = 300; c.height = 400;
+  const x = c.getContext("2d");
+  const gr = x.createLinearGradient(0, 0, 0, 400); gr.addColorStop(0, "#ffe4e6"); gr.addColorStop(1, "#fff1c9");
+  x.fillStyle = gr; x.fillRect(0, 0, 300, 400);
+  x.strokeStyle = "#d9607a"; x.lineWidth = 5; x.beginPath(); x.ellipse(150, 210, 82, 108, 0, 0, Math.PI * 2); x.stroke();
+  x.fillStyle = "#d9607a"; x.font = "22px sans-serif"; x.textAlign = "center"; x.fillText("範例臉", 150, 216);
+  show("seen");
+};
+$("again").onclick = () => { $("photoInput").value = ""; show("open"); };
+
+/* ---------- 問題 ---------- */
+function rankFor(cat) {
+  const want = mine;
+  return ITEMS.filter(it => it.type === cat && it.stock > 0).map(it => {
+    const s = FIT[want.face][it.shape] * .4 + (1 - Math.abs(it.size - want.vol) / 2) * .25 + (it.line === want.line ? 1 : .3) * .2 + (it.metal === want.metal ? 1 : it.metal === "rose" || want.metal === "rose" ? .6 : .3) * .15;
+    return { ...it, s };
+  }).sort((a, b) => b.s - a.s);
+}
+function pieceOptions(cat) {
+  const r = rankFor(cat);
+  const pool = [r[0], r[1], r[r.length - 1], r[r.length - 2]].filter((x, i, a) => x && a.indexOf(x) === i);
+  return pool.sort((a, b) => a.id.charCodeAt(2) * 7 % 5 - b.id.charCodeAt(2) * 7 % 5);
+}
+const ico = d => `<svg viewBox="0 0 52 52" aria-hidden="true" fill="none" stroke="${INK}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const QS = [
+  { key: "cat", q: "今天想看耳環還是項鍊？", opts: () => [["耳環", "earring", ico(`<circle cx="26" cy="14" r="3"/><path d="M26 17v6"/><path d="M26 23c-9 12-7 20 0 20s9-8 0-20z"/>`)], ["項鍊", "necklace", ico(`<path d="M8 10q18 30 36 0"/><circle cx="26" cy="31" r="6"/>`)]] },
+  { key: "face", q: "你覺得自己是什麼臉型？", opts: () => Object.entries(FACE).map(([k, n]) => [n, k, faceSvg(k)]) },
+  { key: "eyes", q: "你的眼睛比較像？", opts: () => [["圓圓大眼", "round", ico(`<ellipse cx="26" cy="26" rx="15" ry="11"/><circle cx="26" cy="26" r="5" fill="${INK}"/>`)], ["細長眼", "long", ico(`<path d="M6 27q20-14 40-2q-20 10-40 2z"/><circle cx="26" cy="26" r="4" fill="${INK}"/>`)]] },
+  { key: "brows", q: "你的眉毛是？", opts: () => [["彎彎的", "arch", ico(`<path d="M8 34q16-22 36-4"/>`)], ["平平的", "flat", ico(`<path d="M8 28q18-6 36 0"/>`)]] },
+  { key: "chin", q: "你的下巴是？", opts: () => [["尖尖的", "sharp", ico(`<path d="M10 6q4 26 16 40q12-14 16-40"/>`)], ["圓圓的", "round", ico(`<path d="M10 6q0 38 16 38t16-38"/>`)], ["有點方", "square", ico(`<path d="M10 6l2 28q2 10 10 10h8q8 0 10-10l2-28"/>`)]] },
+  { key: "lips", q: "你的嘴唇是？", opts: () => [["薄薄的", 1, ico(`<path d="M8 26q9-4 18-1q9-3 18 1q-18 4-36 0z"/>`)], ["剛剛好", 2, ico(`<path d="M8 26q9-7 18-3q9-4 18 3q-18 9-36 0z"/>`)], ["厚厚的", 3, ico(`<path d="M8 26q9-11 18-5q9-6 18 5q-18 14-36 0z"/>`)]] },
+  { key: "vol", q: "整體來說，你的五官是？", opts: () => [["小巧精緻", 1, null, "清秀型，要靠近才看得清楚"], ["剛剛好", 2, null, "不大不小，很耐看"], ["大氣立體", 3, null, "遠遠就看得到輪廓，有存在感"]] },
+  { key: "age", q: "別人猜你的年紀，通常會？", opts: () => [["猜得比較小", "young"], ["猜得差不多", "mid"], ["猜得比較大", "mature"]] },
+  { key: "line", q: "第一次見面，別人說你看起來？", opts: () => [["溫柔親切", "curve", null, "好聊、好相處、有點可愛"], ["帥氣有距離感", "straight", null, "酷酷的、知性、不好惹"]] },
+  { key: "metal", q: "金色、銀色、玫瑰金，哪個最襯你？", opts: () => Object.entries(METAL).map(([k, n]) => [n, k, ico(`<circle cx="26" cy="26" r="14" fill="${{ gold: "#f3d58a", silver: "#d9dee8", rose: "#f4c2c0" }[k]}" stroke="none"/>`)]) },
+  { key: "len", q: () => answers.cat === "earring" ? "你覺得你適合多長的耳環？" : "你覺得你適合多長的項鍊？",
+    opts: () => answers.cat === "earring"
+      ? [["貼耳短款", "short", ico(`<path d="M20 10q-8 8 0 16"/><circle cx="24" cy="30" r="3"/>`)], ["微微垂墜", "mid", ico(`<path d="M20 8q-8 8 0 16"/><path d="M24 26v8"/><circle cx="24" cy="37" r="3"/>`)], ["長長垂墜", "long", ico(`<path d="M20 4q-8 8 0 16"/><path d="M24 22v20"/><circle cx="24" cy="45" r="3"/>`)]]
+      : [["貼頸頸鍊", "choker", ico(`<path d="M14 8q12 14 24 0"/>`)], ["鎖骨鍊", "short", ico(`<path d="M10 8q16 28 32 0"/>`)], ["長鍊", "long_n", ico(`<path d="M8 6q18 46 36 0"/>`)]] },
+  { key: "piece", q: "最後一題！這幾件裡面，你覺得哪件最適合你？", pieces: true, opts: () => pieceOptions(answers.cat).map(it => [it.name, it.id, pieceSvg(it)]) }
+];
+const TEASE = ["嗯哼～記下來了", "這題我很有把握喔", "先不說，等等對答案", "有意思", "我在偷笑（不是笑你）", "好，下一題", "你確定？開玩笑的啦", "跟我想的…先保密", "快好了！"];
+function renderQ() {
+  const list = friend ? FQS() : QS;
+  const Q = list[qi];
+  $("counter").textContent = `${qi + 1} / ${list.length}`;
+  $("prog").style.width = ((qi + 1) / list.length * 100) + "%";
+  $("qText").textContent = typeof Q.q === "function" ? Q.q() : Q.q;
+  $("back").classList.toggle("hidden", qi === 0);
+  const opts = Q.opts();
+  const box = $("qChoices");
+  box.className = "choices" + (Q.pieces ? " pieces" : (Q.key === "vol" || Q.key === "line" || Q.key === "age") ? " one" : opts.length === 3 && opts[0][2] ? " three" : "");
+  box.innerHTML = "";
+  opts.forEach(([label, val, svg, sub]) => {
+    const b = document.createElement("button");
+    b.innerHTML = (svg || "") + `<span>${label}${sub ? `<small>${sub}</small>` : ""}</span>`;
+    b.onclick = () => {
+      answers[Q.key] = val; qi++;
+      if (qi < list.length) {
+        const t = $("tease"); t.textContent = TEASE[Math.floor(Math.random() * TEASE.length)];
+        t.classList.remove("hidden"); t.style.animation = "none"; void t.offsetWidth; t.style.animation = "";
+        renderQ();
+      } else friend ? friendReveal() : reveal();
+    };
+    box.appendChild(b);
+  });
+  window.scrollTo(0, 0);
+}
+$("start").onclick = () => { answers = {}; qi = 0; $("tease").classList.add("hidden"); show("quiz"); renderQ(); };
+$("back").onclick = () => { if (qi > 0) { qi--; renderQ(); } };
+
+/* ---------- 對答案 ---------- */
+const eq = (a, m) => a === m ? 1 : 0;
+const ord = (a, m) => a === m ? 1 : Math.abs(a - m) === 1 ? .4 : 0;
+const ordOf = list => (a, m) => a === m ? 1 : Math.abs(list.indexOf(a) - list.indexOf(m)) === 1 ? .4 : 0;
+const SPEC = [
+  ["face", "臉型", 15, k => FACE[k], (a, m) => a === m ? 1 : NEAR[m].includes(a) ? .4 : 0],
+  ["eyes", "眼睛", 8, k => EYES[k], eq],
+  ["brows", "眉毛", 6, k => BROW[k], eq],
+  ["chin", "下巴", 8, k => CHIN[k], (a, m) => a === m ? 1 : (a !== "sharp" && m !== "sharp") ? .4 : 0],
+  ["lips", "嘴唇", 6, k => LIPS[k], ord],
+  ["vol", "五官", 10, k => VOL[k], ord],
+  ["age", "年紀感", 8, k => AGE[k], ordOf(["young", "mid", "mature"])],
+  ["line", "給人的感覺", 9, k => LINE[k], eq],
+  ["metal", "金屬色", 10, k => METAL[k], (a, m) => a === m ? 1 : (a === "rose" || m === "rose") ? .4 : 0],
+  ["len", "長度", 8, k => ELEN[k] || NLEN[k], (a, m) => ordOf(answers.cat === "earring" ? ["short", "mid", "long"] : ["choker", "short", "long_n"])(a, m)],
+  ["piece", "最適合的那件", 12, id => ITEMS.find(i => i.id === id).name, null]
+];
+function grade() {
+  const r = rankFor(answers.cat);
+  const rows = SPEC.map(([key, label, w, name, fn]) => {
+    const a = answers[key];
+    const m = key === "len" ? (answers.cat === "earring" ? mine.elen : mine.nlen) : key === "piece" ? r[0].id : mine[key];
+    const f = key === "piece" ? (a === r[0].id ? 1 : a === r[1].id ? .5 : 0) : fn(a, m);
+    return [label, name(a), name(m), Math.round(w * f), w];
+  });
+  const score = rows.reduce((s, x) => s + x[3], 0);
+  const off = SHOP.ladder.find(([s]) => score >= s)[1];
+  return { rows, score, off, top: r.slice(0, 3) };
+}
+const STAMP = (got, full) => got === full ? `<span class="stamp ok">一樣</span>` : got > 0 ? `<span class="stamp near">差一點</span>` : `<span class="stamp miss">不一樣</span>`;
+const P_MET = { gold: "暖金", silver: "冷銀", rose: "玫瑰" };
+const P_TYPE = {
+  curve: { 1: ["小甜心", "小巧可愛，越精緻的東西越適合你"], 2: ["溫柔系", "讓人想靠近的氣質，圓弧線條是你的好朋友"], 3: ["大女主", "溫柔但有份量，大一點的款式你撐得住"] },
+  straight: { 1: ["清冷系", "安靜又有距離感，細細的線條最有味道"], 2: ["知性系", "乾淨俐落，簡單的幾何很襯你"], 3: ["氣場系", "一出場就被看見，大膽的款式交給你"] }
+};
+
+function checksum(s) {
+  let h = 2166136261;
+  for (const ch of s + SHOP.salt) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; }
+  const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let o = "";
+  for (let i = 0; i < 4; i++) { o += A[h % 32]; h = Math.floor(h / 32); }
+  return o;
+}
+function newCode(off) {
+  const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let id = "";
+  crypto.getRandomValues(new Uint8Array(4)).forEach(x => id += A[x % 32]);
+  return `JW-${off}-${id}-${checksum(off + id)}`;
+}
+
+function reveal() {
+  const g = grade();
+  let claim = store("jw3Claim");
+  if (!claim) { claim = { code: newCode(g.off), off: g.off, score: g.score }; store("jw3Claim", claim); }
+  const res = { g, mine, answers, claim };
+  store("jw3Result", res);
+  paint(res, true);
+}
+function paint(res, fresh) {
+  const { g } = res;
+  show("result");
+  $("after").classList.add("hidden");
+  $("flipAll").classList.toggle("hidden", !fresh);
+  $("sheet").innerHTML = g.rows.map(([k, you, me, got, full], i) =>
+    `<div class="pair${fresh ? "" : " done"}" style="--d:${fresh ? .1 + i * .06 : 0}s"><span class="k">${k}</span>
+      <div class="two"><div class="you"><small>你說</small>${you}</div>${fresh ? `<button class="me cover" data-i="${i}">點我翻開</button>` : `<div class="me"><small>我看</small>${me}</div>`}</div>
+      ${STAMP(got, full)}</div>`).join("");
+  $("sheet").classList.remove("in"); void $("sheet").offsetWidth; $("sheet").classList.add("in");
+  const flip = btn => {
+    const i = +btn.dataset.i, row = g.rows[i];
+    const d = document.createElement("div"); d.className = "me open"; d.innerHTML = `<small>我看</small>${row[2]}`;
+    btn.replaceWith(d); d.closest(".pair").classList.add("done");
+    if (!$("sheet").querySelector(".cover")) showAfter(res, true);
+  };
+  $("sheet").querySelectorAll(".cover").forEach(b => b.onclick = () => flip(b));
+  $("flipAll").onclick = () => $("sheet").querySelectorAll(".cover").forEach(flip);
+  if (!fresh) showAfter(res, false);
+  window.scrollTo(0, 0);
+}
+function showAfter(res, animate) {
+  const { g, claim } = res, m = res.mine;
+  $("flipAll").classList.add("hidden");
+  $("after").classList.remove("hidden");
+  $("scoreNum").textContent = g.score;
+  $("ring").style.setProperty("--p", animate ? 0 : g.score);
+  if (animate) setTimeout(() => $("ring").style.setProperty("--p", g.score), 120);
+  $("scoreWord").textContent = g.score >= 80 ? "你很懂自己耶！" : g.score >= 60 ? "我們滿有默契的" : g.score >= 40 ? "一半一半，有點意思" : "你比你以為的還要多面喔";
+  const [pn, pl] = P_TYPE[m.line][m.vol];
+  $("persona").textContent = P_MET[m.metal] + pn;
+  $("personaLine").textContent = pl;
+  const firstTime = claim.score === g.score && claim.off === g.off;
+  const zhe = 100 - claim.off;
+  $("couponLine").innerHTML = `<span class="soft">${firstTime ? "你的專屬折扣" : "你之前領過囉，還是這張"}</span><div class="off">整筆 ${zhe % 10 === 0 ? zhe / 10 : zhe} 折</div>`;
+  if (claim.score === 100) $("couponLine").innerHTML += `<div class="gift">滿分彩蛋：${SHOP.perfectGift}</div>`;
+  if (animate && g.score === 100) confetti();
+  $("code").textContent = claim.code;
+  $("couponHow").textContent = `截圖這組折扣碼，${SHOP.order}。一人一次。`;
+  $("picks").innerHTML = g.top.map((it, i) => {
+    const why = [
+      FIT[m.face][it.shape] >= .9 ? `很適合${FACE[m.face]}` : "",
+      it.metal === m.metal ? `${METAL[it.metal]}襯你的膚色` : "",
+      it.size === m.vol ? `大小剛好配你的五官` : "",
+      it.clip ? "有耳夾版" : ""
+    ].filter(Boolean).join("，");
+    return `<button class="pick${i === 0 && pts ? " on" : ""}" data-id="${it.id}">${pieceSvg(it)}<div><div class="nm">${it.name}</div><div class="why">${why || "整體感覺很搭"}</div>
+      ${it.stock <= 3 ? `<div class="left">只剩 ${it.stock} 件</div>` : ""}<div class="pr"><s>NT$${it.price}</s><b>NT$${Math.round(it.price * (100 - claim.off) / 100)}</b></div></div></button>`;
+  }).join("");
+  $("sign").innerHTML = `<p>${FACE_NOTE[m.face]}</p><span>${SHOP.owner}</span>`;
+  const canTry = !!pts;
+  $("tryWrap").classList.toggle("hidden", !canTry);
+  if (canTry) {
+    tryOn(g.top[0]);
+    $("picks").querySelectorAll(".pick").forEach(b => b.onclick = () => {
+      $("picks").querySelectorAll(".pick").forEach(x => x.classList.toggle("on", x === b));
+      tryOn(ITEMS.find(i => i.id === b.dataset.id));
+      $("tryWrap").scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
+  if (animate) setTimeout(() => $("after").scrollIntoView({ behavior: "smooth", block: "start" }), 200);
+}
+
+/* ---------- 試戴 ---------- */
+function tryOn(it) {
+  const src = $("canvas"), c = $("tryCanvas");
+  c.width = src.width; c.height = src.height;
+  const x = c.getContext("2d"); x.drawImage(src, 0, 0);
+  const p = pts, W = dist(p[0], p[16]);
+  const img = new Image();
+  img.onload = () => {
+    if (it.type === "earring") {
+      const s = W * .24;
+      [{ x: p[2].x - W * .03, y: p[2].y + W * .02 }, { x: p[14].x + W * .03, y: p[14].y + W * .02 }]
+        .forEach(o => x.drawImage(img, o.x - s / 2, o.y - s * .12, s, s));
+    } else {
+      const s = W * 1.15;
+      x.drawImage(img, p[8].x - s / 2, p[8].y + W * .18, s, s);
+    }
+  };
+  img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(pieceSvg(it, true));
+}
+$("replay").onclick = () => { try { localStorage.removeItem("jw3Result"); } catch (e) {} mine = null; pts = null; $("photoInput").value = ""; $("status").classList.add("hidden"); show("open"); window.scrollTo(0, 0); };
+$("copy").onclick = async () => {
+  try { await navigator.clipboard.writeText($("code").textContent); $("copy").textContent = "複製好了"; }
+  catch (e) { $("copy").textContent = "長按上面的碼就能複製"; }
+};
+
+/* ---------- 100 分彩蛋 ---------- */
+function confetti() {
+  const box = document.createElement("div"); box.className = "confetti";
+  const cols = ["#f48ca0", "#ffe9a8", "#ffd6dc", "#d9607a", "#f3d58a", "#ffffff"];
+  for (let i = 0; i < 90; i++) {
+    const p = document.createElement("i");
+    p.style.left = Math.random() * 100 + "%";
+    p.style.background = cols[i % cols.length];
+    p.style.animationDuration = 2.2 + Math.random() * 2 + "s";
+    p.style.animationDelay = Math.random() * .8 + "s";
+    box.appendChild(p);
+  }
+  document.body.appendChild(box);
+  setTimeout(() => box.remove(), 5200);
+}
+
+/* ---------- 好友互猜 ---------- */
+let friend = null;
+const FKEYS = ["face", "eyes", "brows", "chin", "lips", "vol", "age", "line", "metal"];
+const FTEXT = { face: "她是什麼臉型？", eyes: "她的眼睛比較像？", brows: "她的眉毛是？", chin: "她的下巴是？", lips: "她的嘴唇是？", vol: "整體來說，她的五官是？", age: "別人猜她的年紀，通常會？", line: "第一次見面，別人會覺得她？", metal: "金色、銀色、玫瑰金，哪個最襯她？" };
+const FQS = () => QS.filter(q => FKEYS.includes(q.key)).map(q => ({ ...q, q: FTEXT[q.key] }));
+const enc = o => btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+const dec = t => JSON.parse(decodeURIComponent(escape(atob(t.replace(/-/g, "+").replace(/_/g, "/")))));
+function subScore(ans, m) {
+  let got = 0, tot = 0; const rows = [];
+  SPEC.filter(x => FKEYS.includes(x[0])).forEach(([k, label, w, name, fn]) => {
+    const f = fn(ans[k], m[k]); got += w * f; tot += w;
+    rows.push([label, name(ans[k]), name(m[k]), Math.round(w * f), w]);
+  });
+  return { score: Math.round(got / tot * 100), rows };
+}
+$("makeLink").onclick = () => {
+  const res = store("jw3Result"); if (!res) return;
+  const n = $("nick").value.trim() || "我";
+  const m = {}; FKEYS.forEach(k => m[k] = res.mine[k]);
+  const url = location.href.split(/[?#]/)[0] + "?f=" + enc({ n, m, s: subScore(res.answers, res.mine).score });
+  $("linkText").textContent = url; $("linkOut").classList.remove("hidden");
+};
+$("copyLink").onclick = async () => {
+  try { await navigator.clipboard.writeText($("linkText").textContent); $("copyLink").textContent = "複製好了，快傳給朋友"; }
+  catch (e) { $("copyLink").textContent = "長按上面的連結複製"; }
+};
+$("fStart").onclick = () => { answers = {}; qi = 0; $("tease").classList.add("hidden"); show("quiz"); renderQ(); };
+function friendReveal() {
+  const r = subScore(answers, friend.m);
+  show("fResult");
+  $("fSheet").innerHTML = r.rows.map(([k, you, me, got, full]) =>
+    `<div class="pair done"><span class="k">${k}</span><div class="two"><div class="you"><small>你猜</small>${you}</div><div class="me"><small>我看</small>${me}</div></div>${STAMP(got, full)}</div>`).join("");
+  $("fScore").textContent = r.score;
+  $("fOwn").textContent = friend.s;
+  $("fName2").textContent = friend.n + "自己";
+  $("fWord").textContent = r.score > friend.s ? `你比${friend.n}還懂她！` : r.score === friend.s ? "你們一樣懂她" : `還是${friend.n}比較懂自己`;
+  if (r.score === 100) confetti();
+  window.scrollTo(0, 0);
+}
+$("fPlay").onclick = () => { location.href = location.href.split(/[?#]/)[0]; };
+
+/* ---------- 店家驗證 ---------- */
+$("vBtn").onclick = () => {
+  const m = $("vIn").value.trim().toUpperCase().match(/^JW-(\d+)-([A-Z0-9]{4})-([A-Z0-9]{4})$/);
+  const ok = m && checksum(m[1] + m[2]) === m[3] && SHOP.ladder.some(l => l[1] === +m[1]);
+  $("vOut").innerHTML = ok ? `<span style="color:#3c9a6b">是真的，整筆折 ${m[1]}%。記得記下這組已經用過。</span>` : `<span style="color:#d0546b">這組不對，請對方再確認一次。</span>`;
+};
+$("reset").onclick = () => { try { localStorage.removeItem("jw3Result"); localStorage.removeItem("jw3Claim"); } catch (e) {} $("vOut").textContent = "清好了，可以重新測。"; };
+function route() {
+  const f = new URLSearchParams(location.search).get("f");
+  if (f && !friend) { try { friend = dec(f); } catch (e) { friend = null; } }
+  if (friend && location.hash !== "#verify") {
+    $("fName1").textContent = friend.n;
+    if ($("fResult").classList.contains("hidden") && $("quiz").classList.contains("hidden")) show("fIntro");
+    return;
+  }
+  if (location.hash === "#verify") { show("verify"); return; }
+  const prev = store("jw3Result");
+  if (prev && prev.g) paint(prev, false); else show("open");
+}
+window.addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
