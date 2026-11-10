@@ -249,6 +249,7 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
       <h2>今天要去哪？</h2>
       <div class="chips" id="occChips"></div>
       <p class="soft" id="occNote"></p>
+      <div class="tryctl hidden" id="bgCtl"><span>背景</span><div class="seg"><button class="on" id="bgOn">換成情境</button><button id="bgOff">原本的</button></div></div>
     </div>
     <div id="tryWrap" class="hidden" style="display:grid;gap:10px">
       <h2>戴上去看看</h2>
@@ -535,6 +536,7 @@ $("alOk").onclick = async () => {
     const det = await faceapi.detectSingleFace(c, new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: .4 })).withFaceLandmarks();
     if (!det) { fail("我找不到你的臉耶，換一張正面一點、亮一點的。"); return; }
     pts = det.landmarks.positions.map(q => ({ x: q.x, y: q.y }));
+    delete masks.front;
     mine = read(pts, ctx);
     if (mine.turned) { fail("臉有點側到了，正對鏡頭再拍一張，我才看得準。"); mine = null; pts = null; return; }
     show("seen");
@@ -761,6 +763,75 @@ function renderPicks() {
   }
 }
 
+/* ---------- 換背景（把人切出來） ---------- */
+let segModel = null, bgOn = true;
+const masks = {};
+async function loadSeg() {
+  if (!window.faceapi) throw new Error("no tf");
+  return segModel ||= await faceapi.tf.loadGraphModel("models/selfie.json");
+}
+async function maskOf(key, canvas) {
+  if (masks[key]) return masks[key];
+  const tf = faceapi.tf, model = await loadSeg();
+  const out = tf.tidy(() => {
+    const t = tf.browser.fromPixels(canvas).toFloat().div(255);
+    let o = model.execute(tf.image.resizeBilinear(t, [256, 256]).expandDims(0));
+    if (Array.isArray(o)) o = o[0];
+    return o.squeeze();
+  });
+  const data = await out.data(); out.dispose();
+  const sm = document.createElement("canvas"); sm.width = sm.height = 256;
+  const sx = sm.getContext("2d"), id = sx.createImageData(256, 256);
+  for (let i = 0; i < data.length; i++) {
+    const a = Math.max(0, Math.min(1, (data[i] - .35) / .3));
+    id.data[i * 4] = id.data[i * 4 + 1] = id.data[i * 4 + 2] = 255; id.data[i * 4 + 3] = a * 255;
+  }
+  sx.putImageData(id, 0, 0);
+  const m = document.createElement("canvas"); m.width = canvas.width; m.height = canvas.height;
+  const mx = m.getContext("2d"); mx.filter = "blur(3px)"; mx.drawImage(sm, 0, 0, m.width, m.height);
+  return masks[key] = m;
+}
+const bgCache = {};
+function bgFor(k, W, H) {
+  const key = k + W + "x" + H; if (bgCache[key]) return bgCache[key];
+  const c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
+  const grad = (stops) => { const g = x.createLinearGradient(0, 0, 0, H); stops.forEach(([p, col]) => g.addColorStop(p, col)); x.fillStyle = g; x.fillRect(0, 0, W, H); };
+  const bokeh = (n, cols, rmin, rmax, ymax, alpha) => { for (let i = 0; i < n; i++) { const r = rmin + ((i * 37) % 100) / 100 * (rmax - rmin);
+    x.globalAlpha = alpha * (.5 + ((i * 53) % 50) / 100); x.fillStyle = cols[i % cols.length];
+    x.beginPath(); x.arc(((i * 71) % 100) / 100 * W, ((i * 29) % 100) / 100 * H * ymax, r, 0, Math.PI * 2); x.fill(); } x.globalAlpha = 1; };
+  if (k === "daily") {
+    grad([[0, "#a9d6f5"], [.55, "#e8f3f7"], [1, "#f4ead8"]]);
+    x.filter = "blur(18px)"; x.fillStyle = "#9cc58f";
+    for (let i = 0; i < 9; i++) { x.beginPath(); x.ellipse(i / 8 * W, H * (.62 + (i % 3) * .05), W * .16, H * .14, 0, 0, Math.PI * 2); x.fill(); }
+    x.filter = "blur(6px)"; bokeh(14, ["#fffbe6", "#ffffff"], W * .02, W * .06, .5, .6);
+  } else if (k === "work") {
+    grad([[0, "#dfe7f0"], [1, "#c9d3de"]]);
+    x.filter = "blur(10px)"; x.fillStyle = "rgba(255,255,255,.75)";
+    for (let i = 0; i < 4; i++) x.fillRect(W * (.06 + i * .24), H * .08, W * .18, H * .5);
+    x.fillStyle = "rgba(120,135,150,.35)"; x.fillRect(0, H * .72, W, H * .28);
+    bokeh(10, ["#ffffff", "#e8f0ff"], W * .03, W * .07, .6, .45);
+  } else if (k === "date") {
+    grad([[0, "#5a3328"], [.6, "#a8634a"], [1, "#e7b38e"]]);
+    x.filter = "blur(8px)"; bokeh(26, ["#ffd59a", "#ffb38a", "#ffe9c4"], W * .025, W * .075, .75, .8);
+    x.filter = "none"; x.fillStyle = "rgba(255,170,190,.12)"; x.fillRect(0, 0, W, H);
+  } else {
+    grad([[0, "#1d1035"], [.6, "#4b1f55"], [1, "#7a3060"]]);
+    x.filter = "blur(7px)"; bokeh(30, ["#ffd36b", "#ff8fb1", "#c9a7ff", "#ffffff"], W * .02, W * .08, 1, .85);
+  }
+  x.filter = "none";
+  return bgCache[key] = c;
+}
+async function prepBg() {
+  const src = tryMode === "front" ? $("canvas") : sideCanvas;
+  try {
+    await maskOf(tryMode, src);
+    $("bgCtl").classList.remove("hidden");
+    drawTry();
+  } catch (e) { $("bgCtl").classList.add("hidden"); }
+}
+$("bgOn").onclick = () => { bgOn = true; $("bgOn").classList.add("on"); $("bgOff").classList.remove("on"); drawTry(); };
+$("bgOff").onclick = () => { bgOn = false; $("bgOff").classList.add("on"); $("bgOn").classList.remove("on"); drawTry(); };
+
 /* ---------- 試戴（可拖曳、可調大小） ---------- */
 let tryState = null, tryMode = "front", tryItem = null;
 const sideCanvas = document.createElement("canvas");
@@ -784,6 +855,7 @@ $("sideInput").addEventListener("change", async e => {
   sideCanvas.width = 600; sideCanvas.height = 800;
   const k = Math.max(600 / img.width, 800 / img.height), x = sideCanvas.getContext("2d");
   x.drawImage(img, (600 - img.width * k) / 2, (800 - img.height * k) / 2, img.width * k, img.height * k);
+  delete masks.side;
   sideReady = true; setMode("side");
 });
 function tryOn(it) {
@@ -805,14 +877,22 @@ function tryOn(it) {
   }
   tryState = { img, pieces, scale: 1, drag: -1, init: pieces.map(q => ({ ...q })) };
   $("trySize").value = 100;
-  img.onload = drawTry;
+  img.onload = () => { drawTry(); if (!masks[tryMode]) prepBg(); };
   img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(pieceSvg(it, true));
 }
 function drawTry() {
   const t = tryState; if (!t) return;
   const c = $("tryCanvas"), x = c.getContext("2d");
-  x.clearRect(0, 0, c.width, c.height); x.drawImage(tryMode === "front" ? $("canvas") : sideCanvas, 0, 0);
+  x.clearRect(0, 0, c.width, c.height);
+  const srcC = tryMode === "front" ? $("canvas") : sideCanvas;
   const o = CUR && OCC[CUR.occ];
+  const mk = masks[tryMode];
+  if (bgOn && mk && o) {
+    x.drawImage(bgFor(CUR.occ, c.width, c.height), 0, 0);
+    const pc = document.createElement("canvas"); pc.width = c.width; pc.height = c.height;
+    const px = pc.getContext("2d"); px.drawImage(mk, 0, 0); px.globalCompositeOperation = "source-in"; px.drawImage(srcC, 0, 0);
+    x.drawImage(pc, 0, 0);
+  } else x.drawImage(srcC, 0, 0);
   if (o && o.tint) { x.fillStyle = o.tint; x.fillRect(0, 0, c.width, c.height); }
   if (o && o.sparkle) {
     x.fillStyle = "rgba(255,245,210,.85)";
