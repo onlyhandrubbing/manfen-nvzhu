@@ -149,6 +149,16 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
 .tryon { justify-self: center; width: min(88%, 340px); border-radius: 26px; overflow: hidden; border: 6px solid #fff; box-shadow: 0 14px 34px -14px rgba(217, 96, 122, .5); background: var(--blush); }
 .tryon canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: grab; }
 .tryon canvas:active { cursor: grabbing; }
+.aligner { justify-self: center; width: min(88%, 340px); border-radius: 26px; overflow: hidden; border: 6px solid #fff; box-shadow: 0 14px 34px -14px rgba(217, 96, 122, .5); background: var(--blush); }
+.aligner canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: grab; }
+.occ { display: grid; gap: 10px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips button { background: #fff; border: 2px solid var(--line); border-radius: 999px; padding: 7px 16px; font-size: .95rem; }
+.chips button.on { background: var(--peach); border-color: var(--peach); color: #fff; }
+.seg { justify-self: center; display: inline-flex; background: #fff; border-radius: 999px; padding: 4px; border: 1px solid var(--line); }
+.seg button { border-radius: 999px; padding: 6px 22px; font-size: .92rem; color: var(--soft); }
+.seg button.on { background: var(--peach); color: #fff; }
+.upload.mini { padding: 18px; }
 .tryctl { display: flex; align-items: center; gap: 12px; justify-content: center; font-size: .88rem; color: var(--soft); }
 .tryctl input[type=range] { flex: 1; max-width: 220px; accent-color: var(--peach); }
 .tryctl .copy { background: #fff; border-radius: 999px; padding: 5px 14px; font-size: .84rem; border: 1px solid var(--line); }
@@ -193,6 +203,16 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
   <button class="link" id="demo">點不開？先用範例臉試玩</button>
 </section>
 
+<section id="align" class="hidden">
+  <h2>把臉放進框框裡</h2>
+  <p class="soft">拖曳照片移動位置，用下面的滑桿放大縮小、轉正。眼睛大概對在虛線上，我會看得比較準。</p>
+  <div class="aligner"><canvas id="alignCanvas" width="600" height="800"></canvas></div>
+  <div class="tryctl"><label for="alZoom">大小</label><input type="range" id="alZoom" min="50" max="300" value="100"></div>
+  <div class="tryctl"><label for="alRot">轉正</label><input type="range" id="alRot" min="-25" max="25" value="0" step="0.5"></div>
+  <button class="go" id="alOk">好了，幫我看</button>
+  <button class="link" id="alBack">換一張照片</button>
+</section>
+
 <section id="seen" class="hidden">
   <div class="arch"><canvas id="canvas"></canvas></div>
   <div class="bubble">好，我看完了！我已經有答案，但先不說。<br>換你回答，直覺選就好～</div>
@@ -225,9 +245,22 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
       <span class="soft" id="couponHow"></span>
       <button class="copy" id="copy">複製折扣碼</button>
     </div>
+    <div class="occ">
+      <h2>今天要去哪？</h2>
+      <div class="chips" id="occChips"></div>
+      <p class="soft" id="occNote"></p>
+    </div>
     <div id="tryWrap" class="hidden" style="display:grid;gap:10px">
       <h2>戴上去看看</h2>
-      <div class="tryon"><canvas id="tryCanvas"></canvas></div>
+      <div class="seg" role="tablist"><button class="on" id="modeFront" role="tab">正臉</button><button id="modeSide" role="tab">側臉</button></div>
+      <div class="upload mini hidden" id="sideUp">
+        <input type="file" id="sideInput" accept="image/*" aria-label="上傳側臉照">
+        <b>拍一張側臉</b>
+        <span class="soft">頭髮撥到耳後，露出整個耳朵</span>
+        <span class="pillbtn">點我上傳側臉</span>
+      </div>
+      <p class="soft hidden" id="sideHint" style="text-align:center"></p>
+      <div class="tryon" id="tryBox"><canvas id="tryCanvas"></canvas></div>
       <p class="soft" style="text-align:center">位置不準？直接用手指把飾品拖到耳垂或鎖骨上</p>
       <div class="tryctl">
         <label for="trySize">大小</label>
@@ -354,7 +387,7 @@ const FACE_NOTE = {
 
 const $ = id => document.getElementById(id);
 const store = (k, v) => { try { if (v === undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } };
-const show = id => ["open", "seen", "quiz", "result", "verify", "fIntro", "fResult"].forEach(s => $(s).classList.toggle("hidden", s !== id));
+const show = id => ["open", "align", "seen", "quiz", "result", "verify", "fIntro", "fResult"].forEach(s => $(s).classList.toggle("hidden", s !== id));
 
 $("shopName").textContent = SHOP.name;
 $("shopIg").textContent = SHOP.ig;
@@ -455,28 +488,60 @@ function read(p, ctx) {
 }
 function note(msg) { $("status").textContent = msg; $("status").classList.remove("hidden"); }
 
+/* 上傳後先讓客人自己對齊 */
+const AL = { img: null, s: 1, base: 1, ox: 0, oy: 0, rot: 0, drag: null };
+function drawAlign(guide = true, target = $("alignCanvas")) {
+  const c = target, x = c.getContext("2d"), W = c.width, H = c.height;
+  x.save(); x.fillStyle = "#ffe4e6"; x.fillRect(0, 0, W, H);
+  x.translate(W / 2 + AL.ox, H / 2 + AL.oy); x.rotate(AL.rot * Math.PI / 180);
+  const k = AL.base * AL.s; x.drawImage(AL.img, -AL.img.width * k / 2, -AL.img.height * k / 2, AL.img.width * k, AL.img.height * k);
+  x.restore();
+  if (!guide) return;
+  x.save();
+  x.fillStyle = "rgba(255,250,247,.55)"; x.beginPath(); x.rect(0, 0, W, H); x.ellipse(W / 2, H * .47, W * .3, H * .3, 0, 0, Math.PI * 2, true); x.fill("evenodd");
+  x.strokeStyle = "#f48ca0"; x.lineWidth = 4; x.setLineDash([14, 10]);
+  x.beginPath(); x.ellipse(W / 2, H * .47, W * .3, H * .3, 0, 0, Math.PI * 2); x.stroke();
+  x.lineWidth = 2; x.beginPath(); x.moveTo(W * .24, H * .4); x.lineTo(W * .76, H * .4); x.stroke();
+  x.restore();
+}
+function alPoint(e) { const c = $("alignCanvas"), r = c.getBoundingClientRect(); return { x: (e.clientX - r.left) * c.width / r.width, y: (e.clientY - r.top) * c.height / r.height }; }
+$("alignCanvas").addEventListener("pointerdown", e => { AL.drag = { p: alPoint(e), ox: AL.ox, oy: AL.oy }; $("alignCanvas").setPointerCapture(e.pointerId); e.preventDefault(); });
+$("alignCanvas").addEventListener("pointermove", e => { if (!AL.drag) return; const p = alPoint(e); AL.ox = AL.drag.ox + p.x - AL.drag.p.x; AL.oy = AL.drag.oy + p.y - AL.drag.p.y; drawAlign(); });
+["pointerup", "pointercancel"].forEach(ev => $("alignCanvas").addEventListener(ev, () => AL.drag = null));
+$("alZoom").addEventListener("input", e => { AL.s = e.target.value / 100; drawAlign(); });
+$("alRot").addEventListener("input", e => { AL.rot = +e.target.value; drawAlign(); });
+$("alBack").onclick = () => { $("photoInput").value = ""; show("open"); };
+
 $("photoInput").addEventListener("change", async e => {
   const f = e.target.files[0]; if (!f) return;
-  note("我看一下喔…");
   const img = new Image(); img.src = URL.createObjectURL(f);
   try { await img.decode(); } catch (err) { note("這張照片打不開，換一張試試。"); return; }
-  const c = $("canvas"), k = Math.min(1, 720 / Math.max(img.width, img.height));
-  c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+  const c = $("alignCanvas");
+  Object.assign(AL, { img, s: 1, ox: 0, oy: 0, rot: 0, base: Math.max(c.width / img.width, c.height / img.height) });
+  $("alZoom").value = 100; $("alRot").value = 0;
+  $("status").classList.add("hidden");
+  show("align"); drawAlign();
+  loadModels().catch(() => {});   // 先在背景載入，按確定時比較快
+});
+
+$("alOk").onclick = async () => {
+  const c = $("canvas"); c.width = 600; c.height = 800;
+  drawAlign(false, c);
   const ctx = c.getContext("2d", { willReadFrequently: true });
-  ctx.drawImage(img, 0, 0, c.width, c.height);
+  $("alOk").textContent = "我看一下喔…"; $("alOk").disabled = true;
+  const fail = msg => { show("open"); note(msg); };
   try {
     await loadModels();
     const det = await faceapi.detectSingleFace(c, new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: .4 })).withFaceLandmarks();
-    if (!det) { note("我找不到你的臉耶，換一張正面一點、亮一點的。"); return; }
+    if (!det) { fail("我找不到你的臉耶，換一張正面一點、亮一點的。"); return; }
     pts = det.landmarks.positions.map(q => ({ x: q.x, y: q.y }));
     mine = read(pts, ctx);
-    if (mine.turned) { note("臉有點側到了，正對鏡頭再拍一張，我才看得準。"); mine = null; pts = null; return; }
-    $("status").classList.add("hidden");
+    if (mine.turned) { fail("臉有點側到了，正對鏡頭再拍一張，我才看得準。"); mine = null; pts = null; return; }
     show("seen");
   } catch (err) {
-    note("你的手機好像跑不動，換個瀏覽器（Chrome 或 Safari）再試一次。");
-  }
-});
+    fail("你的手機好像跑不動，換個瀏覽器（Chrome 或 Safari）再試一次。");
+  } finally { $("alOk").textContent = "好了，幫我看"; $("alOk").disabled = false; }
+};
 $("demo").onclick = () => {
   mine = { face: "oval", vol: 2, line: "curve", metal: "rose", eyes: "round", brows: "arch", chin: "round", age: "young", lips: 2, elen: "mid", nlen: "short", turned: false };
   pts = null;
@@ -647,40 +712,97 @@ function showAfter(res, animate) {
   if (animate && g.score === 100) confetti();
   $("code").textContent = claim.code;
   $("couponHow").textContent = `截圖這組折扣碼，${SHOP.order}。一人一次。`;
-  $("picks").innerHTML = g.top.map((it, i) => {
+  $("sign").innerHTML = `<p>${FACE_NOTE[m.face]}</p><span>${SHOP.owner}</span>`;
+  CUR = { res, occ: CUR && CUR.res === res ? CUR.occ : "daily" };
+  $("occChips").innerHTML = Object.entries(OCC).map(([k, o]) => `<button data-k="${k}" class="${k === CUR.occ ? "on" : ""}">${o.name}</button>`).join("");
+  $("occChips").querySelectorAll("button").forEach(b => b.onclick = () => {
+    CUR.occ = b.dataset.k;
+    $("occChips").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+    renderPicks(); if (tryState) drawTry();
+  });
+  $("tryWrap").classList.toggle("hidden", !pts);
+  setMode("front");
+  renderPicks();
+  if (animate) setTimeout(() => $("after").scrollIntoView({ behavior: "smooth", block: "start" }), 200);
+}
+
+/* ---------- 場合 ---------- */
+let CUR = null;
+const OCC = {
+  daily: { name: "日常", size: 1.5, shapes: ["stud", "hoop", "short", "pearl"], note: "日常出門選小巧好搭的，戴一整天也不累。", tint: null },
+  work: { name: "上班", size: 1, shapes: ["stud", "pearl", "short", "choker"], line: "straight", note: "上班選貼耳、細鍊，低調但看得出你有打扮。", tint: "rgba(205,220,240,.18)" },
+  date: { name: "約會", size: 2, shapes: ["drop", "pearl", "pendant", "hoop"], line: "curve", note: "約會選會晃動的垂墜款，講話時一閃一閃最加分。", tint: "rgba(255,190,200,.16)" },
+  party: { name: "派對", size: 3, shapes: ["long", "hoop", "geo", "long_n"], note: "派對就大膽一點，遠遠就要被看到。", tint: "rgba(255,215,140,.16)", sparkle: true }
+};
+function renderPicks() {
+  const { res } = CUR, o = OCC[CUR.occ], m = res.mine, claim = res.claim;
+  const list = rankFor(res.answers.cat).map(it => {
+    let b = it.s + (o.shapes.includes(it.shape) ? .25 : 0) - Math.abs(it.size - o.size) * .08 + (o.line && it.line === o.line ? .08 : 0);
+    return { ...it, b };
+  }).sort((a, z) => z.b - a.b).slice(0, 3);
+  $("occNote").textContent = o.note;
+  $("picks").innerHTML = list.map((it, i) => {
     const why = [
+      o.shapes.includes(it.shape) ? `適合${o.name}` : "",
       FIT[m.face][it.shape] >= .9 ? `很適合${FACE[m.face]}` : "",
       it.metal === m.metal ? `${METAL[it.metal]}襯你的膚色` : "",
-      it.size === m.vol ? `大小剛好配你的五官` : "",
       it.clip ? "有耳夾版" : ""
     ].filter(Boolean).join("，");
     return `<button class="pick${i === 0 && pts ? " on" : ""}" data-id="${it.id}">${pieceSvg(it)}<div><div class="nm">${it.name}</div><div class="why">${why || "整體感覺很搭"}</div>
       ${it.stock <= 3 ? `<div class="left">只剩 ${it.stock} 件</div>` : ""}<div class="pr"><s>NT$${it.price}</s><b>NT$${Math.round(it.price * (100 - claim.off) / 100)}</b></div></div></button>`;
   }).join("");
-  $("sign").innerHTML = `<p>${FACE_NOTE[m.face]}</p><span>${SHOP.owner}</span>`;
-  const canTry = !!pts;
-  $("tryWrap").classList.toggle("hidden", !canTry);
-  if (canTry) {
-    tryOn(g.top[0]);
+  if (pts) {
+    tryOn(list[0]);
     $("picks").querySelectorAll(".pick").forEach(b => b.onclick = () => {
       $("picks").querySelectorAll(".pick").forEach(x => x.classList.toggle("on", x === b));
       tryOn(ITEMS.find(i => i.id === b.dataset.id));
       $("tryWrap").scrollIntoView({ behavior: "smooth", block: "center" });
     });
   }
-  if (animate) setTimeout(() => $("after").scrollIntoView({ behavior: "smooth", block: "start" }), 200);
 }
 
 /* ---------- 試戴（可拖曳、可調大小） ---------- */
-let tryState = null;
+let tryState = null, tryMode = "front", tryItem = null;
+const sideCanvas = document.createElement("canvas");
+let sideReady = false;
+function setMode(md) {
+  tryMode = md;
+  $("modeFront").classList.toggle("on", md === "front"); $("modeSide").classList.toggle("on", md === "side");
+  $("sideUp").classList.toggle("hidden", !(md === "side" && !sideReady));
+  $("tryBox").classList.toggle("hidden", md === "side" && !sideReady);
+  const neck = tryItem && tryItem.type === "necklace";
+  $("sideHint").classList.toggle("hidden", !(md === "side" && sideReady));
+  $("sideHint").textContent = neck ? "側臉比較適合看耳環喔，這條項鍊也可以拖到脖子上看看" : "把耳環拖到耳垂上，側臉最看得出垂墜的長度";
+  if (tryItem && (md === "front" || sideReady)) tryOn(tryItem);
+}
+$("modeFront").onclick = () => setMode("front");
+$("modeSide").onclick = () => setMode("side");
+$("sideInput").addEventListener("change", async e => {
+  const f = e.target.files[0]; if (!f) return;
+  const img = new Image(); img.src = URL.createObjectURL(f);
+  try { await img.decode(); } catch (err) { return; }
+  sideCanvas.width = 600; sideCanvas.height = 800;
+  const k = Math.max(600 / img.width, 800 / img.height), x = sideCanvas.getContext("2d");
+  x.drawImage(img, (600 - img.width * k) / 2, (800 - img.height * k) / 2, img.width * k, img.height * k);
+  sideReady = true; setMode("side");
+});
 function tryOn(it) {
-  const src = $("canvas"), c = $("tryCanvas");
+  tryItem = it;
+  const front = tryMode === "front";
+  const src = front ? $("canvas") : sideCanvas, c = $("tryCanvas");
   c.width = src.width; c.height = src.height;
-  const p = pts, W = dist(p[0], p[16]);
   const img = new Image();
-  const pieces = it.type === "earring"
-    ? [{ x: p[2].x - W * .03, y: p[2].y + W * .02, base: W * .24 }, { x: p[14].x + W * .03, y: p[14].y + W * .02, base: W * .24 }]
-    : [{ x: p[8].x, y: p[8].y + W * .18, base: W * 1.15 }];
+  let pieces;
+  if (front) {
+    const p = pts, W = dist(p[0], p[16]);
+    pieces = it.type === "earring"
+      ? [{ x: p[2].x - W * .03, y: p[2].y + W * .02, base: W * .24 }, { x: p[14].x + W * .03, y: p[14].y + W * .02, base: W * .24 }]
+      : [{ x: p[8].x, y: p[8].y + W * .18, base: W * 1.15 }];
+  } else {
+    pieces = it.type === "earring"
+      ? [{ x: c.width * .5, y: c.height * .5, base: c.width * .2 }]
+      : [{ x: c.width * .5, y: c.height * .72, base: c.width * .7 }];
+  }
   tryState = { img, pieces, scale: 1, drag: -1, init: pieces.map(q => ({ ...q })) };
   $("trySize").value = 100;
   img.onload = drawTry;
@@ -689,7 +811,17 @@ function tryOn(it) {
 function drawTry() {
   const t = tryState; if (!t) return;
   const c = $("tryCanvas"), x = c.getContext("2d");
-  x.clearRect(0, 0, c.width, c.height); x.drawImage($("canvas"), 0, 0);
+  x.clearRect(0, 0, c.width, c.height); x.drawImage(tryMode === "front" ? $("canvas") : sideCanvas, 0, 0);
+  const o = CUR && OCC[CUR.occ];
+  if (o && o.tint) { x.fillStyle = o.tint; x.fillRect(0, 0, c.width, c.height); }
+  if (o && o.sparkle) {
+    x.fillStyle = "rgba(255,245,210,.85)";
+    for (let k = 0; k < 14; k++) { const sx = (k * 97 % 100) / 100 * c.width, sy = (k * 61 % 100) / 100 * c.height * .35, r = 3 + (k % 4) * 2;
+      x.beginPath(); x.moveTo(sx, sy - r * 2); x.lineTo(sx + r * .5, sy - r * .5); x.lineTo(sx + r * 2, sy); x.lineTo(sx + r * .5, sy + r * .5); x.lineTo(sx, sy + r * 2); x.lineTo(sx - r * .5, sy + r * .5); x.lineTo(sx - r * 2, sy); x.lineTo(sx - r * .5, sy - r * .5); x.fill(); }
+  }
+  if (o) { x.font = `${Math.round(c.width / 22)}px Huninn, sans-serif`; const label = `${o.name} look`; const w = x.measureText(label).width + c.width / 18;
+    x.fillStyle = "rgba(255,255,255,.85)"; x.beginPath(); x.roundRect(c.width / 30, c.width / 30, w, c.width / 14, c.width / 28); x.fill();
+    x.fillStyle = "#d9607a"; x.textBaseline = "middle"; x.fillText(label, c.width / 30 + c.width / 36, c.width / 30 + c.width / 28); }
   t.pieces.forEach((q, i) => {
     const s = q.base * t.scale;
     // 耳環以頂端（耳針）為定位點，項鍊以中心上緣為定位點
