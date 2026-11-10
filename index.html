@@ -161,6 +161,7 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
 .vs small { color: var(--soft); font-size: .78rem; }
 .vs b { font-family: var(--num); font-style: italic; font-weight: 600; font-size: 2.6rem; color: var(--peach-deep); line-height: 1.1; }
 .vs span { font-family: var(--num); font-style: italic; color: var(--soft); }
+.ticket.thanks { background: linear-gradient(135deg, #fff1c9, #ffe4e6); }
 .gift { background: var(--butter); border-radius: 14px; padding: 8px 12px; font-size: .95rem; }
 .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 50; overflow: hidden; }
 .confetti i { position: absolute; top: -20px; width: 9px; height: 14px; border-radius: 3px; animation: fall linear forwards; }
@@ -229,7 +230,7 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
     <div class="sign" id="sign"></div>
     <div class="friend" id="friendBox">
       <h2>邀朋友來猜你</h2>
-      <p class="soft">朋友會回答「你覺得她是什麼臉型、眼睛…」，看看誰比較懂你，還是你最懂自己。</p>
+      <p class="soft">朋友會猜你的臉型、眼睛…，看看誰比較懂你。朋友玩完會拿到一張新朋友券，也會拿到一張要傳回給你的感謝券，邀越多拿越多。</p>
       <input type="text" id="nick" maxlength="12" placeholder="你的暱稱，例如：小美" aria-label="你的暱稱">
       <button class="go" id="makeLink">產生邀請連結</button>
       <div id="linkOut" class="hidden" style="display:grid;gap:8px">
@@ -255,11 +256,23 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
     <div class="vs"><div><small>你猜</small><b id="fScore"></b></div><span>vs</span><div><small id="fName2"></small><b id="fOwn"></b></div></div>
     <span id="fWord"></span>
   </div>
-  <div class="ticket">
-    <span class="soft">換你玩！</span>
-    <div class="off">拍一張正臉，看你多懂自己</div>
-    <button class="copy" id="fPlay">我也要玩</button>
+  <p class="status hidden" id="fSelf"></p>
+  <div id="fCoupons" style="display:grid;gap:14px">
+    <div class="ticket">
+      <span class="soft">謝謝你來玩，送你一張新朋友券</span>
+      <div class="off" id="fOffTxt"></div>
+      <code id="fCode"></code>
+      <button class="copy" id="fCopy">複製折扣碼</button>
+    </div>
+    <div class="ticket thanks">
+      <span class="soft" id="rTitle"></span>
+      <div class="off" id="rOffTxt"></div>
+      <code id="rCode"></code>
+      <button class="copy" id="rCopy">複製，傳回給她</button>
+    </div>
   </div>
+  <p class="soft" id="fRule"></p>
+  <button class="go" id="fPlay">換我拍照玩，看我多懂自己</button>
 </section>
 
 <section id="verify" class="hidden">
@@ -282,6 +295,7 @@ const SHOP = {
   name: "滿分女主",
   ig: "@xiaori.jewelry",
   owner: "滿分女主",
+  referral: { friendOff: 10, thanksNT: 50 },  // 朋友玩完：朋友拿 9 折券；邀請人每邀一位拿折 50 元券
   perfectGift: "滿分加送一對珍珠耳針",  // 100 分彩蛋的禮物
   order: "私訊 IG 或 LINE @xiaori 下單",
   salt: "change-this-secret",
@@ -707,6 +721,7 @@ $("makeLink").onclick = () => {
   const n = $("nick").value.trim() || "我";
   const m = {}; FKEYS.forEach(k => m[k] = res.mine[k]);
   const url = location.href.split(/[?#]/)[0] + "?f=" + enc({ n, m, s: subScore(res.answers, res.mine).score });
+  store("jw3MyLink", url.split("?f=")[1]);
   $("linkText").textContent = url; $("linkOut").classList.remove("hidden");
 };
 $("copyLink").onclick = async () => {
@@ -724,17 +739,52 @@ function friendReveal() {
   $("fName2").textContent = friend.n + "自己";
   $("fWord").textContent = r.score > friend.s ? `你比${friend.n}還懂她！` : r.score === friend.s ? "你們一樣懂她" : `還是${friend.n}比較懂自己`;
   if (r.score === 100) confetti();
+  const raw = new URLSearchParams(location.search).get("f");
+  const own = store("jw3MyLink") === raw;
+  $("fSelf").classList.toggle("hidden", !own);
+  $("fCoupons").classList.toggle("hidden", own);
+  if (own) { $("fSelf").textContent = "這是你自己的邀請連結喔，傳給朋友玩，他們玩完才會拿到券。"; }
+  else {
+    const R = SHOP.referral;
+    let fc = store("jw3FriendCode");
+    if (!fc) { fc = makeCode("F" + R.friendOff); store("jw3FriendCode", fc); }
+    const key = "jw3Thanks_" + checksum(raw);
+    let rc = store(key);
+    if (!rc) { rc = makeCode("R" + R.thanksNT); store(key, rc); }
+    const zhe = 100 - R.friendOff;
+    $("fOffTxt").textContent = `整筆 ${zhe % 10 === 0 ? zhe / 10 : zhe} 折`;
+    $("fCode").textContent = fc;
+    $("rTitle").textContent = `這張是送給${friend.n}的感謝券`;
+    $("rOffTxt").textContent = `折 ${R.thanksNT} 元`;
+    $("rCode").textContent = rc;
+    $("fRule").textContent = `每筆訂單限用一張折扣碼。截圖或複製折扣碼，${SHOP.order}。`;
+  }
   window.scrollTo(0, 0);
 }
+function makeCode(tag) {
+  const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let id = "";
+  crypto.getRandomValues(new Uint8Array(4)).forEach(x => id += A[x % 32]);
+  return `JW-${tag}-${id}-${checksum(tag + id)}`;
+}
+const copyBtn = (btn, src, done) => $(btn).onclick = async () => {
+  try { await navigator.clipboard.writeText($(src).textContent); $(btn).textContent = done; }
+  catch (e) { $(btn).textContent = "長按上面的碼就能複製"; }
+};
+copyBtn("fCopy", "fCode", "複製好了");
+copyBtn("rCopy", "rCode", `複製好了，快傳給她`);
 $("fPlay").onclick = () => { location.href = location.href.split(/[?#]/)[0]; };
 
 /* ---------- 店家驗證 ---------- */
 $("vBtn").onclick = () => {
-  const m = $("vIn").value.trim().toUpperCase().match(/^JW-(\d+)-([A-Z0-9]{4})-([A-Z0-9]{4})$/);
-  const ok = m && checksum(m[1] + m[2]) === m[3] && SHOP.ladder.some(l => l[1] === +m[1]);
-  $("vOut").innerHTML = ok ? `<span style="color:#3c9a6b">是真的，整筆折 ${m[1]}%。記得記下這組已經用過。</span>` : `<span style="color:#d0546b">這組不對，請對方再確認一次。</span>`;
+  const m = $("vIn").value.trim().toUpperCase().match(/^JW-([FR]?)(\d+)-([A-Z0-9]{4})-([A-Z0-9]{4})$/);
+  const tag = m ? m[1] + m[2] : "", n = m ? +m[2] : 0;
+  const R = SHOP.referral;
+  const valid = m && checksum(tag + m[3]) === m[4] &&
+    (m[1] === "F" ? n === R.friendOff : m[1] === "R" ? n === R.thanksNT : SHOP.ladder.some(l => l[1] === n));
+  const what = !valid ? "" : m[1] === "F" ? `新朋友券，整筆折 ${n}%` : m[1] === "R" ? `邀請感謝券，折 ${n} 元` : `測驗折扣，整筆折 ${n}%`;
+  $("vOut").innerHTML = valid ? `<span style="color:#3c9a6b">是真的：${what}。每筆限用一張，記得記下這組已經用過。</span>` : `<span style="color:#d0546b">這組不對，請對方再確認一次。</span>`;
 };
-$("reset").onclick = () => { try { localStorage.removeItem("jw3Result"); localStorage.removeItem("jw3Claim"); } catch (e) {} $("vOut").textContent = "清好了，可以重新測。"; };
+$("reset").onclick = () => { try { Object.keys(localStorage).filter(k => k.startsWith("jw3")).forEach(k => localStorage.removeItem(k)); } catch (e) {} $("vOut").textContent = "清好了，可以重新測。"; };
 function route() {
   const f = new URLSearchParams(location.search).get("f");
   if (f && !friend) { try { friend = dec(f); } catch (e) { friend = null; } }
