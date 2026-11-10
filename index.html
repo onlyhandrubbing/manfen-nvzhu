@@ -136,6 +136,9 @@ input[type=text] { font: inherit; width: 100%; border: 2px solid var(--line); bo
 footer { margin-top: 56px; text-align: center; }
 footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
 @media (prefers-reduced-motion: reduce) { section, .sheet.in .pair { animation: none; } #ring, .track i, .go, .choices button { transition: none; } }
+.rule { background: #fff; border-radius: 22px; padding: 14px 18px; display: grid; gap: 4px; border-left: 5px solid var(--peach); box-shadow: 0 6px 20px -14px rgba(74, 50, 56, .35); }
+.rule b { font-weight: 400; font-size: 1.12rem; color: var(--peach-deep); }
+.rule span { font-size: .9rem; color: var(--soft); line-height: 1.65; }
 .tease { justify-self: start; background: var(--butter); border-radius: 18px 18px 18px 4px; padding: 6px 14px; font-size: .88rem; animation: pop .35s ease both; }
 @keyframes pop { from { transform: scale(.8); opacity: .001; } to { transform: none; opacity: 1; } }
 .two .me.cover { background: var(--blush); color: var(--peach-deep); border-radius: 14px; text-align: center; display: grid; place-items: center; font-size: .86rem; padding: 6px; min-height: 44px; }
@@ -190,7 +193,8 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
 
 <section id="open" class="hero">
   <h1>你覺得你<br><em>適合什麼</em>？</h1>
-  <p>拍一張正臉給我，我先偷偷幫你看。換你說說覺得自己適合什麼，我們想得越像，折越多。</p>
+  <p>拍一張正臉給我，我會先偷偷看出你的臉型、膚色和適合的飾品，但先不說。接著換你回答：你覺得自己是什麼樣子、適合戴什麼？</p>
+  <div class="rule"><b>你越懂自己，折扣越多</b><span>最後我們來對答案。你的答案跟我看到的越接近，匹配分數就越高，結帳的折扣也越大。</span></div>
   <div class="upload">
     <input type="file" id="photoInput" accept="image/*" aria-label="拍一張正臉">
     <span class="cam"><svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="#d9607a" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5a2.5 2.5 0 0 1 2.5-2.5h3l2-3h7l2 3h3a2.5 2.5 0 0 1 2.5 2.5v11a2.5 2.5 0 0 1-2.5 2.5h-17A2.5 2.5 0 0 1 4 21.5z"/><circle cx="15" cy="15.5" r="4.5"/></svg></span>
@@ -215,7 +219,7 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
 
 <section id="seen" class="hidden">
   <div class="arch"><canvas id="canvas"></canvas></div>
-  <div class="bubble">好，我看完了！我已經有答案，但先不說。<br>換你回答，直覺選就好～</div>
+  <div class="bubble">好，我看完了！答案我先藏起來。<br>換你回答你覺得自己是什麼樣子，跟我想的越像，分數越高、折扣越多～</div>
   <button class="go" id="start">換我回答</button>
   <button class="link" id="again">換一張照片</button>
 </section>
@@ -235,8 +239,9 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
   <button class="link" id="flipAll">全部翻開</button>
   <div id="after" class="hidden" style="display:grid;gap:18px">
     <div class="scorecard">
-      <div id="ring"><div><b id="scoreNum"></b><small>默契分數</small></div></div>
+      <div id="ring"><div><b id="scoreNum"></b><small>匹配分數</small></div></div>
       <span id="scoreWord"></span>
+      <p class="soft" id="scoreWhy" style="text-align:center;max-width:30ch"></p>
       <div class="persona"><small>你是</small><b id="persona"></b><span id="personaLine"></span></div>
     </div>
     <div class="ticket" id="coupon">
@@ -344,7 +349,7 @@ const SHOP = {
   perfectGift: "滿分加送一對珍珠耳針",  // 100 分彩蛋的禮物
   order: "私訊 IG 或 LINE @xiaori 下單",
   salt: "change-this-secret",
-  // 默契分數 → 整筆訂單折扣
+  // 匹配分數 → 整筆訂單折扣
   ladder: [[100, 20], [80, 15], [60, 12], [40, 8], [0, 5]]
 };
 // 以下為範例商品。shape：stud 耳針 / hoop 圈圈 / drop 水滴 / long 長耳線 / geo 幾何 / pearl 珍珠
@@ -703,13 +708,14 @@ function showAfter(res, animate) {
   $("scoreNum").textContent = g.score;
   $("ring").style.setProperty("--p", animate ? 0 : g.score);
   if (animate) setTimeout(() => $("ring").style.setProperty("--p", g.score), 120);
-  $("scoreWord").textContent = g.score >= 80 ? "你很懂自己耶！" : g.score >= 60 ? "我們滿有默契的" : g.score >= 40 ? "一半一半，有點意思" : "你比你以為的還要多面喔";
+  $("scoreWord").textContent = g.score >= 80 ? "你很懂自己耶！" : g.score >= 60 ? "你滿了解自己的" : g.score >= 40 ? "一半一半，有點意思" : "你比你以為的還要多面喔";
+  $("scoreWhy").textContent = `你的答案和我看到的有 ${g.score} 分吻合。越了解自己，分數越高，折扣也越多。`;
   const [pn, pl] = P_TYPE[m.line][m.vol];
   $("persona").textContent = P_MET[m.metal] + pn;
   $("personaLine").textContent = pl;
   const firstTime = claim.score === g.score && claim.off === g.off;
   const zhe = 100 - claim.off;
-  $("couponLine").innerHTML = `<span class="soft">${firstTime ? "你的專屬折扣" : "你之前領過囉，還是這張"}</span><div class="off">整筆 ${zhe % 10 === 0 ? zhe / 10 : zhe} 折</div>`;
+  $("couponLine").innerHTML = `<span class="soft">${firstTime ? `匹配 ${claim.score} 分，你拿到的折扣是` : "你之前領過囉，還是這張"}</span><div class="off">整筆 ${zhe % 10 === 0 ? zhe / 10 : zhe} 折</div>`;
   if (claim.score === 100) $("couponLine").innerHTML += `<div class="gift">滿分彩蛋：${SHOP.perfectGift}</div>`;
   if (animate && g.score === 100) confetti();
   $("code").textContent = claim.code;
