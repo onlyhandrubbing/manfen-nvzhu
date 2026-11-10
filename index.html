@@ -146,7 +146,12 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
 .persona small { color: var(--soft); font-size: .75rem; }
 .persona b { font-weight: 400; font-size: 1.5rem; color: var(--peach-deep); }
 .persona span { font-size: .86rem; color: var(--soft); max-width: 30ch; }
-.tryon { width: min(80%, 300px); }
+.tryon { justify-self: center; width: min(88%, 340px); border-radius: 26px; overflow: hidden; border: 6px solid #fff; box-shadow: 0 14px 34px -14px rgba(217, 96, 122, .5); background: var(--blush); }
+.tryon canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: grab; }
+.tryon canvas:active { cursor: grabbing; }
+.tryctl { display: flex; align-items: center; gap: 12px; justify-content: center; font-size: .88rem; color: var(--soft); }
+.tryctl input[type=range] { flex: 1; max-width: 220px; accent-color: var(--peach); }
+.tryctl .copy { background: #fff; border-radius: 999px; padding: 5px 14px; font-size: .84rem; border: 1px solid var(--line); }
 .pick { cursor: pointer; border: 2px solid transparent; text-align: left; }
 .pick.on { border-color: var(--peach); }
 .go.ghost { background: #fff; color: var(--peach-deep); box-shadow: none; border: 2px solid var(--blush); }
@@ -222,8 +227,14 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
     </div>
     <div id="tryWrap" class="hidden" style="display:grid;gap:10px">
       <h2>戴上去看看</h2>
-      <div class="arch tryon"><canvas id="tryCanvas"></canvas></div>
-      <p class="soft" style="text-align:center">點下面的飾品換著戴</p>
+      <div class="tryon"><canvas id="tryCanvas"></canvas></div>
+      <p class="soft" style="text-align:center">位置不準？直接用手指把飾品拖到耳垂或鎖骨上</p>
+      <div class="tryctl">
+        <label for="trySize">大小</label>
+        <input type="range" id="trySize" min="50" max="200" value="100">
+        <button class="copy" id="tryReset">重設</button>
+      </div>
+      <p class="soft" style="text-align:center">點下面的飾品可以換著戴</p>
     </div>
     <h2>我幫你挑的</h2>
     <div class="picks" id="picks"></div>
@@ -660,25 +671,61 @@ function showAfter(res, animate) {
   if (animate) setTimeout(() => $("after").scrollIntoView({ behavior: "smooth", block: "start" }), 200);
 }
 
-/* ---------- 試戴 ---------- */
+/* ---------- 試戴（可拖曳、可調大小） ---------- */
+let tryState = null;
 function tryOn(it) {
   const src = $("canvas"), c = $("tryCanvas");
   c.width = src.width; c.height = src.height;
-  const x = c.getContext("2d"); x.drawImage(src, 0, 0);
   const p = pts, W = dist(p[0], p[16]);
   const img = new Image();
-  img.onload = () => {
-    if (it.type === "earring") {
-      const s = W * .24;
-      [{ x: p[2].x - W * .03, y: p[2].y + W * .02 }, { x: p[14].x + W * .03, y: p[14].y + W * .02 }]
-        .forEach(o => x.drawImage(img, o.x - s / 2, o.y - s * .12, s, s));
-    } else {
-      const s = W * 1.15;
-      x.drawImage(img, p[8].x - s / 2, p[8].y + W * .18, s, s);
-    }
-  };
+  const pieces = it.type === "earring"
+    ? [{ x: p[2].x - W * .03, y: p[2].y + W * .02, base: W * .24 }, { x: p[14].x + W * .03, y: p[14].y + W * .02, base: W * .24 }]
+    : [{ x: p[8].x, y: p[8].y + W * .18, base: W * 1.15 }];
+  tryState = { img, pieces, scale: 1, drag: -1, init: pieces.map(q => ({ ...q })) };
+  $("trySize").value = 100;
+  img.onload = drawTry;
   img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(pieceSvg(it, true));
 }
+function drawTry() {
+  const t = tryState; if (!t) return;
+  const c = $("tryCanvas"), x = c.getContext("2d");
+  x.clearRect(0, 0, c.width, c.height); x.drawImage($("canvas"), 0, 0);
+  t.pieces.forEach((q, i) => {
+    const s = q.base * t.scale;
+    // 耳環以頂端（耳針）為定位點，項鍊以中心上緣為定位點
+    x.drawImage(t.img, q.x - s / 2, q.y - s * .12, s, s);
+    if (t.drag === i) { x.strokeStyle = "rgba(244,140,160,.9)"; x.lineWidth = Math.max(2, c.width / 300); x.setLineDash([6, 5]); x.strokeRect(q.x - s / 2, q.y - s * .12, s, s); x.setLineDash([]); }
+  });
+}
+function tryPoint(e) {
+  const c = $("tryCanvas"), r = c.getBoundingClientRect();
+  return { x: (e.clientX - r.left) * c.width / r.width, y: (e.clientY - r.top) * c.height / r.height };
+}
+$("tryCanvas").addEventListener("pointerdown", e => {
+  const t = tryState; if (!t) return;
+  const m = tryPoint(e);
+  let best = -1, bd = Infinity;
+  t.pieces.forEach((q, i) => {
+    const s = q.base * t.scale, cx = q.x, cy = q.y - s * .12 + s / 2;
+    const d = Math.hypot(m.x - cx, m.y - cy);
+    if (d < bd) { bd = d; best = i; }
+  });
+  if (best < 0) return;
+  t.drag = best; t.off = { x: m.x - t.pieces[best].x, y: m.y - t.pieces[best].y };
+  // 點在離飾品很遠的地方：直接把最近的那個移過去
+  if (bd > t.pieces[best].base * t.scale) t.off = { x: 0, y: 0 };
+  $("tryCanvas").setPointerCapture(e.pointerId);
+  e.preventDefault();
+  t.pieces[best].x = m.x - t.off.x; t.pieces[best].y = m.y - t.off.y; drawTry();
+});
+$("tryCanvas").addEventListener("pointermove", e => {
+  const t = tryState; if (!t || t.drag < 0) return;
+  const m = tryPoint(e);
+  t.pieces[t.drag].x = m.x - t.off.x; t.pieces[t.drag].y = m.y - t.off.y; drawTry();
+});
+["pointerup", "pointercancel"].forEach(ev => $("tryCanvas").addEventListener(ev, () => { if (tryState) { tryState.drag = -1; drawTry(); } }));
+$("trySize").addEventListener("input", e => { if (tryState) { tryState.scale = e.target.value / 100; drawTry(); } });
+$("tryReset").onclick = () => { if (!tryState) return; tryState.pieces = tryState.init.map(q => ({ ...q })); tryState.scale = 1; $("trySize").value = 100; drawTry(); };
 $("replay").onclick = () => { try { localStorage.removeItem("jw3Result"); } catch (e) {} mine = null; pts = null; $("photoInput").value = ""; $("status").classList.add("hidden"); show("open"); window.scrollTo(0, 0); };
 $("copy").onclick = async () => {
   try { await navigator.clipboard.writeText($("code").textContent); $("copy").textContent = "複製好了"; }
