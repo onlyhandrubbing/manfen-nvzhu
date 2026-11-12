@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>滿分女主｜每日抽一支籤</title>
+<meta name="description" content="每天免費抽一支籤，上上籤直接 1 折。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Huninn&family=Fraunces:ital,opsz,wght@1,9..144,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* 同一套牛奶白＋蜜桃粉；主角是正中央的籤筒，抽出來的籤像一張小卡 */
+  --milk: #fffaf7; --blush: #ffe4e6; --peach: #f48ca0; --peach-deep: #d9607a;
+  --butter: #ffe9a8; --gold: #e7b34a; --cocoa: #4a3238; --soft: #9a8288; --line: #f3dde1;
+  --font: "Huninn", "PingFang TC", "Microsoft JhengHei", sans-serif; --num: "Fraunces", Georgia, serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { margin: 0; color: var(--cocoa); font-family: var(--font); font-size: 15.5px; line-height: 1.75;
+  background: radial-gradient(520px 380px at 90% -60px, #ffe1e7 0, transparent 70%), radial-gradient(420px 320px at -80px 420px, #fff1c9 0, transparent 70%), var(--milk); min-height: 100vh; }
+a { color: inherit; }
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+button:focus-visible, a:focus-visible { outline: 3px solid var(--butter); outline-offset: 3px; }
+header { display: flex; justify-content: space-between; align-items: center; max-width: 520px; margin: 0 auto; padding: 16px 20px; }
+.brand { font-family: var(--num); font-style: italic; font-weight: 600; font-size: 1.3rem; color: var(--peach-deep); text-decoration: none; }
+header nav a { font-size: .88rem; text-decoration: none; color: var(--soft); margin-left: 12px; }
+main { max-width: 520px; margin: 0 auto; padding: 4px 20px 60px; display: grid; gap: 22px; }
+h1 { margin: 0; font-weight: 400; font-size: 2rem; line-height: 1.3; text-align: center; text-wrap: balance; }
+h1 em { font-style: normal; background: linear-gradient(transparent 62%, var(--butter) 62%); padding: 0 3px; }
+.lead { margin: 0; text-align: center; color: #6d555b; }
+
+/* 籤筒 */
+.stage { position: relative; height: 300px; display: grid; place-items: end center; }
+.tube { width: 200px; height: 260px; position: relative; transform-origin: 50% 90%; }
+.tube.shake { animation: shake .14s ease-in-out 8 alternate; }
+@keyframes shake { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
+.stick { position: absolute; left: 50%; bottom: 120px; width: 18px; height: 150px; margin-left: -9px; border-radius: 6px; background: linear-gradient(90deg, #f6d38a, #e7b34a); box-shadow: inset -2px 0 0 rgba(0,0,0,.08); opacity: 0; }
+.stick::before { content: ""; position: absolute; top: 8px; left: 3px; right: 3px; height: 34px; border-radius: 4px; background: var(--peach-deep); }
+.stick.fly { animation: fly .9s cubic-bezier(.2,.8,.3,1) forwards; }
+@keyframes fly { 0% { opacity: 1; transform: translateY(40px); } 100% { opacity: 1; transform: translateY(-120px) rotate(10deg); } }
+.drawbtn { justify-self: center; background: var(--peach); color: #fff; border-radius: 999px; padding: 15px 42px; font-size: 1.15rem; box-shadow: 0 12px 24px -10px var(--peach-deep); transition: transform .12s; }
+.drawbtn:active { transform: scale(.96); }
+.drawbtn:disabled { background: #d8c9cc; box-shadow: none; cursor: default; }
+.next { text-align: center; color: var(--soft); font-size: .9rem; margin: -10px 0 0; }
+
+/* 籤卡 */
+.card { background: #fff; border-radius: 28px; padding: 26px 22px 22px; display: grid; gap: 10px; justify-items: center; text-align: center; box-shadow: 0 20px 40px -22px rgba(217, 96, 122, .55); position: relative; overflow: hidden; animation: pop .45s cubic-bezier(.2,.9,.3,1.2) both; }
+@keyframes pop { from { transform: scale(.85) translateY(20px); opacity: .001; } }
+.card::before { content: ""; position: absolute; inset: 10px; border: 1.5px dashed var(--line); border-radius: 20px; pointer-events: none; }
+.rank { writing-mode: vertical-rl; font-size: 1.6rem; letter-spacing: .3em; color: #fff; background: var(--peach-deep); border-radius: 12px; padding: 14px 8px; line-height: 1; }
+.card.big { background: linear-gradient(160deg, #fff6dc, #ffe4e6); }
+.card.big .rank { background: linear-gradient(180deg, #e7b34a, #d9607a); }
+.poem { font-size: 1.05rem; color: #6d555b; max-width: 22ch; }
+.prize { font-family: var(--num); font-style: italic; font-weight: 600; font-size: 2.4rem; color: var(--peach-deep); line-height: 1.1; }
+.code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 1.15rem; letter-spacing: .1em; background: var(--milk); border: 1.5px dashed var(--peach); border-radius: 12px; padding: 8px 14px; word-break: break-all; }
+.card.big .code { font-size: .98rem; letter-spacing: .03em; }
+.small { font-size: .84rem; color: var(--soft); max-width: 34ch; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.pill { background: var(--blush); color: var(--peach-deep); border-radius: 999px; padding: 7px 16px; font-size: .9rem; text-decoration: none; }
+.pill.solid { background: var(--peach); color: #fff; }
+
+/* 彩帶 */
+.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 50; overflow: hidden; }
+.confetti i { position: absolute; top: -20px; width: 9px; height: 14px; border-radius: 3px; animation: fall linear forwards; }
+@keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+
+/* 活動辦法 */
+details { background: #fff; border-radius: 22px; padding: 14px 18px; }
+summary { cursor: pointer; font-size: 1.02rem; }
+table { width: 100%; border-collapse: collapse; font-size: .88rem; margin: 10px 0; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--line); }
+th { color: var(--soft); font-weight: 400; }
+details ul { padding-left: 1.2em; margin: 6px 0 0; font-size: .88rem; color: #6d555b; }
+details li { margin: 4px 0; }
+.hidden { display: none !important; }
+@media (prefers-reduced-motion: reduce) { .tube.shake, .stick.fly, .card, .confetti { animation: none !important; } .confetti { display: none; } }
+</style>
+</head>
+<body>
+<header><a class="brand" href="./">滿分女主</a><nav><a href="./#shop">商品</a><a href="quiz.html">測驗</a></nav></header>
+<main>
+  <h1>每天抽一支籤<br>上上籤 <em>直接 1 折</em></h1>
+  <p class="lead">免費，每人每天一次。抽到的優惠碼在賣貨便結帳時輸入就能用。</p>
+
+  <div class="stage" aria-hidden="true">
+    <svg class="tube" id="tube" viewBox="0 0 200 260">
+      <defs><linearGradient id="tb" x1="0" x2="1"><stop offset="0" stop-color="#f48ca0"/><stop offset=".55" stop-color="#f9a9b8"/><stop offset="1" stop-color="#e4778f"/></linearGradient></defs>
+      <g stroke-linecap="round">
+        <rect x="70" y="10" width="12" height="110" rx="5" fill="#f2c96f" transform="rotate(-8 76 120)"/>
+        <rect x="88" y="0" width="12" height="120" rx="5" fill="#e7b34a"/>
+        <rect x="104" y="6" width="12" height="114" rx="5" fill="#f6d38a" transform="rotate(6 110 120)"/>
+        <rect x="120" y="16" width="12" height="104" rx="5" fill="#e7b34a" transform="rotate(12 126 120)"/>
+        <rect x="56" y="22" width="12" height="98" rx="5" fill="#f6d38a" transform="rotate(-14 62 120)"/>
+      </g>
+      <path d="M40 92 h120 l-10 160 a8 8 0 0 1 -8 8 h-84 a8 8 0 0 1 -8 -8z" fill="url(#tb)"/>
+      <ellipse cx="100" cy="92" rx="60" ry="12" fill="#d9607a"/>
+      <ellipse cx="100" cy="92" rx="52" ry="8" fill="#b84a63"/>
+      <rect x="66" y="150" width="68" height="62" rx="14" fill="#fff" opacity=".92"/>
+      <text x="100" y="176" text-anchor="middle" font-size="20" fill="#d9607a" font-family="Huninn, sans-serif">滿分</text>
+      <text x="100" y="200" text-anchor="middle" font-size="20" fill="#d9607a" font-family="Huninn, sans-serif">靈籤</text>
+    </svg>
+    <div class="stick" id="stick"></div>
+  </div>
+
+  <button class="drawbtn" id="draw">搖一搖，抽一支</button>
+  <p class="next hidden" id="next"></p>
+  <div id="result"></div>
+
+  <details>
+    <summary>活動辦法與中獎機率</summary>
+    <table>
+      <tr><th>籤</th><th>獎項</th><th>機率</th></tr>
+      <tr><td>上上籤</td><td>1 折（最多折 600 元），每月限量 1 名</td><td>0.5%</td></tr>
+      <tr><td>上籤</td><td>7 折（最多折 250 元）</td><td>3%</td></tr>
+      <tr><td>中籤</td><td>85 折（最多折 110 元）</td><td>15%</td></tr>
+      <tr><td>小吉</td><td>折 30 元</td><td>40%</td></tr>
+      <tr><td>平安籤</td><td>95 折（最多折 40 元）</td><td>41.5%</td></tr>
+    </table>
+    <ul>
+      <li>活動期間：2026/11/12 起至 2027/02/10 23:59。</li>
+      <li>每人每天可以抽一次，抽到的優惠碼請自己記下來。</li>
+      <li>優惠碼在賣貨便結帳時，於「賣場折扣碼」輸入。單筆滿 300 元可用；每組碼每人限用一次；每筆訂單只能用一張折扣碼。各優惠碼總數有限，用完為止。</li>
+      <li>上上籤要截圖中獎畫面並私訊店家，核對序號後由店家另外發一張專屬的 1 折折價券。每月限量 1 名，以當月最先私訊核對成功的人為準；當月名額已送出時，改送一組 7 折優惠碼。</li>
+      <li>中獎畫面經修改、或用其他方式取得的序號，店家可以不發獎。</li>
+    </ul>
+  </details>
+</main>
+
+<script>
+// 優惠碼稍微藏一下，避免一眼就從原始碼看到
+const D = s => atob(s).split("").reverse().join("");
+const PRIZES = [
+  { id: "big", p: .005, rank: "上上籤", prize: "1 折", poem: "滿分女主今日登場，好運一次到位。", code: null },
+  { id: "70", p: .03, rank: "上籤", prize: "7 折", poem: "貴人在側，挑一件最閃的犒賞自己。", code: D("MDdLQ1VMRk0=") },
+  { id: "85", p: .15, rank: "中籤", prize: "85 折", poem: "心想事成，喜歡的那件正在等你。", code: D("NThLQ1VMRk0=") },
+  { id: "30", p: .40, rank: "小吉", prize: "折 30 元", poem: "小小幸運，剛好夠買一杯手搖。", code: D("MDNLQ1VMRk0=") },
+  { id: "95", p: .415, rank: "平安籤", prize: "95 折", poem: "平平安安就是福，明天再來試手氣。", code: D("NTlLQ1VMRk0=") }
+];
+const CONTACT = "店家的 IG 或 LINE";
+const SALT = "mf-lucky-2026";
+const END = new Date("2027-02-10T23:59:59+08:00");
+const $ = id => document.getElementById(id);
+const store = (k, v) => { try { if (v === undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } };
+const today = () => new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Taipei" });   // yyyy-mm-dd
+
+function checksum(s) {
+  let h = 2166136261;
+  for (const ch of s + SALT) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; }
+  const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let o = "";
+  for (let i = 0; i < 4; i++) { o += A[h % 32]; h = Math.floor(h / 32); }
+  return o;
+}
+function rand() { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 2 ** 32; }
+function pick() {
+  let r = rand();
+  for (const p of PRIZES) { if ((r -= p.p) < 0) return p; }
+  return PRIZES[PRIZES.length - 1];
+}
+function serial() {
+  const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let id = "";
+  crypto.getRandomValues(new Uint8Array(4)).forEach(x => id += A[x % 32]);
+  const d = today().replace(/-/g, "");
+  return `BIG-${d}-${id}-${checksum(d + id)}`;
+}
+
+function confetti() {
+  const box = document.createElement("div"); box.className = "confetti";
+  const cols = ["#f48ca0", "#ffe9a8", "#e7b34a", "#d9607a", "#fff"];
+  for (let i = 0; i < 110; i++) {
+    const p = document.createElement("i");
+    p.style.left = Math.random() * 100 + "%"; p.style.background = cols[i % cols.length];
+    p.style.animationDuration = 2.4 + Math.random() * 2 + "s"; p.style.animationDelay = Math.random() * .8 + "s";
+    box.appendChild(p);
+  }
+  document.body.appendChild(box); setTimeout(() => box.remove(), 5500);
+}
+
+function showResult(r, fresh) {
+  const P = PRIZES.find(x => x.id === r.id);
+  const big = P.id === "big";
+  $("result").innerHTML = `<div class="card${big ? " big" : ""}">
+    <div class="rank">${P.rank}</div>
+    <div class="poem">${P.poem}</div>
+    <div class="prize">${P.prize}</div>
+    ${big ? `<div class="code" id="codeTxt">${r.serial}</div>
+      <p class="small">恭喜！請截圖這個畫面，私訊${CONTACT}，核對序號後會發給你專屬的 1 折折價券（最多折 600 元）。每月限量 1 名，本月名額若已送出，改送 7 折碼。</p>`
+    : `<div class="code" id="codeTxt">${P.code}</div>
+      <p class="small">到賣貨便結帳時，在「賣場折扣碼」輸入。滿 300 元可用，每人限用一次。</p>`}
+    <div class="row"><button class="pill solid" id="copy">複製${big ? "序號" : "優惠碼"}</button><a class="pill" href="./#shop">去挑飾品</a></div>
+  </div>`;
+  $("copy").onclick = async () => {
+    try { await navigator.clipboard.writeText($("codeTxt").textContent); $("copy").textContent = "複製好了"; }
+    catch (e) { $("copy").textContent = "長按上面的碼複製"; }
+  };
+  if (fresh && (big || P.id === "70")) confetti();
+}
+
+function lockUntilTomorrow() {
+  $("draw").disabled = true; $("draw").textContent = "今天抽過囉";
+  $("next").classList.remove("hidden");
+  const tick = () => {
+    const now = new Date();
+    const tw = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+    const left = (24 * 3600) - (tw.getHours() * 3600 + tw.getMinutes() * 60 + tw.getSeconds());
+    if (left <= 0 || store("mfLuck")?.date !== today()) { location.reload(); return; }
+    const h = Math.floor(left / 3600), m = Math.floor(left % 3600 / 60);
+    $("next").textContent = `明天 00:00 可以再抽（還有 ${h} 小時 ${m} 分）`;
+  };
+  tick(); setInterval(tick, 30000);
+}
+
+$("draw").onclick = () => {
+  if (new Date() > END) { $("next").textContent = "這一期抽籤活動已經結束，謝謝參加！"; $("next").classList.remove("hidden"); return; }
+  const last = store("mfLuck");
+  if (last && last.date === today()) { showResult(last, false); lockUntilTomorrow(); return; }
+  $("draw").disabled = true; $("draw").textContent = "搖搖搖…";
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  $("tube").classList.add("shake");
+  setTimeout(() => {
+    $("tube").classList.remove("shake");
+    $("stick").classList.add("fly");
+    setTimeout(() => {
+      const P = pick();
+      const r = { date: today(), id: P.id };
+      if (P.id === "big") r.serial = serial();
+      store("mfLuck", r);
+      showResult(r, true);
+      lockUntilTomorrow();
+      $("result").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+    }, reduce ? 0 : 700);
+  }, reduce ? 0 : 1150);
+};
+
+(() => {
+  const last = store("mfLuck");
+  if (last && last.date === today()) { showResult(last, false); lockUntilTomorrow(); }
+  if (new Date() > END) { $("draw").disabled = true; $("draw").textContent = "活動已結束"; }
+})();
+</script>
+</body>
+</html>

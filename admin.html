@@ -122,6 +122,21 @@ td code { font-size: .9rem; }
       <p class="soft"><a href="https://myship.7-11.com.tw/seller/myCoupon" target="_blank" rel="noopener">到賣貨便看使用情況</a></p>
     </div>
 
+    <div class="card">
+      <h2>每日抽籤</h2>
+      <table>
+        <tr><th>優惠碼</th><th>籤</th><th>折扣</th><th>最高折</th><th>總量</th></tr>
+        <tr><td>—</td><td>上上籤 0.5%</td><td>1 折</td><td>600 元</td><td>每月 1 名</td></tr>
+        <tr><td><code>MFLUCK70</code></td><td>上籤 3%</td><td>7 折</td><td>250 元</td><td>10</td></tr>
+        <tr><td><code>MFLUCK85</code></td><td>中籤 15%</td><td>85 折</td><td>110 元</td><td>60</td></tr>
+        <tr><td><code>MFLUCK30</code></td><td>小吉 40%</td><td>折 30 元</td><td>—</td><td>200</td></tr>
+        <tr><td><code>MFLUCK95</code></td><td>平安籤 41.5%</td><td>95 折</td><td>40 元</td><td>300</td></tr>
+      </table>
+      <p class="soft">有人私訊說抽到上上籤，把序號貼在這裡核對。序號對了，到賣貨便「折價券設定」開一張：輸入優惠碼、發行總數 1、折扣折數 1、最高折抵 600、最低消費 300，把碼私訊給他（或叫我幫你開）。每月只送 1 名，當月已經送過就改給他 <code>MFLUCK70</code>。</p>
+      <div class="row"><input id="bigIn" placeholder="BIG-20261112-XXXX-XXXX" autocomplete="off" style="flex:1;min-width:200px"><button class="small" id="bigBtn">核對序號</button></div>
+      <div id="bigOut"></div>
+    </div>
+
     <div class="row"><button class="ghost small" id="logout">在這台裝置登出（清除金鑰）</button></div>
   </section>
 
@@ -331,6 +346,23 @@ async function dispatchSync(quiet) {
     if (!quiet) say(e.status === 403 ? "金鑰沒有 Actions 權限，所以不能立即檢查；網站還是會每 3 小時自動核對。" : "沒辦法立即檢查：" + esc(e.message), "err");
   }
 }
+function luckSum(s) {
+  let h = 2166136261;
+  for (const ch of s + "mf-lucky-2026") { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; }
+  const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let o = "";
+  for (let i = 0; i < 4; i++) { o += A[h % 32]; h = Math.floor(h / 32); }
+  return o;
+}
+$("bigBtn").onclick = () => {
+  const m = $("bigIn").value.trim().toUpperCase().match(/^BIG-(\d{8})-([A-Z0-9]{4})-([A-Z0-9]{4})$/);
+  const ok = m && luckSum(m[1] + m[2]) === m[3];
+  const d = m ? `${m[1].slice(0, 4)}/${m[1].slice(4, 6)}/${m[1].slice(6)}` : "";
+  const used = (() => { try { return JSON.parse(localStorage.getItem("mfBigUsed") || "[]"); } catch (e) { return []; } })();
+  if (!ok) { $("bigOut").innerHTML = `<div class="msg err">序號不對，可能打錯或是假的。</div>`; return; }
+  if (used.includes(m[0])) { $("bigOut").innerHTML = `<div class="msg err">這組序號（${d} 抽中）你之前已經核對過了。</div>`; return; }
+  used.push(m[0]); try { localStorage.setItem("mfBigUsed", JSON.stringify(used)); } catch (e) {}
+  $("bigOut").innerHTML = `<div class="msg ok">序號正確，是 ${d} 抽中的上上籤。已記在這台裝置，避免同一組被領兩次。</div>`;
+};
 $("syncNow").onclick = () => dispatchSync(false);
 $("logout").onclick = () => { try { localStorage.removeItem("mfToken"); } catch (e) {} location.reload(); };
 
