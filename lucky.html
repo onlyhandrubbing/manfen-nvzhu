@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>滿分女主｜每日抽一支籤</title>
-<meta name="description" content="每天免費抽一支籤，上上籤直接 1 折。">
+<title>滿分女主｜買家抽籤</title>
+<meta name="description" content="買滿分女主的飾品就送抽籤券，上上籤直接 1 折。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Huninn&family=Fraunces:ital,opsz,wght@1,9..144,600&display=swap" rel="stylesheet">
@@ -39,6 +39,12 @@ h1 em { font-style: normal; background: linear-gradient(transparent 62%, var(--b
 .stick::before { content: ""; position: absolute; top: 8px; left: 3px; right: 3px; height: 34px; border-radius: 4px; background: var(--peach-deep); }
 .stick.fly { animation: fly .9s cubic-bezier(.2,.8,.3,1) forwards; }
 @keyframes fly { 0% { opacity: 1; transform: translateY(40px); } 100% { opacity: 1; transform: translateY(-120px) rotate(10deg); } }
+.ticket { display: grid; gap: 6px; justify-items: center; }
+.ticket label { font-size: .88rem; color: var(--soft); }
+.ticket input { font: inherit; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 1.25rem; letter-spacing: .12em; text-align: center; text-transform: uppercase;
+  width: min(100%, 300px); border: 2px dashed var(--peach); border-radius: 16px; padding: 12px 14px; background: #fff; color: var(--cocoa); }
+.ticket input:focus { outline: none; border-style: solid; }
+.err { color: #c8475f; }
 .drawbtn { justify-self: center; background: var(--peach); color: #fff; border-radius: 999px; padding: 15px 42px; font-size: 1.15rem; box-shadow: 0 12px 24px -10px var(--peach-deep); transition: transform .12s; }
 .drawbtn:active { transform: scale(.96); }
 .drawbtn:disabled { background: #d8c9cc; box-shadow: none; cursor: default; }
@@ -80,8 +86,8 @@ details li { margin: 4px 0; }
 <body>
 <header><a class="brand" href="./">滿分女主</a><nav><a href="./#shop">商品</a><a href="quiz.html">測驗</a></nav></header>
 <main>
-  <h1>每天抽一支籤<br>上上籤 <em>直接 1 折</em></h1>
-  <p class="lead">免費，每人每天一次。抽到的優惠碼在賣貨便結帳時輸入就能用。</p>
+  <h1>買家專屬抽籤<br>上上籤 <em>直接 1 折</em></h1>
+  <p class="lead">在滿分女主買飾品，包裹裡會附一張抽籤券。輸入券上的序號就能抽一次，抽到的優惠下次買就能用。</p>
 
   <div class="stage" aria-hidden="true">
     <svg class="tube" id="tube" viewBox="0 0 200 260">
@@ -103,8 +109,13 @@ details li { margin: 4px 0; }
     <div class="stick" id="stick"></div>
   </div>
 
+  <form class="ticket" id="tform" autocomplete="off">
+    <label for="tin">抽籤券序號</label>
+    <input id="tin" placeholder="MF-XXXX-XXXX" maxlength="14" autocapitalize="characters" spellcheck="false" inputmode="latin">
+  </form>
   <button class="drawbtn" id="draw">搖一搖，抽一支</button>
   <p class="next hidden" id="next"></p>
+  <p class="next" id="nobuy">還沒有抽籤券？<a href="./#shop" style="color:var(--peach-deep)">逛逛店裡的飾品</a>，每筆訂單都送一張。</p>
   <div id="result"></div>
 
   <details>
@@ -119,10 +130,11 @@ details li { margin: 4px 0; }
     </table>
     <ul>
       <li>活動期間：2026/11/12 起至 2027/02/10 23:59。</li>
-      <li>每人每天可以抽一次，抽到的優惠碼請自己記下來。</li>
+      <li>在滿分女主下單的每一筆訂單，出貨時附一張抽籤券。一張券抽一次，同一張券重複輸入，結果都一樣。</li>
+      <li>抽到的優惠碼請自己記下來，下次購買時使用。</li>
       <li>優惠碼在賣貨便結帳時，於「賣場折扣碼」輸入。單筆滿 300 元可用；每組碼每人限用一次；每筆訂單只能用一張折扣碼。各優惠碼總數有限，用完為止。</li>
-      <li>上上籤要截圖中獎畫面並私訊店家，核對序號後由店家另外發一張專屬的 1 折折價券。每月限量 1 名，以當月最先私訊核對成功的人為準；當月名額已送出時，改送一組 7 折優惠碼。</li>
-      <li>中獎畫面經修改、或用其他方式取得的序號，店家可以不發獎。</li>
+      <li>上上籤要截圖中獎畫面，連同抽籤券序號私訊店家，核對後由店家另外發一張專屬的 1 折折價券。每月限量 1 名，以當月最先私訊核對成功的人為準；當月名額已送出時，改送一組 7 折優惠碼。</li>
+      <li>抽籤券不能轉賣；中獎畫面經修改、或用其他方式取得的序號，店家可以不發獎。</li>
     </ul>
   </details>
 </main>
@@ -157,13 +169,22 @@ function pick() {
   for (const p of PRIZES) { if ((r -= p.p) < 0) return p; }
   return PRIZES[PRIZES.length - 1];
 }
-function serial() {
-  const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let id = "";
-  crypto.getRandomValues(new Uint8Array(4)).forEach(x => id += A[x % 32]);
-  const d = today().replace(/-/g, "");
-  return `BIG-${d}-${id}-${checksum(d + id)}`;
+async function sha(t) {
+  const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t));
+  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
 }
-
+// 序號統一成 MF-XXXX-XXXX
+function canon(v) {
+  const s = v.toUpperCase().replace(/[^A-Z0-9]/g, "").replace(/^MF/, "");
+  return s.length === 8 ? `MF-${s.slice(0, 4)}-${s.slice(4)}` : null;
+}
+// 結果由序號決定：同一張券不管抽幾次都一樣
+async function pickFor(ticket) {
+  const h = await sha(ticket + "|draw");
+  let r = parseInt(h.slice(0, 8), 16) / 2 ** 32;
+  for (const p of PRIZES) { if ((r -= p.p) < 0) return p; }
+  return PRIZES[PRIZES.length - 1];
+}
 function confetti() {
   const box = document.createElement("div"); box.className = "confetti";
   const cols = ["#f48ca0", "#ffe9a8", "#e7b34a", "#d9607a", "#fff"];
@@ -183,8 +204,8 @@ function showResult(r, fresh) {
     <div class="rank">${P.rank}</div>
     <div class="poem">${P.poem}</div>
     <div class="prize">${P.prize}</div>
-    ${big ? `<div class="code" id="codeTxt">${r.serial}</div>
-      <p class="small">恭喜！請截圖這個畫面，私訊${CONTACT}，核對序號後會發給你專屬的 1 折折價券（最多折 600 元）。每月限量 1 名，本月名額若已送出，改送 7 折碼。</p>`
+    ${big ? `<div class="code" id="codeTxt">${r.ticket}</div>
+      <p class="small">恭喜！請截圖這個畫面，私訊${CONTACT}並附上抽籤券序號，核對後會發給你專屬的 1 折折價券（最多折 600 元）。每月限量 1 名，本月名額若已送出，改送 7 折碼。</p>`
     : `<div class="code" id="codeTxt">${P.code}</div>
       <p class="small">到賣貨便結帳時，在「賣場折扣碼」輸入。滿 300 元可用，每人限用一次。</p>`}
     <div class="row"><button class="pill solid" id="copy">複製${big ? "序號" : "優惠碼"}</button><a class="pill" href="./#shop">去挑飾品</a></div>
@@ -196,47 +217,41 @@ function showResult(r, fresh) {
   if (fresh && (big || P.id === "70")) confetti();
 }
 
-function lockUntilTomorrow() {
-  $("draw").disabled = true; $("draw").textContent = "今天抽過囉";
-  $("next").classList.remove("hidden");
-  const tick = () => {
-    const now = new Date();
-    const tw = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
-    const left = (24 * 3600) - (tw.getHours() * 3600 + tw.getMinutes() * 60 + tw.getSeconds());
-    if (left <= 0 || store("mfLuck")?.date !== today()) { location.reload(); return; }
-    const h = Math.floor(left / 3600), m = Math.floor(left % 3600 / 60);
-    $("next").textContent = `明天 00:00 可以再抽（還有 ${h} 小時 ${m} 分）`;
-  };
-  tick(); setInterval(tick, 30000);
+function note(t, err) { $("next").textContent = t; $("next").classList.toggle("err", !!err); $("next").classList.remove("hidden"); }
+let busy = false;
+async function draw(e) {
+  if (e) e.preventDefault();
+  if (busy) return;
+  if (new Date() > END) { note("這一期抽籤活動已經結束，謝謝參加！"); return; }
+  const ticket = canon($("tin").value);
+  if (!ticket) { note("序號是 MF 開頭再加 8 個英文或數字，在包裹裡的小卡上。", true); return; }
+  busy = true; $("draw").disabled = true; $("draw").textContent = "確認序號中…"; $("next").classList.add("hidden");
+  try {
+    const [list, h] = await Promise.all([fetch("tickets.json?t=" + Date.now(), { cache: "no-store" }).then(r => r.json()), sha(ticket)]);
+    if (!list.tickets.some(t => t.h === h)) { note("找不到這張抽籤券，請確認有沒有打錯（0 和 O、1 和 I 不會出現在序號裡）。", true); return; }
+    const P = await pickFor(ticket);
+    const prev = (store("mfLuck2") || []).find(x => x.ticket === ticket);
+    const r = { ticket, id: P.id };
+    $("tin").value = ticket;
+    if (prev) { showResult(r, false); note("這張券已經抽過了，結果不會變喔。"); return; }
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    $("draw").textContent = "搖搖搖…";
+    $("tube").classList.add("shake");
+    await new Promise(ok => setTimeout(ok, reduce ? 0 : 1150));
+    $("tube").classList.remove("shake"); $("stick").classList.remove("fly"); void $("stick").offsetWidth; $("stick").classList.add("fly");
+    await new Promise(ok => setTimeout(ok, reduce ? 0 : 700));
+    store("mfLuck2", [...(store("mfLuck2") || []), r]);
+    showResult(r, true);
+    $("result").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+  } catch (err) {
+    note("連線有點問題，稍等一下再試一次。", true);
+  } finally { busy = false; $("draw").disabled = false; $("draw").textContent = "搖一搖，抽一支"; }
 }
-
-$("draw").onclick = () => {
-  if (new Date() > END) { $("next").textContent = "這一期抽籤活動已經結束，謝謝參加！"; $("next").classList.remove("hidden"); return; }
-  const last = store("mfLuck");
-  if (last && last.date === today()) { showResult(last, false); lockUntilTomorrow(); return; }
-  $("draw").disabled = true; $("draw").textContent = "搖搖搖…";
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  $("tube").classList.add("shake");
-  setTimeout(() => {
-    $("tube").classList.remove("shake");
-    $("stick").classList.add("fly");
-    setTimeout(() => {
-      const P = pick();
-      const r = { date: today(), id: P.id };
-      if (P.id === "big") r.serial = serial();
-      store("mfLuck", r);
-      showResult(r, true);
-      lockUntilTomorrow();
-      $("result").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
-    }, reduce ? 0 : 700);
-  }, reduce ? 0 : 1150);
-};
-
-(() => {
-  const last = store("mfLuck");
-  if (last && last.date === today()) { showResult(last, false); lockUntilTomorrow(); }
-  if (new Date() > END) { $("draw").disabled = true; $("draw").textContent = "活動已結束"; }
-})();
+$("draw").onclick = draw;
+$("tform").onsubmit = draw;
+const qs = new URLSearchParams(location.search).get("t");
+if (qs) $("tin").value = qs.toUpperCase();
+if (new Date() > END) { $("draw").disabled = true; $("draw").textContent = "活動已結束"; }
 </script>
 </body>
 </html>
