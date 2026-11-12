@@ -1,0 +1,32 @@
+{
+  "products": [
+    {
+      "id": "elephant",
+      "name": "象福 閃鑽小象項鍊耳環套組",
+      "category": "set",
+      "price": 690,
+      "status": "on",
+      "link": "https://myship.7-11.com.tw/general/detail/GM2611109415951",
+      "images": ["p-elephant-1.jpg", "p-elephant-2.jpg"],
+      "desc": "鼻子往上揚的小象，愛心形的耳朵鋪滿細碎水鑽，一動就閃。小象象徵好運和福氣，鼻子朝上更有把好運吸進來的寓意，自己戴或送給重要的人都很適合。",
+      "specs": ["項鍊 1 條＋針式耳環 1 對", "鈦鋼，金色，水鑽", "項鍊 40cm＋5cm 延長鍊", "針式耳環，需有耳洞"],
+      "metal": "gold",
+      "addedAt": "2026-11-10",
+      "sync": { "stock": 1, "price": 690, "offShelf": false, "checkedAt": "2026-11-12T04:30:00Z", "ok": true }
+    },
+    {
+      "id": "butterfly",
+      "name": "蝶舞 彩繪蝴蝶項鍊耳環套組",
+      "category": "set",
+      "price": 590,
+      "status": "on",
+      "link": "https://myship.7-11.com.tw/general/detail/GM2611109415265",
+      "images": ["p-butterfly-1.jpg", "p-butterfly-2.jpg"],
+      "desc": "五隻小蝴蝶停在金色圓框上，奶油白、粉紅、湖水藍、莓果紅、葡萄紫，每一隻都是琺瑯上色。戴上去像把春天掛在鎖骨上，素色上衣一搭就有重點。",
+      "specs": ["項鍊 1 條＋針式耳環 1 對", "鈦鋼，金色，琺瑯上色", "項鍊 40cm＋5cm 延長鍊", "針式耳環，需有耳洞"],
+      "metal": "gold",
+      "addedAt": "2026-11-10",
+      "sync": { "stock": 1, "price": 590, "offShelf": false, "checkedAt": "2026-11-12T04:30:00Z", "ok": true }
+    }
+  ]
+}

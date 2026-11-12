@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>滿分女主 店家管理</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Huninn&family=Fraunces:ital,opsz,wght@1,9..144,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* 管理頁：同一套顏色，但更像工具，清單一眼看出哪件上架、哪件賣完 */
+  --milk: #fffaf7; --card: #fff; --blush: #ffe4e6; --peach: #f48ca0; --peach-deep: #d9607a;
+  --butter: #ffe9a8; --cocoa: #4a3238; --soft: #9a8288; --line: #f3dde1;
+  --good: #3c9a6b; --bad: #c8475f;
+  --font: "Huninn", "PingFang TC", "Microsoft JhengHei", sans-serif; --num: "Fraunces", Georgia, serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--milk); color: var(--cocoa); font-family: var(--font); font-size: 15px; line-height: 1.65; }
+main { max-width: 760px; margin: 0 auto; padding: 18px 16px 90px; display: grid; gap: 18px; }
+h1 { font-family: var(--num); font-style: italic; font-weight: 600; color: var(--peach-deep); font-size: 1.4rem; margin: 0; }
+h2 { font-weight: 400; font-size: 1.2rem; margin: 0; }
+.top { display: flex; justify-content: space-between; align-items: center; }
+.top a { font-size: .88rem; color: var(--soft); }
+.card { background: var(--card); border-radius: 22px; padding: 18px; display: grid; gap: 12px; box-shadow: 0 8px 24px -18px rgba(74,50,56,.45); }
+.hidden { display: none !important; }
+.soft { color: var(--soft); font-size: .86rem; }
+label { display: grid; gap: 4px; font-size: .88rem; color: var(--soft); }
+input, select, textarea { font: inherit; color: var(--cocoa); border: 2px solid var(--line); border-radius: 14px; padding: 10px 12px; background: #fff; width: 100%; }
+textarea { min-height: 90px; resize: vertical; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--peach); }
+button { font: inherit; cursor: pointer; border: 0; border-radius: 999px; padding: 10px 18px; background: var(--peach); color: #fff; }
+button.ghost { background: #fff; color: var(--peach-deep); border: 2px solid var(--blush); }
+button.small { padding: 5px 12px; font-size: .84rem; }
+button:disabled { opacity: .5; cursor: wait; }
+button:focus-visible { outline: 3px solid var(--butter); outline-offset: 2px; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+ol { margin: 0; padding-left: 1.3em; font-size: .9rem; }
+ol li { margin: 4px 0; }
+code { background: var(--blush); border-radius: 6px; padding: 0 6px; font-size: .85em; }
+.msg { border-radius: 14px; padding: 10px 14px; font-size: .9rem; }
+.msg.ok { background: #e6f5ec; color: var(--good); }
+.msg.err { background: #fde8ec; color: var(--bad); }
+.msg.info { background: var(--butter); }
+
+.list { display: grid; gap: 10px; }
+.p { display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; align-items: center; background: #fff; border-radius: 18px; padding: 10px; border: 2px solid transparent; }
+.p.off { opacity: .55; }
+.p img { width: 64px; height: 64px; border-radius: 14px; object-fit: cover; background: var(--blush); }
+.p .nm { font-size: .98rem; line-height: 1.4; }
+.p .sub { font-size: .8rem; color: var(--soft); display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.pill { border-radius: 999px; padding: 0 8px; font-size: .74rem; background: var(--milk); border: 1px solid var(--line); }
+.pill.on { background: #e6f5ec; color: var(--good); border-color: transparent; }
+.pill.off { background: #eee; color: #777; border-color: transparent; }
+.pill.sold { background: var(--cocoa); color: #fff; border-color: transparent; }
+.pill.warn { background: #fde8ec; color: var(--bad); border-color: transparent; }
+.acts { display: grid; gap: 6px; justify-items: end; }
+.switch { position: relative; width: 50px; height: 28px; border-radius: 999px; background: #ddd; padding: 0; }
+.switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: left .15s; }
+.switch[aria-checked="true"] { background: var(--good); }
+.switch[aria-checked="true"]::after { left: 25px; }
+
+.pics { display: flex; gap: 8px; flex-wrap: wrap; }
+.pic { position: relative; width: 84px; height: 84px; border-radius: 14px; overflow: hidden; background: var(--blush); }
+.pic img { width: 100%; height: 100%; object-fit: cover; }
+.pic button { position: absolute; top: 3px; right: 3px; width: 24px; height: 24px; padding: 0; font-size: .9rem; line-height: 1; background: rgba(74,50,56,.75); }
+.pic .first { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,.85); font-size: .7rem; text-align: center; color: var(--peach-deep); }
+.addpic { position: relative; width: 84px; height: 84px; border-radius: 14px; border: 2px dashed var(--peach); display: grid; place-items: center; color: var(--peach-deep); font-size: .8rem; text-align: center; }
+.addpic input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+td, th { padding: 6px 4px; border-bottom: 1px solid var(--line); text-align: left; }
+th { color: var(--soft); font-weight: 400; }
+td code { font-size: .9rem; }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: rgba(255,250,247,.95); border-top: 1px solid var(--line); padding: 10px 16px; display: flex; justify-content: center; gap: 10px; }
+@media (max-width: 520px) { .two { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><h1>滿分女主 店家管理</h1><a href="./">← 回網站</a></div>
+  <div id="msg"></div>
+
+  <!-- 第一次使用：設定金鑰 -->
+  <section class="card hidden" id="setup">
+    <h2>第一次使用，先設定金鑰</h2>
+    <p class="soft">這把金鑰讓這個頁面可以幫你改網站上的商品。只會存在這支手機（或這台電腦）的瀏覽器裡，不會給任何人。</p>
+    <ol>
+      <li>用手機或電腦開 <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub 金鑰設定頁</a>，登入你的 GitHub。</li>
+      <li>Token name 填 <code>滿分女主管理</code>，Expiration 選 <code>1 year</code>。</li>
+      <li>Repository access 選 <code>Only select repositories</code>，選 <code>manfen-nvzhu</code>。</li>
+      <li>Permissions 裡把 <code>Contents</code> 設成 <code>Read and write</code>；想用「立即檢查賣貨便」按鈕的話，<code>Actions</code> 也設成 <code>Read and write</code>。</li>
+      <li>按 Generate token，複製 <code>github_pat_</code> 開頭那串，貼到下面。</li>
+    </ol>
+    <label>金鑰<input type="password" id="token" autocomplete="off" placeholder="github_pat_..."></label>
+    <div class="row"><button id="saveToken">儲存並開始管理</button></div>
+  </section>
+
+  <!-- 商品清單 -->
+  <section id="dash" class="hidden" style="display:grid;gap:18px">
+    <div class="card">
+      <div class="row" style="justify-content:space-between"><h2>商品 <span class="soft" id="sum"></span></h2>
+        <div class="row"><button class="ghost small" id="syncNow">立即檢查賣貨便</button><button class="small" id="addBtn">＋ 新增商品</button></div></div>
+      <p class="soft">開關是「網站上要不要顯示」。網站下架不會自動下架賣貨便，要停賣請也到 <a href="https://myship.7-11.com.tw/myship/list1" target="_blank" rel="noopener">賣貨便賣場列表</a> 把銷售狀態改成下架。賣貨便那邊賣完或下架，網站每 3 小時會自動標成「已售完」。</p>
+      <div class="list" id="list"></div>
+    </div>
+
+    <div class="card">
+      <h2>優惠碼（已在賣貨便建立）</h2>
+      <p class="soft">都是「全部賣場適用、滿 300 元可用、每人每組限用一次」，有效到 2027/02/10 23:59。到期前要再建新的一批，跟我說一聲就好。</p>
+      <table>
+        <tr><th>優惠碼</th><th>給誰</th><th>折扣</th><th>最高折</th><th>總量</th></tr>
+        <tr><td><code>MFQUIZ20</code></td><td>測驗 100 分</td><td>8 折</td><td>150 元</td><td>30</td></tr>
+        <tr><td><code>MFQUIZ15</code></td><td>測驗 80 分以上</td><td>85 折</td><td>110 元</td><td>60</td></tr>
+        <tr><td><code>MFQUIZ12</code></td><td>測驗 60 分以上</td><td>88 折</td><td>90 元</td><td>100</td></tr>
+        <tr><td><code>MFQUIZ08</code></td><td>測驗 40 分以上</td><td>92 折</td><td>60 元</td><td>150</td></tr>
+        <tr><td><code>MFQUIZ05</code></td><td>測驗參加獎</td><td>95 折</td><td>40 元</td><td>300</td></tr>
+        <tr><td><code>MFNEWF10</code></td><td>好友互猜的新朋友</td><td>9 折</td><td>80 元</td><td>150</td></tr>
+        <tr><td><code>MFTHX050</code></td><td>邀請朋友的人</td><td>折 50 元</td><td>—</td><td>150</td></tr>
+      </table>
+      <p class="soft"><a href="https://myship.7-11.com.tw/seller/myCoupon" target="_blank" rel="noopener">到賣貨便看使用情況</a></p>
+    </div>
+
+    <div class="row"><button class="ghost small" id="logout">在這台裝置登出（清除金鑰）</button></div>
+  </section>
+
+  <!-- 新增 / 編輯 -->
+  <section class="card hidden" id="editor">
+    <h2 id="edTitle">新增商品</h2>
+    <div>
+      <p class="soft" style="margin:0 0 6px">照片（第一張是封面，最多 6 張；會自動縮小到適合網頁的大小）</p>
+      <div class="pics" id="pics"></div>
+    </div>
+    <label>商品名稱<input id="fName" maxlength="40" placeholder="例如：象福 閃鑽小象項鍊耳環套組"></label>
+    <div class="two">
+      <label>分類<select id="fCat"><option value="set">套組</option><option value="earring">耳環</option><option value="necklace">項鍊</option><option value="other">其他</option></select></label>
+      <label>價格（要和賣貨便一樣）<input id="fPrice" type="number" min="1" inputmode="numeric" placeholder="590"></label>
+    </div>
+    <label>賣貨便賣場連結<input id="fLink" inputmode="url" placeholder="https://myship.7-11.com.tw/general/detail/GM..."></label>
+    <label>介紹<textarea id="fDesc" placeholder="這件的故事、戴起來的感覺"></textarea></label>
+    <label>規格（一行一項）<textarea id="fSpecs" placeholder="項鍊 1 條＋針式耳環 1 對&#10;鈦鋼，金色&#10;項鍊 40cm＋5cm 延長鍊"></textarea></label>
+    <div class="two">
+      <label>金屬色<select id="fMetal"><option value="gold">金色</option><option value="silver">銀色</option><option value="rose">玫瑰金</option><option value="mixed">混色</option></select></label>
+      <label>網站上<select id="fStatus"><option value="on">上架（顯示）</option><option value="off">下架（隱藏）</option></select></label>
+    </div>
+    <div class="row">
+      <button id="saveItem">儲存</button>
+      <button class="ghost" id="cancelEdit">取消</button>
+      <button class="ghost hidden" id="delItem" style="margin-left:auto;color:var(--bad);border-color:#fbd5dc">刪除這件</button>
+    </div>
+  </section>
+</main>
+
+<script>
+const REPO = "onlyhandrubbing/manfen-nvzhu", BRANCH = "main", API = "https://api.github.com/repos/" + REPO;
+const CATS = { set: "套組", earring: "耳環", necklace: "項鍊", other: "其他" };
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+let token = "", data = null, sha = null, editing = null, pics = [];
+
+function say(text, kind = "info") { $("msg").innerHTML = text ? `<div class="msg ${kind}">${text}</div>` : ""; if (text) window.scrollTo({ top: 0, behavior: "smooth" }); }
+function getToken() { try { return localStorage.getItem("mfToken") || ""; } catch (e) { return ""; } }
+async function gh(path, opt = {}) {
+  const r = await fetch(API + path, { ...opt, headers: { Authorization: "Bearer " + token, Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", ...(opt.headers || {}) } });
+  if (r.status === 204) return null;
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(j.message || ("HTTP " + r.status)); e.status = r.status; throw e; }
+  return j;
+}
+const b64 = s => btoa(unescape(encodeURIComponent(s)));
+const unb64 = s => decodeURIComponent(escape(atob(s.replace(/\n/g, ""))));
+
+async function loadData() {
+  const j = await gh(`/contents/products.json?ref=${BRANCH}&t=${Date.now()}`);
+  sha = j.sha; data = JSON.parse(unb64(j.content));
+}
+async function saveData(message) {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const j = await gh("/contents/products.json", { method: "PUT", body: JSON.stringify({ message, branch: BRANCH, sha, content: b64(JSON.stringify(data, null, 2) + "\n") }) });
+      sha = j.content.sha; return;
+    } catch (e) {
+      if (e.status !== 409 && e.status !== 422) throw e;
+      // 同時被自動同步改過：重新讀最新版，再把這次的修改套上去
+      const mine = JSON.parse(JSON.stringify(data));
+      await loadData();
+      mine.products.forEach(p => { const cur = data.products.find(x => x.id === p.id); if (cur && p.sync === undefined) p.sync = cur.sync; else if (cur) p.sync = cur.sync; });
+      data.products = mine.products;
+    }
+  }
+  throw new Error("儲存衝突，請重新整理再試一次");
+}
+
+function ago(iso) {
+  if (!iso) return "";
+  const m = Math.round((Date.now() - new Date(iso)) / 60000);
+  return m < 60 ? `${Math.max(1, m)} 分鐘前` : m < 1440 ? `${Math.round(m / 60)} 小時前` : `${Math.round(m / 1440)} 天前`;
+}
+function renderList() {
+  const ps = data.products;
+  $("sum").textContent = `${ps.filter(p => p.status === "on").length} 件上架／共 ${ps.length} 件`;
+  $("list").innerHTML = ps.length ? ps.map((p, i) => {
+    const s = p.sync || {};
+    const sold = s.ok && (s.offShelf || s.stock <= 0);
+    const syncTxt = !p.link ? `<span class="pill warn">沒有賣貨便連結</span>`
+      : s.ok === false ? `<span class="pill warn">賣貨便檢查失敗</span>`
+      : sold ? `<span class="pill sold">${s.offShelf ? "賣貨便已下架" : "賣貨便已售完"}</span>`
+      : s.ok ? `<span class="pill">賣貨便庫存 ${s.stock}</span>` : "";
+    const priceWarn = s.ok && s.price && s.price !== p.price ? `<span class="pill warn">賣貨便價格 ${s.price}</span>` : "";
+    return `<div class="p${p.status === "on" ? "" : " off"}">
+      <img src="${esc(p.images[0] || "")}" alt="">
+      <div><div class="nm">${esc(p.name)}</div>
+        <div class="sub"><span>NT$${p.price}</span><span>${CATS[p.category] || ""}</span>${syncTxt}${priceWarn}${s.checkedAt ? `<span>${ago(s.checkedAt)}核對</span>` : ""}</div></div>
+      <div class="acts"><button class="switch" role="switch" aria-checked="${p.status === "on"}" aria-label="網站上架" data-i="${i}"></button>
+        <button class="ghost small" data-edit="${i}">編輯</button></div>
+    </div>`;
+  }).join("") : `<p class="soft">還沒有商品，按「新增商品」開始。</p>`;
+  $("list").querySelectorAll(".switch").forEach(b => b.onclick = () => toggle(+b.dataset.i, b));
+  $("list").querySelectorAll("[data-edit]").forEach(b => b.onclick = () => openEditor(+b.dataset.edit));
+}
+async function toggle(i, btn) {
+  const p = data.products[i], next = p.status === "on" ? "off" : "on";
+  btn.disabled = true;
+  try {
+    p.status = next;
+    await saveData(`${next === "on" ? "上架" : "下架"}：${p.name}`);
+    say(`已${next === "on" ? "上架" : "下架"}「${esc(p.name)}」，網站約 1 分鐘後更新。${next === "off" ? "記得到賣貨便也把賣場下架。" : ""}`, "ok");
+  } catch (e) { p.status = next === "on" ? "off" : "on"; say("沒存成功：" + esc(e.message), "err"); }
+  btn.disabled = false; renderList();
+}
+
+/* ---------- 照片：縮小後再上傳 ---------- */
+function shrink(file) {
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, 1400 / Math.max(img.width, img.height));
+      const c = document.createElement("canvas"); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      res(c.toDataURL("image/jpeg", .86));
+    };
+    img.onerror = () => rej(new Error("這張照片打不開"));
+    img.src = URL.createObjectURL(file);
+  });
+}
+function renderPics() {
+  $("pics").innerHTML = pics.map((p, i) => `<div class="pic"><img src="${p.data || esc(p.path)}" alt=""><button data-del="${i}" aria-label="移除">×</button>${i === 0 ? `<span class="first">封面</span>` : ""}</div>`).join("")
+    + (pics.length < 6 ? `<label class="addpic">＋ 加照片<input type="file" accept="image/*" multiple id="picIn"></label>` : "");
+  $("pics").querySelectorAll("[data-del]").forEach(b => b.onclick = () => { pics.splice(+b.dataset.del, 1); renderPics(); });
+  const inp = $("picIn");
+  if (inp) inp.onchange = async e => {
+    for (const f of [...e.target.files].slice(0, 6 - pics.length)) { try { pics.push({ data: await shrink(f) }); } catch (err) { say(err.message, "err"); } }
+    renderPics();
+  };
+}
+
+function openEditor(i) {
+  editing = i;
+  const p = i === null ? { name: "", category: "set", price: "", link: "", desc: "", specs: [], metal: "gold", status: "on", images: [] } : data.products[i];
+  $("edTitle").textContent = i === null ? "新增商品" : "編輯商品";
+  $("fName").value = p.name; $("fCat").value = p.category; $("fPrice").value = p.price; $("fLink").value = p.link || "";
+  $("fDesc").value = p.desc || ""; $("fSpecs").value = (p.specs || []).join("\n"); $("fMetal").value = p.metal || "gold"; $("fStatus").value = p.status;
+  pics = p.images.map(path => ({ path }));
+  $("delItem").classList.toggle("hidden", i === null);
+  renderPics();
+  $("dash").classList.add("hidden"); $("editor").classList.remove("hidden"); say("");
+  window.scrollTo(0, 0);
+}
+function closeEditor() { $("editor").classList.add("hidden"); $("dash").classList.remove("hidden"); renderList(); }
+$("cancelEdit").onclick = closeEditor;
+$("addBtn").onclick = () => openEditor(null);
+
+$("saveItem").onclick = async () => {
+  const name = $("fName").value.trim(), price = Math.round(+$("fPrice").value), link = $("fLink").value.trim();
+  if (!name) return say("請填商品名稱", "err");
+  if (!(price > 0)) return say("請填價格", "err");
+  if (link && !/^https:\/\/myship\.7-11\.com\.tw\/general\/detail\/GM\d+/.test(link)) return say("賣貨便連結格式不對，要像 https://myship.7-11.com.tw/general/detail/GM2611...", "err");
+  if (!pics.length) return say("至少放一張照片", "err");
+  const btn = $("saveItem"); btn.disabled = true; btn.textContent = "儲存中…";
+  try {
+    const old = editing === null ? null : data.products[editing];
+    const id = old ? old.id : "p" + Date.now().toString(36);
+    const paths = [];
+    for (let k = 0; k < pics.length; k++) {
+      const pic = pics[k];
+      if (pic.path) { paths.push(pic.path); continue; }
+      const path = `images/${id}-${Math.random().toString(36).slice(2, 7)}${k}.jpg`;
+      btn.textContent = `上傳照片 ${k + 1}/${pics.length}…`;
+      await gh("/contents/" + path, { method: "PUT", body: JSON.stringify({ message: `照片：${name}`, branch: BRANCH, content: pic.data.split(",")[1] }) });
+      paths.push(path);
+    }
+    btn.textContent = "儲存中…";
+    await loadData();   // 拿最新版，避免蓋掉自動同步的結果
+    const item = {
+      ...(old ? data.products.find(x => x.id === old.id) || old : {}),
+      id, name, category: $("fCat").value, price, link, status: $("fStatus").value,
+      images: paths, desc: $("fDesc").value.trim(), specs: $("fSpecs").value.split("\n").map(s => s.trim()).filter(Boolean),
+      metal: $("fMetal").value, addedAt: old ? old.addedAt : new Date().toISOString().slice(0, 10)
+    };
+    if (old && old.link !== link) delete item.sync;   // 換了連結，重新核對
+    const idx = data.products.findIndex(x => x.id === id);
+    if (idx >= 0) data.products[idx] = item; else data.products.unshift(item);
+    await saveData(`${old ? "修改" : "新增"}：${name}`);
+    closeEditor();
+    say(`「${esc(name)}」已${old ? "更新" : "新增"}，網站約 1 分鐘後看得到。${link ? "" : "還沒填賣貨便連結，客人會買不到喔。"}`, "ok");
+    if (!old && link) dispatchSync(true);
+  } catch (e) { say("沒存成功：" + esc(e.message), "err"); }
+  btn.disabled = false; btn.textContent = "儲存";
+};
+$("delItem").onclick = async () => {
+  const p = data.products[editing];
+  if (!p) return;
+  const b = $("delItem");
+  if (b.dataset.sure !== "1") { b.dataset.sure = "1"; b.textContent = "再按一次確定刪除"; setTimeout(() => { b.dataset.sure = ""; b.textContent = "刪除這件"; }, 4000); return; }
+  b.disabled = true;
+  try {
+    await loadData();
+    data.products = data.products.filter(x => x.id !== p.id);
+    await saveData(`刪除：${p.name}`);
+    closeEditor(); say(`已從網站刪除「${esc(p.name)}」。賣貨便上的賣場沒有動，要停賣請也去賣貨便下架。`, "ok");
+  } catch (e) { say("刪除失敗：" + esc(e.message), "err"); }
+  b.disabled = false; b.dataset.sure = ""; b.textContent = "刪除這件";
+};
+
+async function dispatchSync(quiet) {
+  try {
+    await gh("/actions/workflows/sync.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: BRANCH }) });
+    if (!quiet) say("已請網站去核對賣貨便，大約 1～2 分鐘後重新整理這頁就會看到結果。", "ok");
+  } catch (e) {
+    if (!quiet) say(e.status === 403 ? "金鑰沒有 Actions 權限，所以不能立即檢查；網站還是會每 3 小時自動核對。" : "沒辦法立即檢查：" + esc(e.message), "err");
+  }
+}
+$("syncNow").onclick = () => dispatchSync(false);
+$("logout").onclick = () => { try { localStorage.removeItem("mfToken"); } catch (e) {} location.reload(); };
+
+$("saveToken").onclick = async () => {
+  const t = $("token").value.trim();
+  if (!t) return say("請貼上金鑰", "err");
+  token = t;
+  try { await loadData(); } catch (e) { return say(e.status === 401 ? "金鑰不對或已過期，請重新產生。" : e.status === 404 ? "這把金鑰看不到 manfen-nvzhu，請確認 Repository access 有選它。" : "連不上：" + esc(e.message), "err"); }
+  try { localStorage.setItem("mfToken", t); } catch (e) {}
+  $("setup").classList.add("hidden"); $("dash").classList.remove("hidden"); renderList(); say("設定好了！之後在這支手機打開這頁就能直接管理。", "ok");
+};
+
+(async () => {
+  token = getToken();
+  if (!token) { $("setup").classList.remove("hidden"); return; }
+  try { await loadData(); $("dash").classList.remove("hidden"); renderList(); }
+  catch (e) { $("setup").classList.remove("hidden"); say(e.status === 401 ? "金鑰過期了，請重新設定。" : "讀不到商品資料：" + esc(e.message), "err"); }
+})();
+</script>
+</body>
+</html>
