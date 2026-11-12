@@ -1,18 +1,86 @@
 {
   "products": [
     {
+      "id": "cat",
+      "name": "貓咪抱珍珠耳環",
+      "category": "earring",
+      "price": 390,
+      "status": "on",
+      "link": "https://myship.7-11.com.tw/general/detail/GM2611139553862",
+      "images": [
+        "p-cat-1.jpg"
+      ],
+      "desc": "小貓背對著你，抱著一顆圓滾滾的珍珠，像在窗邊偷看外面。一隻黑一隻金的鏡面小貓，左右不一樣反而更可愛，上班、約會都戴得住。",
+      "specs": [
+        "針式耳環 1 對（黑貓＋金貓）",
+        "金屬鏡面，珍珠造型",
+        "耳針 925 銀（依原廠卡片標示）",
+        "僅此一對"
+      ],
+      "metal": "gold",
+      "addedAt": "2026-11-13",
+      "sync": {
+        "stock": 1,
+        "price": 390,
+        "offShelf": false,
+        "checkedAt": "2026-11-13T08:00:00Z",
+        "ok": true
+      }
+    },
+    {
+      "id": "blob",
+      "name": "彩鑽不規則耳環",
+      "category": "earring",
+      "price": 450,
+      "status": "on",
+      "link": "https://myship.7-11.com.tw/general/detail/GM2611139553914",
+      "images": [
+        "p-blob-1.jpg"
+      ],
+      "desc": "不規則的金色外框，裡面裝滿粉、藍、綠、白的小水鑽，一動就閃。形狀很有個性，大小剛好有存在感，素色衣服一戴就亮。",
+      "specs": [
+        "針式耳環 1 對",
+        "金色金屬，彩色水鑽",
+        "耳針 925 銀（依原廠卡片標示）",
+        "僅此一對"
+      ],
+      "metal": "gold",
+      "addedAt": "2026-11-13",
+      "sync": {
+        "stock": 1,
+        "price": 450,
+        "offShelf": false,
+        "checkedAt": "2026-11-13T08:00:00Z",
+        "ok": true
+      }
+    },
+    {
       "id": "elephant",
       "name": "象福 閃鑽小象項鍊耳環套組",
       "category": "set",
       "price": 690,
       "status": "on",
       "link": "https://myship.7-11.com.tw/general/detail/GM2611109415951",
-      "images": ["p-elephant-1.jpg", "p-elephant-2.jpg"],
+      "images": [
+        "p-elephant-1.jpg",
+        "p-elephant-2.jpg"
+      ],
       "desc": "鼻子往上揚的小象，愛心形的耳朵鋪滿細碎水鑽，一動就閃。小象象徵好運和福氣，鼻子朝上更有把好運吸進來的寓意，自己戴或送給重要的人都很適合。",
-      "specs": ["項鍊 1 條＋針式耳環 1 對", "鈦鋼，金色，水鑽", "項鍊 40cm＋5cm 延長鍊", "針式耳環，需有耳洞"],
+      "specs": [
+        "項鍊 1 條＋針式耳環 1 對",
+        "鈦鋼，金色，水鑽",
+        "項鍊 40cm＋5cm 延長鍊",
+        "針式耳環，需有耳洞"
+      ],
       "metal": "gold",
       "addedAt": "2026-11-10",
-      "sync": { "stock": 1, "price": 690, "offShelf": false, "checkedAt": "2026-11-12T04:30:00Z", "ok": true }
+      "sync": {
+        "stock": 1,
+        "price": 690,
+        "offShelf": false,
+        "checkedAt": "2026-11-12T04:30:00Z",
+        "ok": true
+      }
     },
     {
       "id": "butterfly",
@@ -21,12 +89,26 @@
       "price": 590,
       "status": "on",
       "link": "https://myship.7-11.com.tw/general/detail/GM2611109415265",
-      "images": ["p-butterfly-1.jpg", "p-butterfly-2.jpg"],
+      "images": [
+        "p-butterfly-1.jpg",
+        "p-butterfly-2.jpg"
+      ],
       "desc": "五隻小蝴蝶停在金色圓框上，奶油白、粉紅、湖水藍、莓果紅、葡萄紫，每一隻都是琺瑯上色。戴上去像把春天掛在鎖骨上，素色上衣一搭就有重點。",
-      "specs": ["項鍊 1 條＋針式耳環 1 對", "鈦鋼，金色，琺瑯上色", "項鍊 40cm＋5cm 延長鍊", "針式耳環，需有耳洞"],
+      "specs": [
+        "項鍊 1 條＋針式耳環 1 對",
+        "鈦鋼，金色，琺瑯上色",
+        "項鍊 40cm＋5cm 延長鍊",
+        "針式耳環，需有耳洞"
+      ],
       "metal": "gold",
       "addedAt": "2026-11-10",
-      "sync": { "stock": 1, "price": 590, "offShelf": false, "checkedAt": "2026-11-12T04:30:00Z", "ok": true }
+      "sync": {
+        "stock": 1,
+        "price": 590,
+        "offShelf": false,
+        "checkedAt": "2026-11-12T04:30:00Z",
+        "ok": true
+      }
     }
   ]
 }

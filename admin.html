@@ -123,28 +123,28 @@ td code { font-size: .9rem; }
     </div>
 
     <div class="card">
-      <h2>抽籤券（買家專屬）</h2>
-      <p class="soft">每出一筆貨，產生一張抽籤券，把序號寫在小卡放進包裹（或用賣貨便訊息傳給買家）。買家到 <a href="lucky.html" target="_blank">抽籤頁</a> 輸入序號抽一次，同一張券重抽結果不變。</p>
+      <h2>刮刮卡（買家專屬）</h2>
+      <p class="soft">每出一筆貨，產生一張刮刮卡，把序號寫在小卡放進包裹（或用賣貨便訊息傳給買家）。買家到 <a href="lucky.html" target="_blank">刮刮樂頁</a> 輸入序號刮一次，同一張券重刮結果不變。</p>
       <div class="row">
         <input id="tNote" placeholder="備註（例如訂單編號、買家名字），只存在這台裝置" style="flex:1;min-width:200px">
         <select id="tCount" style="width:auto"><option value="1">1 張</option><option value="5">5 張</option><option value="10">10 張</option><option value="20">20 張</option></select>
-        <button class="small" id="tGen">產生抽籤券</button>
+        <button class="small" id="tGen">產生刮刮卡</button>
       </div>
       <div id="tOut"></div>
-      <details><summary class="soft" style="cursor:pointer">最近產生的抽籤券</summary><div id="tList" class="soft"></div></details>
+      <details><summary class="soft" style="cursor:pointer">最近產生的刮刮卡</summary><div id="tList" class="soft"></div></details>
     </div>
 
     <div class="card">
-      <h2>抽籤獎項與核對上上籤</h2>
+      <h2>刮刮樂獎項與核對頭獎</h2>
       <table>
-        <tr><th>優惠碼</th><th>籤</th><th>折扣</th><th>最高折</th><th>總量</th></tr>
-        <tr><td>—</td><td>上上籤 0.5%</td><td>1 折</td><td>600 元</td><td>每月 1 名</td></tr>
-        <tr><td><code>MFLUCK70</code></td><td>上籤 3%</td><td>7 折</td><td>250 元</td><td>10</td></tr>
-        <tr><td><code>MFLUCK85</code></td><td>中籤 15%</td><td>85 折</td><td>110 元</td><td>60</td></tr>
-        <tr><td><code>MFLUCK30</code></td><td>小吉 40%</td><td>折 30 元</td><td>—</td><td>200</td></tr>
-        <tr><td><code>MFLUCK95</code></td><td>平安籤 41.5%</td><td>95 折</td><td>40 元</td><td>300</td></tr>
+        <tr><th>優惠碼</th><th>獎項</th><th>折扣</th><th>最高折</th><th>總量</th></tr>
+        <tr><td>—</td><td>頭獎 1%</td><td>1 折</td><td>600 元</td><td>每月 1 名</td></tr>
+        <tr><td><code>MFLUCK70</code></td><td>二獎 3%</td><td>7 折</td><td>250 元</td><td>10</td></tr>
+        <tr><td><code>MFLUCK85</code></td><td>三獎 15%</td><td>85 折</td><td>110 元</td><td>60</td></tr>
+        <tr><td><code>MFLUCK30</code></td><td>四獎 40%</td><td>折 30 元</td><td>—</td><td>200</td></tr>
+        <tr><td><code>MFLUCK95</code></td><td>幸運獎 41%</td><td>95 折</td><td>40 元</td><td>300</td></tr>
       </table>
-      <p class="soft">有人私訊說抽到上上籤，把他的抽籤券序號貼在這裡核對。對了就到賣貨便「折價券設定」開一張：輸入優惠碼、發行總數 1、折扣折數 1、最高折抵 600、最低消費 300，把碼私訊給他（或叫我幫你開）。每月只送 1 名，當月已送過就改給 <code>MFLUCK70</code>。</p>
+      <p class="soft">有人私訊說刮到頭獎，把他的刮刮卡序號貼在這裡核對。對了就到賣貨便「折價券設定」開一張：輸入優惠碼、發行總數 1、折扣折數 1、最高折抵 600、最低消費 300，把碼私訊給他（或叫我幫你開）。每月只送 1 名，當月已送過就改給 <code>MFLUCK70</code>。</p>
       <div class="row"><input id="bigIn" placeholder="MF-XXXX-XXXX" autocomplete="off" style="flex:1;min-width:200px"><button class="small" id="bigBtn">核對</button></div>
       <div id="bigOut"></div>
     </div>
@@ -358,9 +358,9 @@ async function dispatchSync(quiet) {
     if (!quiet) say(e.status === 403 ? "金鑰沒有 Actions 權限，所以不能立即檢查；網站還是會每 3 小時自動核對。" : "沒辦法立即檢查：" + esc(e.message), "err");
   }
 }
-/* ---------- 抽籤券 ---------- */
+/* ---------- 刮刮卡 ---------- */
 const TA = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-const PR = [["big", .005, "上上籤 1 折"], ["70", .03, "上籤 7 折"], ["85", .15, "中籤 85 折"], ["30", .40, "小吉 折 30 元"], ["95", .415, "平安籤 95 折"]];
+const PR = [["big", .01, "頭獎 1 折"], ["70", .03, "二獎 7 折"], ["85", .15, "三獎 85 折"], ["30", .40, "四獎 折 30 元"], ["95", .41, "幸運獎 95 折"]];
 async function sha256(t) { const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join(""); }
 function canon(v) { const s = v.toUpperCase().replace(/[^A-Z0-9]/g, "").replace(/^MF/, ""); return s.length === 8 ? `MF-${s.slice(0, 4)}-${s.slice(4)}` : null; }
 async function resultOf(t) { let r = parseInt((await sha256(t + "|draw")).slice(0, 8), 16) / 2 ** 32; for (const p of PR) { if ((r -= p[1]) < 0) return p; } return PR[PR.length - 1]; }
@@ -390,17 +390,17 @@ $("tGen").onclick = async () => {
     for (let i = 0; i < n; i++) { let c = ""; crypto.getRandomValues(new Uint8Array(8)).forEach(x => c += TA[x % 32]); codes.push(`MF-${c.slice(0, 4)}-${c.slice(4)}`); }
     const hs = await Promise.all(codes.map(sha256));
     const at = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Taipei" });
-    await saveTickets(`新增 ${n} 張抽籤券`, d => { hs.forEach(h => d.tickets.push({ h, at })); });
+    await saveTickets(`新增 ${n} 張刮刮卡`, d => { hs.forEach(h => d.tickets.push({ h, at })); });
     const all = localT(); codes.forEach(code => all.push({ code, at, note })); try { localStorage.setItem("mfTickets", JSON.stringify(all)); } catch (e) {}
     const url = location.href.replace(/admin\.html.*$/, "lucky.html");
-    $("tOut").innerHTML = `<div class="msg ok">產生好了，約 1 分鐘後就能抽。抄在小卡上：</div>` + codes.map(c => `<div class="row" style="margin-top:6px"><code style="font-size:1.05rem">${c}</code><button class="ghost small" data-c="${c}">複製卡片文字</button></div>`).join("");
+    $("tOut").innerHTML = `<div class="msg ok">產生好了，約 1 分鐘後就能刮。抄在小卡上：</div>` + codes.map(c => `<div class="row" style="margin-top:6px"><code style="font-size:1.05rem">${c}</code><button class="ghost small" data-c="${c}">複製卡片文字</button></div>`).join("");
     $("tOut").querySelectorAll("[data-c]").forEach(b => b.onclick = async () => {
-      const txt = `滿分女主 抽籤券\n序號：${b.dataset.c}\n到 ${url} 輸入序號抽一次，上上籤 1 折！`;
+      const txt = `滿分女主 刮刮卡\n序號：${b.dataset.c}\n到 ${url} 輸入序號刮一次，頭獎 1 折！`;
       try { await navigator.clipboard.writeText(txt); b.textContent = "複製好了"; } catch (e) { b.textContent = "請手動抄序號"; }
     });
     $("tNote").value = ""; renderTList();
   } catch (e) { say("沒產生成功：" + esc(e.message), "err"); }
-  btn.disabled = false; btn.textContent = "產生抽籤券";
+  btn.disabled = false; btn.textContent = "產生刮刮卡";
 };
 $("bigBtn").onclick = async () => {
   const t = canon($("bigIn").value);
@@ -408,14 +408,14 @@ $("bigBtn").onclick = async () => {
   try {
     await loadTickets();
     const h = await sha256(t), rec = tdata.tickets.find(x => x.h === h);
-    if (!rec) { $("bigOut").innerHTML = `<div class="msg err">找不到這張抽籤券，不是你發出去的。</div>`; return; }
+    if (!rec) { $("bigOut").innerHTML = `<div class="msg err">找不到這張刮刮卡，不是你發出去的。</div>`; return; }
     const r = await resultOf(t);
-    if (r[0] !== "big") { $("bigOut").innerHTML = `<div class="msg err">這張券是真的（${rec.at} 發出），但它抽到的是「${r[2]}」，不是上上籤。</div>`; return; }
-    if (rec.c) { $("bigOut").innerHTML = `<div class="msg err">這張上上籤在 ${rec.c} 已經核對領過了。</div>`; return; }
+    if (r[0] !== "big") { $("bigOut").innerHTML = `<div class="msg err">這張券是真的（${rec.at} 發出），但它刮到的是「${r[2]}」，不是頭獎。</div>`; return; }
+    if (rec.c) { $("bigOut").innerHTML = `<div class="msg err">這張頭獎在 ${rec.c} 已經核對領過了。</div>`; return; }
     const today = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Taipei" });
-    await saveTickets("上上籤已領取", d => { const x = d.tickets.find(y => y.h === h); if (x) x.c = today; });
+    await saveTickets("頭獎已領取", d => { const x = d.tickets.find(y => y.h === h); if (x) x.c = today; });
     const month = today.slice(0, 7), given = tdata.tickets.filter(x => x.c && x.c.startsWith(month)).length;
-    $("bigOut").innerHTML = `<div class="msg ok">真的上上籤！已標記為已領取。這個月已經核對 ${given} 張${given > 1 ? "，超過每月 1 名，這位請改送 MFLUCK70" : "，可以發 1 折券給他"}。</div>`;
+    $("bigOut").innerHTML = `<div class="msg ok">真的頭獎！已標記為已領取。這個月已經核對 ${given} 張${given > 1 ? "，超過每月 1 名，這位請改送 MFLUCK70" : "，可以發 1 折券給他"}。</div>`;
   } catch (e) { $("bigOut").innerHTML = `<div class="msg err">核對失敗：${esc(e.message)}</div>`; }
 };
 renderTList();

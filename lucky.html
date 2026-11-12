@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>滿分女主｜買家抽籤</title>
-<meta name="description" content="買滿分女主的飾品就送抽籤券，上上籤直接 1 折。">
+<title>滿分女主｜買家刮刮樂</title>
+<meta name="description" content="買滿分女主的飾品就送刮刮卡，頭獎直接 1 折。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Huninn&family=Fraunces:ital,opsz,wght@1,9..144,600&display=swap" rel="stylesheet">
 <style>
 :root {
-  /* 同一套牛奶白＋蜜桃粉；主角是正中央的籤筒，抽出來的籤像一張小卡 */
+  /* 同一套牛奶白＋蜜桃粉；主角是一張金色刮刮卡 */
   --milk: #fffaf7; --blush: #ffe4e6; --peach: #f48ca0; --peach-deep: #d9607a;
   --butter: #ffe9a8; --gold: #e7b34a; --cocoa: #4a3238; --soft: #9a8288; --line: #f3dde1;
   --font: "Huninn", "PingFang TC", "Microsoft JhengHei", sans-serif; --num: "Fraunces", Georgia, serif;
@@ -30,15 +30,7 @@ h1 { margin: 0; font-weight: 400; font-size: 2rem; line-height: 1.3; text-align:
 h1 em { font-style: normal; background: linear-gradient(transparent 62%, var(--butter) 62%); padding: 0 3px; }
 .lead { margin: 0; text-align: center; color: #6d555b; }
 
-/* 籤筒 */
-.stage { position: relative; height: 300px; display: grid; place-items: end center; }
-.tube { width: 200px; height: 260px; position: relative; transform-origin: 50% 90%; }
-.tube.shake { animation: shake .14s ease-in-out 8 alternate; }
-@keyframes shake { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
-.stick { position: absolute; left: 50%; bottom: 120px; width: 18px; height: 150px; margin-left: -9px; border-radius: 6px; background: linear-gradient(90deg, #f6d38a, #e7b34a); box-shadow: inset -2px 0 0 rgba(0,0,0,.08); opacity: 0; }
-.stick::before { content: ""; position: absolute; top: 8px; left: 3px; right: 3px; height: 34px; border-radius: 4px; background: var(--peach-deep); }
-.stick.fly { animation: fly .9s cubic-bezier(.2,.8,.3,1) forwards; }
-@keyframes fly { 0% { opacity: 1; transform: translateY(40px); } 100% { opacity: 1; transform: translateY(-120px) rotate(10deg); } }
+/* 刮刮卡 */
 .ticket { display: grid; gap: 6px; justify-items: center; }
 .ticket label { font-size: .88rem; color: var(--soft); }
 .ticket input { font: inherit; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 1.25rem; letter-spacing: .12em; text-align: center; text-transform: uppercase;
@@ -50,18 +42,26 @@ h1 em { font-style: normal; background: linear-gradient(transparent 62%, var(--b
 .drawbtn:disabled { background: #d8c9cc; box-shadow: none; cursor: default; }
 .next { text-align: center; color: var(--soft); font-size: .9rem; margin: -10px 0 0; }
 
-/* 籤卡 */
-.card { background: #fff; border-radius: 28px; padding: 26px 22px 22px; display: grid; gap: 10px; justify-items: center; text-align: center; box-shadow: 0 20px 40px -22px rgba(217, 96, 122, .55); position: relative; overflow: hidden; animation: pop .45s cubic-bezier(.2,.9,.3,1.2) both; }
-@keyframes pop { from { transform: scale(.85) translateY(20px); opacity: .001; } }
-.card::before { content: ""; position: absolute; inset: 10px; border: 1.5px dashed var(--line); border-radius: 20px; pointer-events: none; }
-.rank { writing-mode: vertical-rl; font-size: 1.6rem; letter-spacing: .3em; color: #fff; background: var(--peach-deep); border-radius: 12px; padding: 14px 8px; line-height: 1; }
-.card.big { background: linear-gradient(160deg, #fff6dc, #ffe4e6); }
-.card.big .rank { background: linear-gradient(180deg, #e7b34a, #d9607a); }
-.poem { font-size: 1.05rem; color: #6d555b; max-width: 22ch; }
-.prize { font-family: var(--num); font-style: italic; font-weight: 600; font-size: 2.4rem; color: var(--peach-deep); line-height: 1.1; }
+.sc { position: relative; background: #fff; border-radius: 28px; padding: 18px; box-shadow: 0 20px 40px -22px rgba(217, 96, 122, .55); }
+.sc::before { content: ""; position: absolute; inset: 8px; border: 1.5px dashed var(--line); border-radius: 22px; pointer-events: none; }
+.sc-top { display: flex; justify-content: space-between; align-items: baseline; padding: 2px 8px 12px; }
+.sc-top b { font-family: var(--num); font-style: italic; font-weight: 600; color: var(--peach-deep); font-size: 1.15rem; }
+.sc-top span { font-size: .8rem; color: var(--soft); font-family: ui-monospace, Menlo, monospace; letter-spacing: .06em; }
+.zone { user-select: none; -webkit-user-select: none; position: relative; border-radius: 20px; overflow: hidden; aspect-ratio: 16 / 10; background: linear-gradient(160deg, #fff6f0, #ffe9ee); }
+.zone.big { background: linear-gradient(160deg, #fff6dc, #ffe4e6); }
+.under { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 2px; text-align: center; padding: 12px; }
+.lvl { font-size: .95rem; color: #fff; background: var(--peach-deep); border-radius: 999px; padding: 2px 14px; }
+.zone.big .lvl { background: linear-gradient(90deg, #e7b34a, #d9607a); }
+.prize { font-family: var(--num); font-style: italic; font-weight: 600; font-size: 3rem; color: var(--peach-deep); line-height: 1.15; }
+.line2 { font-size: .92rem; color: #6d555b; }
+.wait { color: var(--soft); font-size: 1rem; }
+canvas.foil { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: grab; transition: opacity .5s; }
+canvas.foil.gone { opacity: 0; pointer-events: none; }
+.hint { text-align: center; font-size: .85rem; color: var(--soft); margin: 10px 0 0; }
+.after { display: grid; gap: 10px; justify-items: center; text-align: center; margin-top: 14px; animation: pop .4s cubic-bezier(.2,.9,.3,1.2) both; }
+@keyframes pop { from { transform: translateY(10px); opacity: .001; } }
 .code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 1.15rem; letter-spacing: .1em; background: var(--milk); border: 1.5px dashed var(--peach); border-radius: 12px; padding: 8px 14px; word-break: break-all; }
-.card.big .code { font-size: .98rem; letter-spacing: .03em; }
-.small { font-size: .84rem; color: var(--soft); max-width: 34ch; }
+.small { font-size: .84rem; color: var(--soft); max-width: 34ch; margin: 0; }
 .row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
 .pill { background: var(--blush); color: var(--peach-deep); border-radius: 999px; padding: 7px 16px; font-size: .9rem; text-decoration: none; }
 .pill.solid { background: var(--peach); color: #fff; }
@@ -80,61 +80,50 @@ th { color: var(--soft); font-weight: 400; }
 details ul { padding-left: 1.2em; margin: 6px 0 0; font-size: .88rem; color: #6d555b; }
 details li { margin: 4px 0; }
 .hidden { display: none !important; }
-@media (prefers-reduced-motion: reduce) { .tube.shake, .stick.fly, .card, .confetti { animation: none !important; } .confetti { display: none; } }
+@media (prefers-reduced-motion: reduce) { .after, .confetti { animation: none !important; } .confetti { display: none; } }
 </style>
 </head>
 <body>
 <header><a class="brand" href="./">滿分女主</a><nav><a href="./#shop">商品</a><a href="quiz.html">測驗</a></nav></header>
 <main>
-  <h1>買家專屬抽籤<br>上上籤 <em>直接 1 折</em></h1>
-  <p class="lead">在滿分女主買飾品，包裹裡會附一張抽籤券。輸入券上的序號就能抽一次，抽到的優惠下次買就能用。</p>
-
-  <div class="stage" aria-hidden="true">
-    <svg class="tube" id="tube" viewBox="0 0 200 260">
-      <defs><linearGradient id="tb" x1="0" x2="1"><stop offset="0" stop-color="#f48ca0"/><stop offset=".55" stop-color="#f9a9b8"/><stop offset="1" stop-color="#e4778f"/></linearGradient></defs>
-      <g stroke-linecap="round">
-        <rect x="70" y="10" width="12" height="110" rx="5" fill="#f2c96f" transform="rotate(-8 76 120)"/>
-        <rect x="88" y="0" width="12" height="120" rx="5" fill="#e7b34a"/>
-        <rect x="104" y="6" width="12" height="114" rx="5" fill="#f6d38a" transform="rotate(6 110 120)"/>
-        <rect x="120" y="16" width="12" height="104" rx="5" fill="#e7b34a" transform="rotate(12 126 120)"/>
-        <rect x="56" y="22" width="12" height="98" rx="5" fill="#f6d38a" transform="rotate(-14 62 120)"/>
-      </g>
-      <path d="M40 92 h120 l-10 160 a8 8 0 0 1 -8 8 h-84 a8 8 0 0 1 -8 -8z" fill="url(#tb)"/>
-      <ellipse cx="100" cy="92" rx="60" ry="12" fill="#d9607a"/>
-      <ellipse cx="100" cy="92" rx="52" ry="8" fill="#b84a63"/>
-      <rect x="66" y="150" width="68" height="62" rx="14" fill="#fff" opacity=".92"/>
-      <text x="100" y="176" text-anchor="middle" font-size="20" fill="#d9607a" font-family="Huninn, sans-serif">滿分</text>
-      <text x="100" y="200" text-anchor="middle" font-size="20" fill="#d9607a" font-family="Huninn, sans-serif">靈籤</text>
-    </svg>
-    <div class="stick" id="stick"></div>
-  </div>
+  <h1>買家專屬刮刮樂<br>頭獎 <em>直接 1 折</em></h1>
+  <p class="lead">在滿分女主買飾品，包裹裡會附一張刮刮卡序號。輸入序號，用手指刮開銀色那層，刮到的優惠下次買就能用。</p>
 
   <form class="ticket" id="tform" autocomplete="off">
-    <label for="tin">抽籤券序號</label>
+    <label for="tin">刮刮卡序號</label>
     <input id="tin" placeholder="MF-XXXX-XXXX" maxlength="14" autocapitalize="characters" spellcheck="false" inputmode="latin">
   </form>
-  <button class="drawbtn" id="draw">搖一搖，抽一支</button>
+  <button class="drawbtn" id="draw">拿出我的刮刮卡</button>
   <p class="next hidden" id="next"></p>
-  <p class="next" id="nobuy">還沒有抽籤券？<a href="./#shop" style="color:var(--peach-deep)">逛逛店裡的飾品</a>，每筆訂單都送一張。</p>
-  <div id="result"></div>
+  <p class="next" id="nobuy">還沒有刮刮卡？<a href="./#shop" style="color:var(--peach-deep)">逛逛店裡的飾品</a>，每筆訂單都送一張。</p>
+
+  <div class="sc" id="sc">
+    <div class="sc-top"><b>滿分女主 Lucky</b><span id="scNo">MF-····-····</span></div>
+    <div class="zone" id="zone">
+      <div class="under" id="under"><div class="wait">輸入序號後，這裡可以刮</div></div>
+      <canvas class="foil" id="foil" aria-label="刮刮卡銀漆，用手指或滑鼠來回刮開"></canvas>
+    </div>
+    <p class="hint" id="hint">先輸入序號喔</p>
+    <div id="result"></div>
+  </div>
 
   <details>
     <summary>活動辦法與中獎機率</summary>
     <table>
-      <tr><th>籤</th><th>獎項</th><th>機率</th></tr>
-      <tr><td>上上籤</td><td>1 折（最多折 600 元），每月限量 1 名</td><td>0.5%</td></tr>
-      <tr><td>上籤</td><td>7 折（最多折 250 元）</td><td>3%</td></tr>
-      <tr><td>中籤</td><td>85 折（最多折 110 元）</td><td>15%</td></tr>
-      <tr><td>小吉</td><td>折 30 元</td><td>40%</td></tr>
-      <tr><td>平安籤</td><td>95 折（最多折 40 元）</td><td>41.5%</td></tr>
+      <tr><th>獎項</th><th>內容</th><th>機率</th></tr>
+      <tr><td>頭獎</td><td>1 折（最多折 600 元），每月限量 1 名</td><td>1%</td></tr>
+      <tr><td>二獎</td><td>7 折（最多折 250 元）</td><td>3%</td></tr>
+      <tr><td>三獎</td><td>85 折（最多折 110 元）</td><td>15%</td></tr>
+      <tr><td>四獎</td><td>折 30 元</td><td>40%</td></tr>
+      <tr><td>幸運獎</td><td>95 折（最多折 40 元）</td><td>41%</td></tr>
     </table>
     <ul>
       <li>活動期間：2026/11/12 起至 2027/02/10 23:59。</li>
-      <li>在滿分女主下單的每一筆訂單，出貨時附一張抽籤券。一張券抽一次，同一張券重複輸入，結果都一樣。</li>
-      <li>抽到的優惠碼請自己記下來，下次購買時使用。</li>
+      <li>在滿分女主下單的每一筆訂單，出貨時附一張刮刮卡序號。一組序號刮一次，同一組重複輸入，結果都一樣。</li>
+      <li>刮到的優惠碼請自己記下來，下次購買時使用。</li>
       <li>優惠碼在賣貨便結帳時，於「賣場折扣碼」輸入。單筆滿 300 元可用；每組碼每人限用一次；每筆訂單只能用一張折扣碼。各優惠碼總數有限，用完為止。</li>
-      <li>上上籤要截圖中獎畫面，連同抽籤券序號私訊店家，核對後由店家另外發一張專屬的 1 折折價券。每月限量 1 名，以當月最先私訊核對成功的人為準；當月名額已送出時，改送一組 7 折優惠碼。</li>
-      <li>抽籤券不能轉賣；中獎畫面經修改、或用其他方式取得的序號，店家可以不發獎。</li>
+      <li>頭獎要截圖中獎畫面，連同刮刮卡序號私訊店家，核對後由店家另外發一張專屬的 1 折折價券。每月限量 1 名，以當月最先私訊核對成功的人為準；當月名額已送出時，改送一組 7 折優惠碼。</li>
+      <li>刮刮卡不能轉賣；中獎畫面經修改、或用其他方式取得的序號，店家可以不發獎。</li>
     </ul>
   </details>
 </main>
@@ -143,11 +132,11 @@ details li { margin: 4px 0; }
 // 優惠碼稍微藏一下，避免一眼就從原始碼看到
 const D = s => atob(s).split("").reverse().join("");
 const PRIZES = [
-  { id: "big", p: .005, rank: "上上籤", prize: "1 折", poem: "滿分女主今日登場，好運一次到位。", code: null },
-  { id: "70", p: .03, rank: "上籤", prize: "7 折", poem: "貴人在側，挑一件最閃的犒賞自己。", code: D("MDdLQ1VMRk0=") },
-  { id: "85", p: .15, rank: "中籤", prize: "85 折", poem: "心想事成，喜歡的那件正在等你。", code: D("NThLQ1VMRk0=") },
-  { id: "30", p: .40, rank: "小吉", prize: "折 30 元", poem: "小小幸運，剛好夠買一杯手搖。", code: D("MDNLQ1VMRk0=") },
-  { id: "95", p: .415, rank: "平安籤", prize: "95 折", poem: "平平安安就是福，明天再來試手氣。", code: D("NTlLQ1VMRk0=") }
+  { id: "big", p: .01, rank: "頭獎", prize: "1 折", line: "今天的女主角就是你！", code: null },
+  { id: "70", p: .03, rank: "二獎", prize: "7 折", line: "挑一件最閃的犒賞自己", code: D("MDdLQ1VMRk0=") },
+  { id: "85", p: .15, rank: "三獎", prize: "85 折", line: "喜歡的那件正在等你", code: D("NThLQ1VMRk0=") },
+  { id: "30", p: .40, rank: "四獎", prize: "折 30 元", line: "剛好夠買一杯手搖", code: D("MDNLQ1VMRk0=") },
+  { id: "95", p: .41, rank: "幸運獎", prize: "95 折", line: "小小幸運也是幸運", code: D("NTlLQ1VMRk0=") }
 ];
 const CONTACT = "店家的 IG 或 LINE";
 const SALT = "mf-lucky-2026";
@@ -197,15 +186,58 @@ function confetti() {
   document.body.appendChild(box); setTimeout(() => box.remove(), 5500);
 }
 
-function showResult(r, fresh) {
-  const P = PRIZES.find(x => x.id === r.id);
-  const big = P.id === "big";
-  $("result").innerHTML = `<div class="card${big ? " big" : ""}">
-    <div class="rank">${P.rank}</div>
-    <div class="poem">${P.poem}</div>
-    <div class="prize">${P.prize}</div>
-    ${big ? `<div class="code" id="codeTxt">${r.ticket}</div>
-      <p class="small">恭喜！請截圖這個畫面，私訊${CONTACT}並附上抽籤券序號，核對後會發給你專屬的 1 折折價券（最多折 600 元）。每月限量 1 名，本月名額若已送出，改送 7 折碼。</p>`
+/* ---------- 刮刮卡 ---------- */
+const foil = $("foil"), ctx = foil.getContext("2d");
+let scratching = false, revealed = false, armed = false, cur = null, last = null, moves = 0;
+function paintFoil() {
+  const r = foil.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+  foil.width = r.width * dpr; foil.height = r.height * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.globalCompositeOperation = "source-over";
+  const g = ctx.createLinearGradient(0, 0, r.width, r.height);
+  g.addColorStop(0, "#e9d9b0"); g.addColorStop(.35, "#f8edd0"); g.addColorStop(.6, "#dcc392"); g.addColorStop(1, "#f3e3bb");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, r.width, r.height);
+  // 細細的閃粉
+  for (let i = 0; i < 260; i++) { ctx.fillStyle = `rgba(255,255,255,${Math.random() * .55})`; ctx.fillRect(Math.random() * r.width, Math.random() * r.height, 1.5, 1.5); }
+  // 小愛心花紋
+  ctx.fillStyle = "rgba(217,96,122,.16)"; ctx.font = "16px sans-serif";
+  for (let y = 18; y < r.height; y += 34) for (let x = (y / 34 % 2) * 22 + 10; x < r.width; x += 44) ctx.fillText("♥", x, y);
+  ctx.fillStyle = "rgba(122,86,60,.62)"; ctx.font = "600 20px Huninn, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillText("刮開這裡", r.width / 2, r.height / 2 - 10);
+  ctx.font = "13px Huninn, sans-serif"; ctx.fillText("用手指來回刮刮看", r.width / 2, r.height / 2 + 16);
+  foil.classList.remove("gone");
+}
+function pos(e) { const r = foil.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+function scratchAt(p) {
+  ctx.globalCompositeOperation = "destination-out"; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.lineWidth = 34;
+  ctx.beginPath(); ctx.moveTo(...(last || p)); ctx.lineTo(...p); ctx.stroke();
+  ctx.beginPath(); ctx.arc(p[0], p[1], 17, 0, 7); ctx.fill();
+  last = p;
+  if (++moves % 12 === 0) checkCleared();
+}
+function checkCleared() {
+  const d = ctx.getImageData(0, 0, foil.width, foil.height).data; let clear = 0, n = 0;
+  for (let i = 3; i < d.length; i += 64) { n++; if (d[i] < 40) clear++; }
+  if (clear / n > .5) reveal(true);
+}
+foil.addEventListener("pointerdown", e => { if (!armed || revealed) return; scratching = true; last = null; foil.setPointerCapture(e.pointerId); scratchAt(pos(e)); });
+foil.addEventListener("pointermove", e => { if (scratching) scratchAt(pos(e)); });
+["pointerup", "pointercancel"].forEach(t => foil.addEventListener(t, () => { scratching = false; last = null; }));
+addEventListener("resize", () => { if (!revealed) paintFoil(); });
+
+function setUnder(P) {
+  $("zone").classList.toggle("big", P.id === "big");
+  $("under").innerHTML = `<div class="lvl">${P.rank}</div><div class="prize">${P.prize}</div><div class="line2">${P.line}</div>`;
+}
+function reveal(fresh) {
+  if (revealed || !cur) return;
+  revealed = true; armed = false; foil.classList.add("gone");
+  const P = PRIZES.find(x => x.id === cur.id), big = P.id === "big";
+  if (fresh) store("mfLuck3", [...(store("mfLuck3") || []).filter(x => x.ticket !== cur.ticket), cur]);
+  $("hint").classList.add("hidden");
+  $("result").innerHTML = `<div class="after">
+    ${big ? `<div class="code" id="codeTxt">${cur.ticket}</div>
+      <p class="small">恭喜！請截圖這個畫面，私訊${CONTACT}並附上刮刮卡序號，核對後會發給你專屬的 1 折折價券（最多折 600 元）。每月限量 1 名，本月名額若已送出，改送 7 折碼。</p>`
     : `<div class="code" id="codeTxt">${P.code}</div>
       <p class="small">到賣貨便結帳時，在「賣場折扣碼」輸入。滿 300 元可用，每人限用一次。</p>`}
     <div class="row"><button class="pill solid" id="copy">複製${big ? "序號" : "優惠碼"}</button><a class="pill" href="./#shop">去挑飾品</a></div>
@@ -222,33 +254,29 @@ let busy = false;
 async function draw(e) {
   if (e) e.preventDefault();
   if (busy) return;
-  if (new Date() > END) { note("這一期抽籤活動已經結束，謝謝參加！"); return; }
+  if (new Date() > END) { note("這一期刮刮樂已經結束，謝謝參加！"); return; }
   const ticket = canon($("tin").value);
   if (!ticket) { note("序號是 MF 開頭再加 8 個英文或數字，在包裹裡的小卡上。", true); return; }
   busy = true; $("draw").disabled = true; $("draw").textContent = "確認序號中…"; $("next").classList.add("hidden");
   try {
     const [list, h] = await Promise.all([fetch("tickets.json?t=" + Date.now(), { cache: "no-store" }).then(r => r.json()), sha(ticket)]);
-    if (!list.tickets.some(t => t.h === h)) { note("找不到這張抽籤券，請確認有沒有打錯（0 和 O、1 和 I 不會出現在序號裡）。", true); return; }
+    if (!list.tickets.some(t => t.h === h)) { note("找不到這張刮刮卡，請確認有沒有打錯（0 和 O、1 和 I 不會出現在序號裡）。", true); return; }
     const P = await pickFor(ticket);
-    const prev = (store("mfLuck2") || []).find(x => x.ticket === ticket);
-    const r = { ticket, id: P.id };
-    $("tin").value = ticket;
-    if (prev) { showResult(r, false); note("這張券已經抽過了，結果不會變喔。"); return; }
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    $("draw").textContent = "搖搖搖…";
-    $("tube").classList.add("shake");
-    await new Promise(ok => setTimeout(ok, reduce ? 0 : 1150));
-    $("tube").classList.remove("shake"); $("stick").classList.remove("fly"); void $("stick").offsetWidth; $("stick").classList.add("fly");
-    await new Promise(ok => setTimeout(ok, reduce ? 0 : 700));
-    store("mfLuck2", [...(store("mfLuck2") || []), r]);
-    showResult(r, true);
-    $("result").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+    $("tin").value = ticket; $("scNo").textContent = ticket;
+    cur = { ticket, id: P.id }; revealed = false; moves = 0; $("result").innerHTML = "";
+    setUnder(P); paintFoil();
+    const prev = (store("mfLuck3") || []).find(x => x.ticket === ticket);
+    if (prev) { reveal(false); note("這張卡已經刮過了，結果不會變喔。"); return; }
+    armed = true;
+    $("hint").textContent = "刮開一半就會自動揭曉"; $("hint").classList.remove("hidden");
+    $("sc").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
   } catch (err) {
     note("連線有點問題，稍等一下再試一次。", true);
-  } finally { busy = false; $("draw").disabled = false; $("draw").textContent = "搖一搖，抽一支"; }
+  } finally { busy = false; $("draw").disabled = false; $("draw").textContent = "換一張刮刮卡"; }
 }
 $("draw").onclick = draw;
 $("tform").onsubmit = draw;
+paintFoil();
 const qs = new URLSearchParams(location.search).get("t");
 if (qs) $("tin").value = qs.toUpperCase();
 if (new Date() > END) { $("draw").disabled = true; $("draw").textContent = "活動已結束"; }
