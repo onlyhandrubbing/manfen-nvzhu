@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>滿分女主 店家管理</title>
+<title>雅琦飾品 店家管理</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Huninn&family=Fraunces:ital,opsz,wght@1,9..144,600&display=swap" rel="stylesheet">
 <style>
@@ -79,7 +79,7 @@ td code { font-size: .9rem; }
 </head>
 <body>
 <main>
-  <div class="top"><h1>滿分女主 店家管理</h1><a href="./">← 回網站</a></div>
+  <div class="top"><h1>雅琦飾品 店家管理</h1><a href="./">← 回網站</a></div>
   <div id="msg"></div>
 
   <!-- 第一次使用：設定金鑰 -->
@@ -88,7 +88,7 @@ td code { font-size: .9rem; }
     <p class="soft">這把金鑰讓這個頁面可以幫你改網站上的商品。只會存在這支手機（或這台電腦）的瀏覽器裡，不會給任何人。</p>
     <ol>
       <li>用手機或電腦開 <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub 金鑰設定頁</a>，登入你的 GitHub。</li>
-      <li>Token name 填 <code>滿分女主管理</code>，Expiration 選 <code>1 year</code>。</li>
+      <li>Token name 填 <code>雅琦飾品管理</code>，Expiration 選 <code>1 year</code>。</li>
       <li>Repository access 選 <code>Only select repositories</code>，選 <code>manfen-nvzhu</code>。</li>
       <li>Permissions 裡把 <code>Contents</code> 設成 <code>Read and write</code>；想用「立即檢查賣貨便」按鈕的話，<code>Actions</code> 也設成 <code>Read and write</code>。</li>
       <li>按 Generate token，複製 <code>github_pat_</code> 開頭那串，貼到下面。</li>
@@ -395,7 +395,7 @@ $("tGen").onclick = async () => {
     const url = location.href.replace(/admin\.html.*$/, "lucky.html");
     $("tOut").innerHTML = `<div class="msg ok">產生好了，約 1 分鐘後就能刮。抄在小卡上：</div>` + codes.map(c => `<div class="row" style="margin-top:6px"><code style="font-size:1.05rem">${c}</code><button class="ghost small" data-c="${c}">複製卡片文字</button></div>`).join("");
     $("tOut").querySelectorAll("[data-c]").forEach(b => b.onclick = async () => {
-      const txt = `滿分女主 刮刮卡\n序號：${b.dataset.c}\n到 ${url} 輸入序號刮一次，頭獎 1 折！`;
+      const txt = `雅琦飾品 刮刮卡\n序號：${b.dataset.c}\n到 ${url} 輸入序號刮一次，頭獎 1 折！`;
       try { await navigator.clipboard.writeText(txt); b.textContent = "複製好了"; } catch (e) { b.textContent = "請手動抄序號"; }
     });
     $("tNote").value = ""; renderTList();
