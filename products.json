@@ -1,6 +1,117 @@
 {
   "products": [
     {
+      "id": "bearshell",
+      "name": "星空貝殼小熊耳環",
+      "category": "earring",
+      "price": 450,
+      "status": "off",
+      "link": "",
+      "desc": "深色貝殼一片一片拼成小熊，換個角度就閃出藍綠色的光，像把星空裝進去。金色花邊收邊，可愛但不幼稚，黑色上衣戴特別好看。",
+      "specs": [
+        "針式耳環 1 對",
+        "金色金屬邊，深色貝殼拼貼",
+        "耳針 925 銀（依原廠卡片標示）",
+        "僅此一對"
+      ],
+      "metal": "gold",
+      "addedAt": "2026-11-14",
+      "sync": {
+        "stock": 1,
+        "price": 450,
+        "offShelf": false,
+        "checkedAt": "2026-11-14T08:00:00Z",
+        "ok": true
+      },
+      "images": [
+        "p-bearshell-1.jpg"
+      ],
+      "fit": {
+        "shape": "geo",
+        "size": 2,
+        "line": "curve",
+        "metal": "gold"
+      },
+      "tryon": {
+        "l": "t-bearshell-l.png",
+        "r": "t-bearshell-r.png"
+      }
+    },
+    {
+      "id": "bearring",
+      "name": "晶鑽圓框小熊耳環",
+      "category": "earring",
+      "price": 450,
+      "status": "off",
+      "link": "",
+      "desc": "銀色圓框裡坐著一隻黃色琺瑯小熊，旁邊三顆方形水鑽排成小皇冠。圓框是鏤空的，戴上去會透出膚色，輕巧不壓耳朵。",
+      "specs": [
+        "針式耳環 1 對",
+        "銀色金屬圓框，琺瑯小熊，方形水鑽",
+        "耳針 925 銀（依原廠卡片標示）",
+        "僅此一對"
+      ],
+      "metal": "silver",
+      "addedAt": "2026-11-14",
+      "sync": {
+        "stock": 1,
+        "price": 450,
+        "offShelf": false,
+        "checkedAt": "2026-11-14T08:00:00Z",
+        "ok": true
+      },
+      "images": [
+        "p-bearring-1.jpg"
+      ],
+      "fit": {
+        "shape": "hoop",
+        "size": 2,
+        "line": "curve",
+        "metal": "silver"
+      },
+      "tryon": {
+        "l": "t-bearring-l.png",
+        "r": "t-bearring-r.png"
+      }
+    },
+    {
+      "id": "bunny",
+      "name": "貝殼小兔耳環",
+      "category": "earring",
+      "price": 390,
+      "status": "off",
+      "link": "",
+      "desc": "兩隻豎耳朵的小兔，臉是一片白色貝殼，一隻深色一隻銀色，左右不一樣剛好成一對。小小一顆貼在耳垂上，素顏也很好搭。",
+      "specs": [
+        "針式耳環 1 對（深色＋銀色）",
+        "金屬兔耳，白色貝殼",
+        "耳針 925 銀（依原廠卡片標示）",
+        "僅此一對"
+      ],
+      "metal": "silver",
+      "addedAt": "2026-11-14",
+      "sync": {
+        "stock": 1,
+        "price": 390,
+        "offShelf": false,
+        "checkedAt": "2026-11-14T08:00:00Z",
+        "ok": true
+      },
+      "images": [
+        "p-bunny-1.jpg"
+      ],
+      "fit": {
+        "shape": "stud",
+        "size": 2,
+        "line": "straight",
+        "metal": "silver"
+      },
+      "tryon": {
+        "l": "t-bunny-l.png",
+        "r": "t-bunny-r.png"
+      }
+    },
+    {
       "id": "cat",
       "name": "貓咪抱珍珠耳環",
       "category": "earring",
@@ -25,6 +136,16 @@
         "offShelf": false,
         "checkedAt": "2026-11-13T08:00:00Z",
         "ok": true
+      },
+      "fit": {
+        "shape": "pearl",
+        "size": 2,
+        "line": "curve",
+        "metal": "gold"
+      },
+      "tryon": {
+        "l": "t-cat-l.png",
+        "r": "t-cat-r.png"
       }
     },
     {
@@ -52,6 +173,16 @@
         "offShelf": false,
         "checkedAt": "2026-11-13T08:00:00Z",
         "ok": true
+      },
+      "fit": {
+        "shape": "geo",
+        "size": 2,
+        "line": "curve",
+        "metal": "rose"
+      },
+      "tryon": {
+        "l": "t-blob-l.png",
+        "r": "t-blob-r.png"
       }
     },
     {
@@ -62,8 +193,7 @@
       "status": "on",
       "link": "https://myship.7-11.com.tw/general/detail/GM2611109415951",
       "images": [
-        "p-elephant-1.jpg",
-        "p-elephant-2.jpg"
+        "p-elephant-1.jpg"
       ],
       "desc": "鼻子往上揚的小象，愛心形的耳朵鋪滿細碎水鑽，一動就閃。小象象徵好運和福氣，鼻子朝上更有把好運吸進來的寓意，自己戴或送給重要的人都很適合。",
       "specs": [
@@ -80,6 +210,19 @@
         "offShelf": false,
         "checkedAt": "2026-11-12T04:30:00Z",
         "ok": true
+      },
+      "fit": {
+        "shape": "stud",
+        "size": 1,
+        "line": "curve",
+        "metal": "gold",
+        "nshape": "pendant",
+        "nsize": 3
+      },
+      "tryon": {
+        "l": "t-elephant-l.png",
+        "r": "t-elephant-r.png",
+        "n": "t-elephant-n.png"
       }
     },
     {
@@ -90,8 +233,7 @@
       "status": "on",
       "link": "https://myship.7-11.com.tw/general/detail/GM2611109415265",
       "images": [
-        "p-butterfly-1.jpg",
-        "p-butterfly-2.jpg"
+        "p-butterfly-1.jpg"
       ],
       "desc": "五隻小蝴蝶停在金色圓框上，奶油白、粉紅、湖水藍、莓果紅、葡萄紫，每一隻都是琺瑯上色。戴上去像把春天掛在鎖骨上，素色上衣一搭就有重點。",
       "specs": [
@@ -108,6 +250,19 @@
         "offShelf": false,
         "checkedAt": "2026-11-12T04:30:00Z",
         "ok": true
+      },
+      "fit": {
+        "shape": "stud",
+        "size": 1,
+        "line": "curve",
+        "metal": "gold",
+        "nshape": "pendant",
+        "nsize": 2
+      },
+      "tryon": {
+        "l": "t-butterfly-l.png",
+        "r": "t-butterfly-r.png",
+        "n": "t-butterfly-n.png"
       }
     }
   ]

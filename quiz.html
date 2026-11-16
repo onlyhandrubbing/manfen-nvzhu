@@ -87,7 +87,7 @@ button:focus-visible { outline: 3px solid var(--butter); outline-offset: 3px; }
 .choices button:hover { border-color: var(--blush); }
 .choices button small { display: block; color: var(--soft); font-size: .76rem; line-height: 1.5; margin-top: 2px; }
 .choices svg { width: 56px; height: 56px; }
-.choices.pieces svg { width: 100%; height: auto; max-width: 140px; }
+.choices.pieces svg, .choices.pieces img { width: 100%; height: auto; max-width: 140px; border-radius: 18px; display: block; margin: 0 auto; }
 .choices.one { grid-template-columns: 1fr; }
 .choices.one button { justify-items: start; text-align: left; padding: 16px 18px; }
 
@@ -126,6 +126,7 @@ button:focus-visible { outline: 3px solid var(--butter); outline-offset: 3px; }
 .pick svg, .pick img { width: 84px; height: 84px; border-radius: 18px; object-fit: cover; display: block; }
 .pick .nm { font-size: 1.02rem; }
 .pick .why { color: var(--soft); font-size: .78rem; line-height: 1.55; }
+.pick .seeit { display: inline-block; margin-top: 4px; font-size: .82rem; color: var(--peach-deep); text-decoration: none; }
 .pick .pr { font-variant-numeric: tabular-nums; margin-top: 2px; }
 .pick .pr s { color: var(--soft); font-size: .8rem; margin-right: 6px; }
 .pick .pr b { font-weight: 400; color: var(--peach-deep); }
@@ -278,7 +279,7 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
       <p class="soft" style="text-align:center">點下面的飾品可以換著戴</p>
     </div>
     <h2>適合你的款式</h2>
-    <p class="soft">下面是適合你的款式類型，點一下可以試戴。店裡實際有的現貨請到 <a href="./#shop" style="color:var(--peach-deep)">商品頁</a> 看。</p>
+    <p class="soft">下面是店裡適合你的現貨，點一下就能戴上去看看。每件都只有一個，喜歡就別等太久。</p>
     <div class="picks" id="picks"></div>
     <div class="sign" id="sign"></div>
     <div class="friend" id="friendBox">
@@ -358,7 +359,7 @@ const SHOP = {
 // 以下為範例商品。shape：stud 耳針 / hoop 圈圈 / drop 水滴 / long 長耳線 / geo 幾何 / pearl 珍珠
 //                     choker 頸鍊 / short 鎖骨鍊 / long_n 長鍊 / pendant 墜飾
 // stock 現貨數量（0 就不推薦、3 件以下會顯示「只剩 N 件」）；size 1 小巧 2 中 3 大；line：curve 柔和、straight 俐落；img 放實拍照片路徑
-const ITEMS = [
+let ITEMS = [
   { id: "E01", type: "earring",  name: "金色水滴",       price: 590, shape: "drop",    metal: "gold",   size: 2, line: "curve",    clip: true, stock: 2 },
   { id: "E02", type: "earring",  name: "銀色大圈",       price: 490, shape: "hoop",    metal: "silver", size: 3, line: "curve",    clip: false, stock: 5 },
   { id: "E03", type: "earring",  name: "淡水珍珠耳針",   price: 390, shape: "pearl",   metal: "gold",   size: 1, line: "curve",    clip: true, stock: 8 },
@@ -373,6 +374,18 @@ const ITEMS = [
   { id: "N05", type: "necklace", name: "玫瑰金小愛心",   price: 560, shape: "pendant", metal: "rose",   size: 1, line: "curve", stock: 3 }
 ];
 /* ================================== */
+// 用店裡真的商品來推薦＋試戴（products.json 的 fit / tryon 欄位）。抓不到時才用上面的範例。
+const itemsReady = fetch("products.json?t=" + Date.now(), { cache: "no-store" }).then(r => r.json()).then(d => {
+  const live = [];
+  d.products.filter(p => p.status === "on" && p.fit && p.tryon).forEach(p => {
+    const stock = p.sync && p.sync.ok && typeof p.sync.stock === "number" ? (p.sync.offShelf ? 0 : p.sync.stock) : 1;
+    const base = { name: p.name.replace(/(項鍊)?耳環套組$|耳環$/, ""), price: p.price, img: p.images[0], pid: p.id, link: p.link, stock, line: p.fit.line, metal: p.fit.metal };
+    if (p.tryon.l) live.push({ ...base, id: p.id + "-e", type: "earring", shape: p.fit.shape, size: p.fit.size, clip: false, tl: p.tryon.l, tr: p.tryon.r || p.tryon.l });
+    if (p.tryon.n) live.push({ ...base, id: p.id + "-n", type: "necklace", shape: p.fit.nshape || "pendant", size: p.fit.nsize || p.fit.size, tn: p.tryon.n });
+  });
+  if (live.some(i => i.stock > 0)) ITEMS = live;
+}).catch(() => {});
+
 
 const FACE = { oval: "鵝蛋臉", round: "圓臉", long: "長臉", square: "方臉", heart: "心形臉" };
 const NEAR = { oval: ["round", "long", "heart"], round: ["oval", "square"], long: ["oval", "square"], square: ["round", "long"], heart: ["oval"] };
@@ -429,6 +442,7 @@ function pieceSvg(it, big) {
     long_n: `<path d="M16 14 Q48 50 80 14" ${s}/><path d="M48 32V78" ${s}/><circle cx="48" cy="81" r="3" ${s}/>`,
     pendant: `<path d="M14 14 Q48 54 82 14" ${s}/>` + (it.size === 1 ? `<path d="M48 64c-10-7-10-15-4-15c3 0 4 3 4 3s1-3 4-3c6 0 6 8-4 15z" ${s}/>` : `<circle cx="48" cy="56" r="13" ${s}/>`)
   }[it.shape];
+  if (it.img && !big) return `<img src="${it.img}" alt="${it.name}">`;
   if (big) return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">${g.replaceAll('stroke-width="3"', 'stroke-width="4"')}</svg>`;
   if (it.img) return `<img src="${it.img}" alt="${it.name}">`;
   return `<svg viewBox="0 0 96 96" role="img" aria-label="${it.name}"><rect width="96" height="96" rx="24" fill="${bg}"/><path d="M78 14l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#fff"/>${g}</svg>`;
@@ -623,7 +637,7 @@ function renderQ() {
   });
   window.scrollTo(0, 0);
 }
-$("start").onclick = () => { answers = {}; qi = 0; $("tease").classList.add("hidden"); show("quiz"); renderQ(); };
+$("start").onclick = async () => { await itemsReady; answers = {}; qi = 0; $("tease").classList.add("hidden"); show("quiz"); renderQ(); };
 $("back").onclick = () => { if (qi > 0) { qi--; renderQ(); } };
 
 /* ---------- 對答案 ---------- */
@@ -641,7 +655,7 @@ const SPEC = [
   ["line", "給人的感覺", 9, k => LINE[k], eq],
   ["metal", "金屬色", 10, k => METAL[k], (a, m) => a === m ? 1 : (a === "rose" || m === "rose") ? .4 : 0],
   ["len", "長度", 8, k => ELEN[k] || NLEN[k], (a, m) => ordOf(answers.cat === "earring" ? ["short", "mid", "long"] : ["choker", "short", "long_n"])(a, m)],
-  ["piece", "最適合的那件", 12, id => ITEMS.find(i => i.id === id).name, null]
+  ["piece", "最適合的那件", 12, id => (ITEMS.find(i => i.id === id) || { name: "—" }).name, null]
 ];
 function grade() {
   const r = rankFor(answers.cat);
@@ -762,13 +776,13 @@ function renderPicks() {
       it.clip ? "有耳夾版" : ""
     ].filter(Boolean).join("，");
     return `<button class="pick${i === 0 && pts ? " on" : ""}" data-id="${it.id}">${pieceSvg(it)}<div><div class="nm">${it.name}</div><div class="why">${why || "整體感覺很搭"}</div>
-      </div></button>`;
+      ${it.pid ? `<a class="seeit" href="./#p-${it.pid}" onclick="event.stopPropagation()">看這件 NT$${it.price} →</a>` : ""}</div></button>`;
   }).join("");
   if (pts) {
     tryOn(list[0]);
     $("picks").querySelectorAll(".pick").forEach(b => b.onclick = () => {
       $("picks").querySelectorAll(".pick").forEach(x => x.classList.toggle("on", x === b));
-      tryOn(ITEMS.find(i => i.id === b.dataset.id));
+      tryOn(list.find(i => i.id === b.dataset.id) || ITEMS.find(i => i.id === b.dataset.id));
       $("tryWrap").scrollIntoView({ behavior: "smooth", block: "center" });
     });
   }
@@ -869,27 +883,59 @@ $("sideInput").addEventListener("change", async e => {
   delete masks.side;
   sideReady = true; setMode("side");
 });
-function tryOn(it) {
+const imgCache = {};
+function loadImg(src) {
+  return imgCache[src] ||= new Promise(ok => { const im = new Image(); im.onload = () => ok(im); im.onerror = () => ok(null); im.src = src; });
+}
+async function tryOn(it) {
   tryItem = it;
   const front = tryMode === "front";
   const src = front ? $("canvas") : sideCanvas, c = $("tryCanvas");
   c.width = src.width; c.height = src.height;
-  const img = new Image();
+  const real = !!(it.tl || it.tn);
   let pieces;
-  if (front) {
-    const p = pts, W = dist(p[0], p[16]);
-    pieces = it.type === "earring"
-      ? [{ x: p[2].x - W * .03, y: p[2].y + W * .02, base: W * .24 }, { x: p[14].x + W * .03, y: p[14].y + W * .02, base: W * .24 }]
-      : [{ x: p[8].x, y: p[8].y + W * .18, base: W * 1.15 }];
+  if (real) {
+    // 真的商品照片（去背 PNG）：耳環一邊一個，項鍊是墜子＋畫一條細鍊
+    if (it.type === "earring") {
+      const [L, R] = await Promise.all([loadImg(it.tl), loadImg(it.tr)]);
+      if (front) {
+        const p = pts, W = dist(p[0], p[16]);
+        pieces = [{ img: L, x: p[2].x - W * .035, y: p[2].y + W * .015, base: W * .12 }, { img: R, x: p[14].x + W * .035, y: p[14].y + W * .015, base: W * .12 }];
+      } else pieces = [{ img: R, x: c.width * .5, y: c.height * .5, base: c.width * .11 }];
+    } else {
+      const N = await loadImg(it.tn);
+      if (front) {
+        const p = pts, W = dist(p[0], p[16]);
+        pieces = [{ img: N, x: p[8].x, y: p[8].y + W * .55, base: W * .26, chain: W * .5, neck: p[8].y + W * .2 }];
+      } else pieces = [{ img: N, x: c.width * .5, y: c.height * .78, base: c.width * .18, chain: c.width * .3, neck: c.height * .62 }];
+    }
+    if (tryItem !== it) return;
   } else {
-    pieces = it.type === "earring"
-      ? [{ x: c.width * .5, y: c.height * .5, base: c.width * .2 }]
-      : [{ x: c.width * .5, y: c.height * .72, base: c.width * .7 }];
+    const img = new Image();
+    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(pieceSvg(it, true));
+    await new Promise(ok => { img.onload = ok; img.onerror = ok; });
+    if (front) {
+      const p = pts, W = dist(p[0], p[16]);
+      pieces = it.type === "earring"
+        ? [{ img, sq: 1, x: p[2].x - W * .03, y: p[2].y + W * .02, base: W * .24 }, { img, sq: 1, x: p[14].x + W * .03, y: p[14].y + W * .02, base: W * .24 }]
+        : [{ img, sq: 1, x: p[8].x, y: p[8].y + W * .18, base: W * 1.15 }];
+    } else {
+      pieces = it.type === "earring"
+        ? [{ img, sq: 1, x: c.width * .5, y: c.height * .5, base: c.width * .2 }]
+        : [{ img, sq: 1, x: c.width * .5, y: c.height * .72, base: c.width * .7 }];
+    }
   }
-  tryState = { img, pieces, scale: 1, drag: -1, init: pieces.map(q => ({ ...q })) };
+  pieces = pieces.filter(q => q.img);
+  tryState = { pieces, scale: 1, drag: -1, init: pieces.map(q => ({ ...q })) };
   $("trySize").value = 100;
-  img.onload = () => { drawTry(); if (!masks[tryMode]) prepBg(); };
-  img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(pieceSvg(it, true));
+  drawTry(); if (!masks[tryMode]) prepBg();
+}
+// 每個飾品的框：耳環以耳針（上緣附近）定位，墜子以掛環（上緣）定位
+function box(q, scale) {
+  const im = q.img, s = q.base * scale;
+  if (q.sq) return { x: q.x - s / 2, y: q.y - s * .12, w: s, h: s };
+  const k = s / Math.max(im.width, im.height * .9), w = im.width * k, h = im.height * k;
+  return q.chain ? { x: q.x - w / 2, y: q.y, w, h } : { x: q.x - w / 2, y: q.y - h * .3, w, h };
 }
 function drawTry() {
   const t = tryState; if (!t) return;
@@ -914,10 +960,22 @@ function drawTry() {
     x.fillStyle = "rgba(255,255,255,.85)"; x.beginPath(); x.roundRect(c.width / 30, c.width / 30, w, c.width / 14, c.width / 28); x.fill();
     x.fillStyle = "#d9607a"; x.textBaseline = "middle"; x.fillText(label, c.width / 30 + c.width / 36, c.width / 30 + c.width / 28); }
   t.pieces.forEach((q, i) => {
-    const s = q.base * t.scale;
-    // 耳環以頂端（耳針）為定位點，項鍊以中心上緣為定位點
-    x.drawImage(t.img, q.x - s / 2, q.y - s * .12, s, s);
-    if (t.drag === i) { x.strokeStyle = "rgba(244,140,160,.9)"; x.lineWidth = Math.max(2, c.width / 300); x.setLineDash([6, 5]); x.strokeRect(q.x - s / 2, q.y - s * .12, s, s); x.setLineDash([]); }
+    const b = box(q, t.scale);
+    if (q.chain) {
+      // 細金鍊：從脖子兩側垂到墜子的掛環
+      const half = q.chain * t.scale ** .3, top = q.neck + (q.y - q.neck) * .05;
+      x.save(); x.lineWidth = Math.max(1.2, c.width / 420); x.lineCap = "round";
+      [-1, 1].forEach(sd => {
+        const g = x.createLinearGradient(q.x + sd * half, top, q.x, q.y);
+        g.addColorStop(0, "rgba(214,170,80,.35)"); g.addColorStop(1, "rgba(232,190,95,.95)");
+        x.strokeStyle = g; x.beginPath(); x.moveTo(q.x + sd * half, top);
+        x.quadraticCurveTo(q.x + sd * half * .55, q.y - (q.y - top) * .05, q.x, q.y + b.h * .03); x.stroke();
+      });
+      x.restore();
+    }
+    x.save(); x.shadowColor = "rgba(60,30,30,.28)"; x.shadowBlur = c.width / 120; x.shadowOffsetY = c.width / 260;
+    x.drawImage(q.img, b.x, b.y, b.w, b.h); x.restore();
+    if (t.drag === i) { x.strokeStyle = "rgba(244,140,160,.9)"; x.lineWidth = Math.max(2, c.width / 300); x.setLineDash([6, 5]); x.strokeRect(b.x, b.y, b.w, b.h); x.setLineDash([]); }
   });
 }
 function tryPoint(e) {
@@ -929,14 +987,14 @@ $("tryCanvas").addEventListener("pointerdown", e => {
   const m = tryPoint(e);
   let best = -1, bd = Infinity;
   t.pieces.forEach((q, i) => {
-    const s = q.base * t.scale, cx = q.x, cy = q.y - s * .12 + s / 2;
+    const b = box(q, t.scale), cx = b.x + b.w / 2, cy = b.y + b.h / 2;
     const d = Math.hypot(m.x - cx, m.y - cy);
     if (d < bd) { bd = d; best = i; }
   });
   if (best < 0) return;
   t.drag = best; t.off = { x: m.x - t.pieces[best].x, y: m.y - t.pieces[best].y };
   // 點在離飾品很遠的地方：直接把最近的那個移過去
-  if (bd > t.pieces[best].base * t.scale) t.off = { x: 0, y: 0 };
+  if (bd > t.pieces[best].base * t.scale * 1.2) t.off = { x: 0, y: 0 };
   $("tryCanvas").setPointerCapture(e.pointerId);
   e.preventDefault();
   t.pieces[best].x = m.x - t.off.x; t.pieces[best].y = m.y - t.off.y; drawTry();

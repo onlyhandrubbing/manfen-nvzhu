@@ -99,6 +99,22 @@ td code { font-size: .9rem; }
 
   <!-- 商品清單 -->
   <section id="dash" class="hidden" style="display:grid;gap:18px">
+    <section class="card" id="inboxCard">
+      <h2>上傳新商品，交給 Claude 上架</h2>
+      <p class="soft">拍清楚一點的照片傳上來（白卡、桌面都可以），Claude 會幫你去背、寫文案、開好賣貨便賣場，再放上網站和測驗試戴。</p>
+      <div class="pics" id="iPics"></div>
+      <div class="two">
+        <label>叫它什麼（可以不填）<input id="iName" maxlength="30" placeholder="例如：小熊耳環"></label>
+        <label>想賣多少（不填就幫你定）<input id="iPrice" type="number" min="1" inputmode="numeric" placeholder="450"></label>
+      </div>
+      <div class="two">
+        <label>有幾個<input id="iQty" type="number" min="1" value="1" inputmode="numeric"></label>
+        <label>種類<select id="iCat"><option value="earring">耳環</option><option value="necklace">項鍊</option><option value="set">項鍊＋耳環套組</option><option value="other">其他</option></select></label>
+      </div>
+      <label>要注意的地方（可以不填）<textarea id="iNote" placeholder="例如：鈦鋼、項鍊 40+5 公分、夾式耳環、左右不一樣是設計"></textarea></label>
+      <div class="row"><button id="iSend">送出給 Claude</button><span class="soft" id="iStat"></span></div>
+      <div id="iList" class="list"></div>
+    </section>
     <div class="card">
       <div class="row" style="justify-content:space-between"><h2>商品 <span class="soft" id="sum"></span></h2>
         <div class="row"><button class="ghost small" id="syncNow">立即檢查賣貨便</button><button class="small" id="addBtn">＋ 新增商品</button></div></div>
@@ -258,11 +274,11 @@ async function toggle(i, btn) {
 }
 
 /* ---------- 照片：縮小後再上傳 ---------- */
-function shrink(file) {
+function shrink(file, max = 1400) {
   return new Promise((res, rej) => {
     const img = new Image();
     img.onload = () => {
-      const k = Math.min(1, 1400 / Math.max(img.width, img.height));
+      const k = Math.min(1, max / Math.max(img.width, img.height));
       const c = document.createElement("canvas"); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
       c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
       res(c.toDataURL("image/jpeg", .86));
@@ -418,6 +434,68 @@ $("bigBtn").onclick = async () => {
     $("bigOut").innerHTML = `<div class="msg ok">真的頭獎！已標記為已領取。這個月已經核對 ${given} 張${given > 1 ? "，超過每月 1 名，這位請改送 MFLUCK70" : "，可以發 1 折券給他"}。</div>`;
   } catch (e) { $("bigOut").innerHTML = `<div class="msg err">核對失敗：${esc(e.message)}</div>`; }
 };
+
+/* ---------- 新商品收件匣：照片＋資料存到 inbox.json，Claude 處理後標成已上架 ---------- */
+let ipics = [], inbox = { items: [] }, isha = null;
+async function loadInbox() {
+  try { const j = await gh(`/contents/inbox.json?ref=${BRANCH}&t=${Date.now()}`); isha = j.sha; inbox = JSON.parse(unb64(j.content)); }
+  catch (e) { if (e.status !== 404) throw e; isha = null; inbox = { items: [] }; }
+}
+function renderIPics() {
+  $("iPics").innerHTML = ipics.map((d, i) => `<div class="pic"><img src="${d}" alt=""><button data-idel="${i}" aria-label="移除">×</button></div>`).join("")
+    + (ipics.length < 4 ? `<label class="addpic">＋ 商品照片<input type="file" accept="image/*" multiple id="iPicIn"></label>` : "");
+  $("iPics").querySelectorAll("[data-idel]").forEach(b => b.onclick = () => { ipics.splice(+b.dataset.idel, 1); renderIPics(); });
+  const inp = $("iPicIn");
+  if (inp) inp.onchange = async e => {
+    for (const f of [...e.target.files].slice(0, 4 - ipics.length)) { try { ipics.push(await shrink(f, 2000)); } catch (err) { say(err.message, "err"); } }
+    renderIPics();
+  };
+}
+function renderInbox() {
+  const it = [...inbox.items].reverse();
+  $("iList").innerHTML = it.map(x => `<div class="p${x.status === "done" ? " off" : ""}">
+    <img src="${esc(x.photos[0])}" alt="">
+    <div><div class="nm">${esc(x.name || "（還沒取名）")}</div>
+      <div class="sub"><span>${esc(x.at)}</span>${x.price ? `<span>想賣 NT$${x.price}</span>` : ""}<span>${x.qty || 1} 個</span>
+      ${x.status === "done" ? `<span class="pill on">已上架${x.pid ? "：" + esc(x.pid) : ""}</span>` : `<span class="pill warn">等 Claude 處理</span>`}</div></div>
+    <div class="acts">${x.status !== "done" ? `<button class="ghost small" data-icancel="${esc(x.id)}">取消</button>` : ""}</div>
+  </div>`).join("");
+  $("iList").querySelectorAll("[data-icancel]").forEach(b => b.onclick = async () => {
+    b.disabled = true;
+    try { await loadInbox(); inbox.items = inbox.items.filter(x => x.id !== b.dataset.icancel); await saveInbox("取消新商品"); renderInbox(); }
+    catch (e) { say("沒取消成功：" + esc(e.message), "err"); b.disabled = false; }
+  });
+}
+async function saveInbox(message) {
+  const j = await gh("/contents/inbox.json", { method: "PUT", body: JSON.stringify({ message, branch: BRANCH, ...(isha ? { sha: isha } : {}), content: b64(JSON.stringify(inbox, null, 2) + "\n") }) });
+  isha = j.content.sha;
+}
+$("iSend").onclick = async () => {
+  if (!ipics.length) return say("先加至少一張商品照片", "err");
+  const btn = $("iSend"); btn.disabled = true;
+  const id = "n" + Date.now().toString(36);
+  try {
+    const photos = [];
+    for (let i = 0; i < ipics.length; i++) {
+      $("iStat").textContent = `上傳照片 ${i + 1}/${ipics.length}…`;
+      const path = `inbox/${id}-${i + 1}.jpg`;
+      await gh("/contents/" + path, { method: "PUT", body: JSON.stringify({ message: "新商品照片", branch: BRANCH, content: ipics[i].split(",")[1] }) });
+      photos.push(path);
+    }
+    $("iStat").textContent = "存資料…";
+    const rec = { id, at: new Date().toLocaleString("sv-SE", { timeZone: "Asia/Taipei" }).slice(0, 16), name: $("iName").value.trim(), price: +$("iPrice").value || null,
+      qty: Math.max(1, +$("iQty").value || 1), category: $("iCat").value, note: $("iNote").value.trim(), photos, status: "waiting" };
+    for (let a = 0; a < 2; a++) {
+      try { await loadInbox(); inbox.items.push(rec); await saveInbox("新商品：" + (rec.name || id)); break; }
+      catch (e) { if (a || (e.status !== 409 && e.status !== 422)) throw e; }
+    }
+    ipics = []; ["iName", "iPrice", "iNote"].forEach(k => $(k).value = ""); $("iQty").value = 1;
+    renderIPics(); renderInbox();
+    say("收到了！跟 Claude 說一聲「有新商品」，就會幫你去背、開賣貨便、放上網站。", "ok");
+  } catch (e) { say("沒送出成功：" + esc(e.message), "err"); }
+  btn.disabled = false; $("iStat").textContent = "";
+};
+renderIPics();
 renderTList();
 $("syncNow").onclick = () => dispatchSync(false);
 $("logout").onclick = () => { try { localStorage.removeItem("mfToken"); } catch (e) {} location.reload(); };
@@ -428,13 +506,13 @@ $("saveToken").onclick = async () => {
   token = t;
   try { await loadData(); } catch (e) { return say(e.status === 401 ? "金鑰不對或已過期，請重新產生。" : e.status === 404 ? "這把金鑰看不到 manfen-nvzhu，請確認 Repository access 有選它。" : "連不上：" + esc(e.message), "err"); }
   try { localStorage.setItem("mfToken", t); } catch (e) {}
-  $("setup").classList.add("hidden"); $("dash").classList.remove("hidden"); renderList(); say("設定好了！之後在這支手機打開這頁就能直接管理。", "ok");
+  $("setup").classList.add("hidden"); $("dash").classList.remove("hidden"); renderList(); loadInbox().then(renderInbox).catch(() => {}); say("設定好了！之後在這支手機打開這頁就能直接管理。", "ok");
 };
 
 (async () => {
   token = getToken();
   if (!token) { $("setup").classList.remove("hidden"); return; }
-  try { await loadData(); $("dash").classList.remove("hidden"); renderList(); }
+  try { await loadData(); $("dash").classList.remove("hidden"); renderList(); loadInbox().then(renderInbox).catch(() => {}); }
   catch (e) { $("setup").classList.remove("hidden"); say(e.status === 401 ? "金鑰過期了，請重新設定。" : "讀不到商品資料：" + esc(e.message), "err"); }
 })();
 </script>
