@@ -1,4 +1,4 @@
-"""雅琦飾品：商品照去背 + 產生網站用圖。
+"""jiajia accessories：商品照去背 + 產生網站用圖。
 用法：
   pip install --break-system-packages rembg onnxruntime scipy opencv-python-headless pillow
   python3 cut.py <照片> <商品id> [--box x0 y0 x1 y1] [--kind earring|necklace|set] [--out 輸出資料夾]
