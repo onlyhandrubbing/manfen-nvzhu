@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>雅琦飾品</title>
-<meta name="description" content="雅琦飾品｜鈦鋼飾品小店。先玩「滿分女主」測驗，測你適合什麼，越懂自己折扣越多。">
+<title>jiajia accessories</title>
+<meta name="description" content="jiajia accessories｜耳環、項鍊小店。先玩「滿分女主」測驗，測你適合什麼，越懂自己折扣越多。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Huninn&family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,500;1,9..144,600&display=swap" rel="stylesheet">
@@ -38,7 +38,9 @@ header { position: sticky; top: 0; z-index: 20; background: rgba(255, 250, 247, 
 header .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
 .brand { font-family: var(--num); font-style: italic; font-weight: 600; font-size: 1.35rem; color: var(--peach-deep); text-decoration: none; letter-spacing: .01em; }
 nav { display: flex; gap: 6px; align-items: center; }
-nav a { text-decoration: none; font-size: .92rem; padding: 6px 12px; border-radius: 999px; }
+nav a { text-decoration: none; font-size: .92rem; padding: 6px 12px; border-radius: 999px; white-space: nowrap; }
+.brand { white-space: nowrap; }
+@media (max-width: 440px) { header .brand { font-size: 1.08rem; } nav a { padding: 6px 8px; font-size: .86rem; } }
 nav a.cta { background: var(--peach); color: #fff; }
 
 /* 開場 */
@@ -148,7 +150,7 @@ footer a { color: var(--soft); }
 <body>
 <header>
   <div class="wrap">
-    <a class="brand" href="./">雅琦飾品</a>
+    <a class="brand" href="./">jiajia accessories</a>
     <nav>
       <a href="#shop" class="hide-sm">全部商品</a>
       <a href="#how" class="hide-sm">怎麼買</a>
@@ -162,7 +164,7 @@ footer a { color: var(--soft); }
   <div class="wrap">
     <div>
       <h1>挑一件<br><em>最像你的</em>飾品</h1>
-      <p>每一件都是我親手挑的鈦鋼飾品，數量不多，賣完就沒了。不確定什麼適合自己？先玩個小測驗，越懂自己，折扣越多。</p>
+      <p>每一件都是我親手挑的飾品，數量不多，賣完就沒了。不確定什麼適合自己？先玩個小測驗，越懂自己，折扣越多。</p>
       <div class="actions">
         <a class="btn primary" href="quiz.html">先測我適合什麼</a>
         <a class="btn ghost" href="#shop">直接逛逛</a>
@@ -203,7 +205,7 @@ footer a { color: var(--soft); }
 
 <footer>
   <div class="wrap">
-    <span>© 雅琦飾品　<a href="https://www.instagram.com/yachi6505/" target="_blank" rel="noopener">IG @yachi6505</a></span>
+    <span>© jiajia accessories　<a href="https://www.instagram.com/yachi6505/" target="_blank" rel="noopener">IG @yachi6505</a></span>
     <span><a href="lucky.html">買家刮刮樂</a>　<a href="quiz.html">滿分女主測驗</a>　<a href="admin.html">店家管理</a></span>
   </div>
 </footer>

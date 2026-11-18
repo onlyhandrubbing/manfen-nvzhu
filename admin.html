@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>雅琦飾品 店家管理</title>
+<title>jiajia accessories 店家管理</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Huninn&family=Fraunces:ital,opsz,wght@1,9..144,600&display=swap" rel="stylesheet">
 <style>
@@ -79,7 +79,7 @@ td code { font-size: .9rem; }
 </head>
 <body>
 <main>
-  <div class="top"><h1>雅琦飾品 店家管理</h1><a href="./">← 回網站</a></div>
+  <div class="top"><h1>jiajia accessories 店家管理</h1><a href="./">← 回網站</a></div>
   <div id="msg"></div>
 
   <!-- 第一次使用：設定金鑰 -->
@@ -88,7 +88,7 @@ td code { font-size: .9rem; }
     <p class="soft">這把金鑰讓這個頁面可以幫你改網站上的商品。只會存在這支手機（或這台電腦）的瀏覽器裡，不會給任何人。</p>
     <ol>
       <li>用手機或電腦開 <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub 金鑰設定頁</a>，登入你的 GitHub。</li>
-      <li>Token name 填 <code>雅琦飾品管理</code>，Expiration 選 <code>1 year</code>。</li>
+      <li>Token name 填 <code>jiajia 管理</code>，Expiration 選 <code>1 year</code>。</li>
       <li>Repository access 選 <code>Only select repositories</code>，選 <code>manfen-nvzhu</code>。</li>
       <li>Permissions 裡把 <code>Contents</code> 設成 <code>Read and write</code>；想用「立即檢查賣貨便」按鈕的話，<code>Actions</code> 也設成 <code>Read and write</code>。</li>
       <li>按 Generate token，複製 <code>github_pat_</code> 開頭那串，貼到下面。</li>
@@ -111,7 +111,7 @@ td code { font-size: .9rem; }
         <label>有幾個<input id="iQty" type="number" min="1" value="1" inputmode="numeric"></label>
         <label>種類<select id="iCat"><option value="earring">耳環</option><option value="necklace">項鍊</option><option value="set">項鍊＋耳環套組</option><option value="other">其他</option></select></label>
       </div>
-      <label>要注意的地方（可以不填）<textarea id="iNote" placeholder="例如：鈦鋼、項鍊 40+5 公分、夾式耳環、左右不一樣是設計"></textarea></label>
+      <label>要注意的地方（可以不填）<textarea id="iNote" placeholder="例如：項鍊 40+5 公分、夾式耳環"></textarea></label>
       <div class="row"><button id="iSend">送出給 Claude</button><span class="soft" id="iStat"></span></div>
       <div id="iList" class="list"></div>
     </section>
@@ -182,7 +182,7 @@ td code { font-size: .9rem; }
     </div>
     <label>賣貨便賣場連結<input id="fLink" inputmode="url" placeholder="https://myship.7-11.com.tw/general/detail/GM..."></label>
     <label>介紹<textarea id="fDesc" placeholder="這件的故事、戴起來的感覺"></textarea></label>
-    <label>規格（一行一項）<textarea id="fSpecs" placeholder="項鍊 1 條＋針式耳環 1 對&#10;鈦鋼，金色&#10;項鍊 40cm＋5cm 延長鍊"></textarea></label>
+    <label>規格（一行一項）<textarea id="fSpecs" placeholder="耳環 1 對&#10;僅此一對"></textarea></label>
     <div class="two">
       <label>金屬色<select id="fMetal"><option value="gold">金色</option><option value="silver">銀色</option><option value="rose">玫瑰金</option><option value="mixed">混色</option></select></label>
       <label>網站上<select id="fStatus"><option value="on">上架（顯示）</option><option value="off">下架（隱藏）</option></select></label>
@@ -411,7 +411,7 @@ $("tGen").onclick = async () => {
     const url = location.href.replace(/admin\.html.*$/, "lucky.html");
     $("tOut").innerHTML = `<div class="msg ok">產生好了，約 1 分鐘後就能刮。抄在小卡上：</div>` + codes.map(c => `<div class="row" style="margin-top:6px"><code style="font-size:1.05rem">${c}</code><button class="ghost small" data-c="${c}">複製卡片文字</button></div>`).join("");
     $("tOut").querySelectorAll("[data-c]").forEach(b => b.onclick = async () => {
-      const txt = `雅琦飾品 刮刮卡\n序號：${b.dataset.c}\n到 ${url} 輸入序號刮一次，頭獎 1 折！`;
+      const txt = `jiajia accessories 刮刮卡\n序號：${b.dataset.c}\n到 ${url} 輸入序號刮一次，頭獎 1 折！`;
       try { await navigator.clipboard.writeText(txt); b.textContent = "複製好了"; } catch (e) { b.textContent = "請手動抄序號"; }
     });
     $("tNote").value = ""; renderTList();
