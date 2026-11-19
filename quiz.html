@@ -666,6 +666,8 @@ const SPEC = [
   ["len", "長度", 8, k => ELEN[k] || NLEN[k], (a, m) => ordOf(answers.cat === "earring" ? ["short", "mid", "long"] : ["choker", "short", "long_n"])(a, m)],
   ["piece", "最適合的那件", 12, id => (ITEMS.find(i => i.id === id) || { name: "—" }).name, null]
 ];
+// 顯示用分數：把 0–100 壓到 55–100，一般人會落在 75–90（折扣不受影響）
+const boost = raw => Math.round(100 - (100 - raw) * .45);
 function grade() {
   const r = rankFor(answers.cat);
   const rows = SPEC.map(([key, label, w, name, fn]) => {
@@ -674,9 +676,9 @@ function grade() {
     const f = key === "piece" ? (a === r[0].id ? 1 : a === r[1].id ? .5 : 0) : fn(a, m);
     return [label, name(a), name(m), Math.round(w * f), w];
   });
-  const score = rows.reduce((s, x) => s + x[3], 0);
-  const off = SHOP.ladder.find(([s]) => score >= s)[1];
-  return { rows, score, off, top: r.slice(0, 3) };
+  const raw = rows.reduce((s, x) => s + x[3], 0);
+  const off = SHOP.ladder.find(([s]) => raw >= s)[1];   // 折扣照原本的實際分數算
+  return { rows, score: boost(raw), raw, off, top: r.slice(0, 3) };
 }
 const STAMP = (got, full) => got === full ? `<span class="stamp ok">一樣</span>` : got > 0 ? `<span class="stamp near">差一點</span>` : `<span class="stamp miss">不一樣</span>`;
 const P_MET = { gold: "暖金", silver: "冷銀", rose: "玫瑰" };
@@ -1051,7 +1053,7 @@ function subScore(ans, m) {
     const f = fn(ans[k], m[k]); got += w * f; tot += w;
     rows.push([label, name(ans[k]), name(m[k]), Math.round(w * f), w]);
   });
-  return { score: Math.round(got / tot * 100), rows };
+  return { score: boost(Math.round(got / tot * 100)), rows };
 }
 $("makeLink").onclick = () => {
   const res = store("jw4Result"); if (!res) return;
