@@ -41,22 +41,20 @@ nav { display: flex; gap: 6px; align-items: center; }
 nav a { text-decoration: none; font-size: .92rem; padding: 6px 12px; border-radius: 999px; white-space: nowrap; }
 .brand { white-space: nowrap; }
 @media (max-width: 440px) { header .brand { font-size: 1.08rem; } nav a { padding: 6px 8px; font-size: .86rem; } }
-nav a.cta { background: var(--peach); color: #fff; }
+nav a.cta { background: var(--cocoa); color: #fff; border-radius: 8px; }
 
 /* 開場 */
 .hero { position: relative; overflow: hidden; }
-.hero::before { content: ""; position: absolute; inset: 0; background:
-  radial-gradient(520px 380px at 92% 0, #ffe1e7 0, transparent 70%),
-  radial-gradient(420px 320px at 0 100%, #fff1c9 0, transparent 70%); pointer-events: none; }
-.hero .wrap { position: relative; display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; padding-top: 48px; padding-bottom: 56px; }
+.hero .wrap { position: relative; display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; padding-top: 44px; padding-bottom: 40px; }
 .hero h1 { margin: 0; font-weight: 400; font-size: clamp(2.1rem, 5vw, 3.3rem); line-height: 1.25; text-wrap: balance; }
-.hero h1 em { font-style: normal; background: linear-gradient(transparent 62%, var(--butter) 62%); padding: 0 3px; }
-.hero p { margin: 18px 0 0; max-width: 34ch; color: #6d555b; }
+.hero h1 em { font-style: normal; color: var(--peach-deep); }
+.hero p { margin: 14px 0 0; max-width: 30ch; color: #6d555b; }
+.hero .fine { margin-top: 16px; font-size: .84rem; color: var(--soft); max-width: none; }
 .hero .actions { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px; }
-.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: 999px; text-decoration: none; font-size: 1rem; }
-.btn.primary { background: var(--peach); color: #fff; box-shadow: 0 10px 22px -10px var(--peach-deep); }
-.btn.ghost { background: #fff; border: 2px solid var(--blush); color: var(--peach-deep); }
-.arch { justify-self: center; width: min(100%, 360px); aspect-ratio: 4 / 5; border-radius: 999px 999px 32px 32px; overflow: hidden; background: var(--blush); border: 8px solid #fff; box-shadow: 0 24px 50px -24px rgba(217, 96, 122, .55); }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 10px; text-decoration: none; font-size: .98rem; }
+.btn.primary { background: var(--cocoa); color: #fff; }
+.btn.ghost { background: transparent; border: 1px solid #d9c6ca; color: var(--cocoa); }
+.arch { justify-self: center; width: min(100%, 380px); aspect-ratio: 1; border-radius: 6px; overflow: hidden; background: var(--blush); }
 .arch img { width: 100%; height: 100%; object-fit: cover; }
 
 /* 折扣說明條 */
@@ -66,50 +64,49 @@ nav a.cta { background: var(--peach); color: #fff; }
 .deal a { color: var(--butter); }
 
 /* 商品 */
-.shop { padding: 56px 0 30px; }
+.shop { padding: 24px 0 30px; }
 .shop-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 14px; margin-bottom: 22px; }
 .shop-head h2 { margin: 0; font-weight: 400; font-size: 1.7rem; }
-.shop-head h2 small { font-family: var(--num); font-style: italic; color: var(--soft); font-size: .95rem; margin-left: 8px; }
+.shop-head h2 small { color: var(--soft); font-size: .9rem; margin-left: 8px; }
 .chips { display: flex; gap: 8px; flex-wrap: wrap; }
-.chips button { background: #fff; border: 2px solid var(--line); border-radius: 999px; padding: 6px 16px; font-size: .92rem; }
-.chips button.on { background: var(--peach); border-color: var(--peach); color: #fff; }
+.chips button { background: transparent; border: 1px solid #e6d3d7; border-radius: 8px; padding: 4px 14px; font-size: .9rem; }
+.chips button.on { background: var(--cocoa); border-color: var(--cocoa); color: #fff; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 22px; }
-.item { background: var(--card); border-radius: 26px; overflow: hidden; text-align: left; display: grid; box-shadow: 0 12px 30px -22px rgba(74, 50, 56, .5); transition: transform .2s, box-shadow .2s; }
-.item:hover { transform: translateY(-3px); box-shadow: 0 18px 36px -22px rgba(217, 96, 122, .6); }
+.item { background: transparent; border-radius: 0; overflow: visible; text-align: left; display: grid; }
+.item .ph { border-radius: 6px; }
 .item .ph { position: relative; aspect-ratio: 1; background: #fbeff0; overflow: hidden; }
 .item .ph img { width: 100%; height: 100%; object-fit: cover; transition: opacity .35s; }
 .item .ph img + img { position: absolute; inset: 0; opacity: 0; }
 .item:hover .ph img + img { opacity: 1; }
-.tag { position: absolute; top: 12px; left: 12px; background: #fff; color: var(--peach-deep); border-radius: 999px; padding: 2px 10px; font-size: .74rem; }
+.tag { position: absolute; top: 10px; left: 10px; background: #fff; color: var(--cocoa); border-radius: 4px; padding: 1px 8px; font-size: .74rem; }
 .tag.out { background: var(--cocoa); color: #fff; }
-.item .info { padding: 14px 18px 18px; display: grid; gap: 2px; }
+.item .info { padding: 10px 2px 6px; display: grid; gap: 0; }
 .item .nm { font-size: 1.02rem; line-height: 1.5; }
 .item .meta { display: flex; justify-content: space-between; align-items: baseline; }
-.price { font-family: var(--num); font-weight: 500; font-size: 1.15rem; color: var(--peach-deep); font-variant-numeric: tabular-nums; }
+.price { font-family: var(--num); font-weight: 500; font-size: 1.05rem; color: var(--cocoa); font-variant-numeric: tabular-nums; }
 .price small { font-family: var(--font); font-size: .78rem; margin-right: 2px; }
 .left { font-size: .78rem; color: var(--soft); }
 .sold .ph img { filter: grayscale(.5) opacity(.7); }
-.empty { padding: 40px; text-align: center; color: var(--soft); background: #fff; border-radius: 26px; }
+.empty { padding: 40px; text-align: center; color: var(--soft); }
 
 /* 購物說明 */
 .how { padding: 40px 0 70px; }
 .how h2 { font-weight: 400; font-size: 1.5rem; margin: 0 0 18px; }
-.how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-.how-grid div { background: #fff; border-radius: 22px; padding: 18px 20px; }
-.how-grid b { display: block; font-weight: 400; color: var(--peach-deep); font-size: 1.05rem; margin-bottom: 4px; }
-.how-grid p { margin: 0; font-size: .9rem; color: #6d555b; }
-.how-grid code { background: var(--blush); border-radius: 6px; padding: 0 6px; font-size: .86rem; }
+.how ol { margin: 0; padding-left: 1.3em; display: grid; gap: 10px; max-width: 42em; color: #6d555b; font-size: .94rem; }
+.how ol b { font-weight: 400; color: var(--cocoa); }
+.how code { font-family: ui-monospace, Menlo, monospace; font-size: .86rem; color: var(--cocoa); }
+.how a, .hero a.inl { color: var(--peach-deep); text-decoration: none; }
 
 footer { border-top: 1px solid var(--line); padding: 26px 0 40px; font-size: .85rem; color: var(--soft); }
 footer .wrap { display: flex; flex-wrap: wrap; gap: 10px 22px; justify-content: space-between; }
-footer a { color: var(--soft); }
+footer a { color: var(--soft); text-decoration: none; }
 
 /* 商品詳細（從下方滑上來的面板） */
 .sheet { position: fixed; inset: 0; z-index: 50; display: none; }
 .sheet.open { display: block; }
 .sheet .bg { position: absolute; inset: 0; background: rgba(74, 50, 56, .45); animation: fade .25s ease both; }
-.panel { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: min(100%, 880px); max-height: 92vh; overflow: auto; background: var(--milk); border-radius: 30px 30px 0 0; animation: up .3s ease both; }
-@media (min-width: 760px) { .panel { bottom: auto; top: 50%; transform: translate(-50%, -50%); border-radius: 30px; animation: pop .25s ease both; } }
+.panel { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: min(100%, 880px); max-height: 92vh; overflow: auto; background: var(--milk); border-radius: 16px 16px 0 0; animation: up .3s ease both; }
+@media (min-width: 760px) { .panel { bottom: auto; top: 50%; transform: translate(-50%, -50%); border-radius: 12px; animation: pop .25s ease both; } }
 @keyframes fade { from { opacity: 0; } }
 @keyframes up { from { transform: translate(-50%, 40px); opacity: .001; } }
 @keyframes pop { from { transform: translate(-50%, -48%); opacity: .001; } }
@@ -128,20 +125,19 @@ footer a { color: var(--soft); }
 .detail p { margin: 0; color: #6d555b; }
 .specs { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; font-size: .9rem; }
 .specs li { display: flex; gap: 8px; }
-.specs li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--peach); margin-top: .65em; flex: none; }
+.specs li::before { content: "—"; color: var(--soft); flex: none; }
 .buy { justify-content: center; }
 .buy[aria-disabled="true"] { background: #cdbfc2; box-shadow: none; pointer-events: none; }
-.codebox { background: #fff; border-radius: 18px; padding: 12px 16px; font-size: .86rem; color: #6d555b; border: 1px dashed var(--peach); }
-.codebox a { color: var(--peach-deep); }
+.codebox { padding: 12px 0 0; font-size: .86rem; color: #6d555b; border-top: 1px solid var(--line); }
+.codebox a { color: var(--peach-deep); text-decoration: none; }
 .close { position: absolute; top: 12px; right: 12px; width: 38px; height: 38px; border-radius: 50%; background: #fff; font-size: 1.3rem; line-height: 1; z-index: 2; box-shadow: 0 4px 12px -6px rgba(0,0,0,.3); }
 
 @media (max-width: 759px) {
   .hero .wrap { grid-template-columns: 1fr; padding-top: 30px; gap: 26px; }
-  .arch { width: min(78%, 300px); }
+  .arch { display: none; }
   nav a.hide-sm { display: none; }
   .grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-  .item { border-radius: 20px; }
-  .item .info { padding: 10px 12px 14px; }
+  .item .info { padding: 8px 2px 4px; }
   .item .nm { font-size: .92rem; }
 }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } html { scroll-behavior: auto; } }
@@ -155,7 +151,7 @@ footer a { color: var(--soft); }
       <a href="#shop" class="hide-sm">全部商品</a>
       <a href="#how" class="hide-sm">怎麼買</a>
       <a href="lucky.html">買家刮刮樂</a>
-      <a href="quiz.html" class="cta">測驗拿折扣</a>
+      <a href="quiz.html" class="cta">做測驗</a>
     </nav>
   </div>
 </header>
@@ -163,28 +159,23 @@ footer a { color: var(--soft); }
 <section class="hero">
   <div class="wrap">
     <div>
-      <h1>挑一件<br><em>最像你的</em>飾品</h1>
-      <p>每一件都是我親手挑的飾品，數量不多，賣完就沒了。不確定什麼適合自己？先玩個小測驗，越懂自己，折扣越多。</p>
+      <h1>耳環、項鍊<br>每款只有一件</h1>
+      <p>家裡收了很多飾品，一件一件整理出來賣。不知道挑哪個，可以先做個小測驗，順便拿折扣。</p>
       <div class="actions">
-        <a class="btn primary" href="quiz.html">先測我適合什麼</a>
-        <a class="btn ghost" href="#shop">直接逛逛</a>
+        <a class="btn ghost" href="#shop">看商品</a>
+        <a class="btn primary" href="quiz.html">做測驗</a>
       </div>
+      <p class="fine">7-11 取貨付款・測驗最高 8 折・每單附刮刮卡</p>
     </div>
     <div class="arch"><img id="heroImg" src="p-elephant-1.jpg" alt="店裡的精選飾品"></div>
   </div>
 </section>
 
-<div class="deal"><div class="wrap">
-  <span>拍正臉玩測驗，匹配分數越高，<b>最高 8 折</b></span>
-  <span><a href="lucky.html">每筆訂單送刮刮卡，頭獎 1 折</a></span>
-  <span>7-11 取貨付款</span>
-  <span>優惠碼在賣貨便結帳時輸入</span>
-</div></div>
 
 <section class="shop" id="shop">
   <div class="wrap">
     <div class="shop-head">
-      <h2>店裡現貨<small id="count"></small></h2>
+      <h2>現貨<small id="count"></small></h2>
       <div class="chips" id="cats"></div>
     </div>
     <div class="grid" id="grid"></div>
@@ -194,12 +185,12 @@ footer a { color: var(--soft); }
 <section class="how" id="how">
   <div class="wrap">
     <h2>怎麼買</h2>
-    <div class="how-grid">
-      <div><b>在賣貨便下單</b><p>點商品裡的「到賣貨便購買」，用 7-11 取貨付款，到店再付錢。</p></div>
-      <div><b>有優惠碼就輸入</b><p>測驗拿到的優惠碼（例如 <code>MFQUIZ15</code>），在賣貨便結帳頁的「賣場折扣碼」輸入。滿 300 元可用，每組碼每人限用一次，每筆訂單用一張。</p></div>
-      <div><b>買了就能刮刮樂</b><p>每筆訂單的包裹裡都有一張刮刮卡，到 <a href="lucky.html">刮刮樂頁</a> 輸入序號，刮到的優惠下次買就能用，頭獎 1 折。</p></div>
-      <div><b>數量很少</b><p>大部分款式只有一組，網站每幾小時會跟賣貨便核對庫存，顯示「已售完」就是真的沒了。</p></div>
-    </div>
+    <ol>
+      <li><b>點商品，按「到賣貨便購買」。</b>7-11 取貨，到店再付錢。</li>
+      <li><b>有優惠碼的話</b>，結帳時填在「賣場折扣碼」，滿 300 可用。</li>
+      <li><b>包裹裡有刮刮卡</b>，到<a href="lucky.html">這裡</a>輸入序號，刮到的折扣下次用。</li>
+      <li>每款通常只有一件，顯示「已售完」就是真的沒了。</li>
+    </ol>
   </div>
 </section>
 
@@ -264,11 +255,11 @@ function render() {
   if (!list.length) { $("grid").innerHTML = `<div class="empty">新貨整理中，過幾天再來看看～</div>`; return; }
   $("grid").innerHTML = list.map(p => {
     const sold = isSold(p), st = stockOf(p);
-    const tag = sold ? `<span class="tag out">已售完</span>` : st === 1 ? `<span class="tag">僅此一組</span>` : st !== null && st <= 3 ? `<span class="tag">只剩 ${st} 組</span>` : "";
+    const tag = sold ? `<span class="tag out">已售完</span>` : st !== null && st > 1 && st <= 3 ? `<span class="tag">剩 ${st} 件</span>` : "";
     return `<button class="item${sold ? " sold" : ""}" data-id="${esc(p.id)}" aria-label="${esc(p.name)}">
       <div class="ph"><img src="${esc(p.images[0])}" alt="" loading="lazy">${p.images[1] ? `<img src="${esc(p.images[1])}" alt="" loading="lazy">` : ""}${tag}</div>
       <div class="info"><span class="nm">${esc(p.name)}</span>
-      <span class="meta"><span class="price"><small>NT$</small>${priceOf(p)}</span><span class="left">${CATS[p.category] || ""}</span></span></div>
+      <span class="meta"><span class="price"><small>NT$</small>${priceOf(p)}</span></span></div>
     </button>`;
   }).join("");
   $("grid").querySelectorAll(".item").forEach(b => b.onclick = () => { location.hash = "p-" + b.dataset.id; });
@@ -280,7 +271,7 @@ function open(p) {
   $("dName").textContent = p.name;
   $("dPrice").innerHTML = `<small>NT$</small>${priceOf(p)}`;
   const st = stockOf(p), sold = isSold(p);
-  $("dLeft").textContent = sold ? "已售完" : st === 1 ? "僅此一組" : st ? `剩 ${st} 組` : "";
+  $("dLeft").textContent = sold ? "已售完" : st === 1 ? "只有這一件" : st ? `剩 ${st} 件` : "";
   $("dDesc").textContent = p.desc || "";
   $("dSpecs").innerHTML = (p.specs || []).map(s => `<li>${esc(s)}</li>`).join("");
   const setMain = i => { $("dMain").src = p.images[i]; $("dMain").alt = p.name; $("dThumbs").querySelectorAll("button").forEach((b, j) => b.classList.toggle("on", i === j)); };
@@ -292,8 +283,8 @@ function open(p) {
   buy.setAttribute("aria-disabled", sold ? "true" : "false");
   const c = myCode();
   $("dCode").innerHTML = c
-    ? `你的測驗優惠碼 <b>${CODES[c.off]}</b>（匹配 ${c.score} 分）。到賣貨便結帳時，在「賣場折扣碼」輸入就能用，滿 300 元可用。`
-    : `還沒有優惠碼？<a href="quiz.html">玩一下測驗</a>，越懂自己折扣越多，最高 8 折。`;
+    ? `你的優惠碼 <b>${CODES[c.off]}</b>，結帳時填在「賣場折扣碼」，滿 300 可用。`
+    : `還沒有優惠碼的話，<a href="quiz.html">做個測驗</a>可以拿，最高 8 折。`;
   $("sheet").classList.add("open"); document.body.style.overflow = "hidden";
   $("close").focus();
 }

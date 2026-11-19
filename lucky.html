@@ -18,7 +18,7 @@
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 body { margin: 0; color: var(--cocoa); font-family: var(--font); font-size: 15.5px; line-height: 1.75;
-  background: radial-gradient(520px 380px at 90% -60px, #ffe1e7 0, transparent 70%), radial-gradient(420px 320px at -80px 420px, #fff1c9 0, transparent 70%), var(--milk); min-height: 100vh; }
+  background: var(--milk); min-height: 100vh; }
 a { color: inherit; }
 button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
 button:focus-visible, a:focus-visible { outline: 3px solid var(--butter); outline-offset: 3px; }
@@ -27,7 +27,8 @@ header { display: flex; justify-content: space-between; align-items: center; max
 header nav a { font-size: .88rem; text-decoration: none; color: var(--soft); margin-left: 12px; }
 main { max-width: 520px; margin: 0 auto; padding: 4px 20px 60px; display: grid; gap: 22px; }
 h1 { margin: 0; font-weight: 400; font-size: 2rem; line-height: 1.3; text-align: center; text-wrap: balance; }
-h1 em { font-style: normal; background: linear-gradient(transparent 62%, var(--butter) 62%); padding: 0 3px; }
+h1 em { font-style: normal; color: var(--peach-deep); }
+a { text-decoration: none; }
 .lead { margin: 0; text-align: center; color: #6d555b; }
 
 /* 刮刮卡 */
@@ -37,12 +38,12 @@ h1 em { font-style: normal; background: linear-gradient(transparent 62%, var(--b
   width: min(100%, 300px); border: 2px dashed var(--peach); border-radius: 16px; padding: 12px 14px; background: #fff; color: var(--cocoa); }
 .ticket input:focus { outline: none; border-style: solid; }
 .err { color: #c8475f; }
-.drawbtn { justify-self: center; background: var(--peach); color: #fff; border-radius: 999px; padding: 15px 42px; font-size: 1.15rem; box-shadow: 0 12px 24px -10px var(--peach-deep); transition: transform .12s; }
+.drawbtn { justify-self: center; background: var(--cocoa); color: #fff; border-radius: 12px; padding: 15px 42px; font-size: 1.15rem; box-shadow: none; transition: transform .12s; }
 .drawbtn:active { transform: scale(.96); }
 .drawbtn:disabled { background: #d8c9cc; box-shadow: none; cursor: default; }
 .next { text-align: center; color: var(--soft); font-size: .9rem; margin: -10px 0 0; }
 
-.sc { position: relative; background: #fff; border-radius: 28px; padding: 18px; box-shadow: 0 20px 40px -22px rgba(217, 96, 122, .55); }
+.sc { position: relative; background: #fff; border-radius: 14px; padding: 18px; box-shadow: none; }
 .sc::before { content: ""; position: absolute; inset: 8px; border: 1.5px dashed var(--line); border-radius: 22px; pointer-events: none; }
 .sc-top { display: flex; justify-content: space-between; align-items: baseline; padding: 2px 8px 12px; }
 .sc-top b { font-family: var(--num); font-style: italic; font-weight: 600; color: var(--peach-deep); font-size: 1.15rem; }
@@ -86,16 +87,16 @@ details li { margin: 4px 0; }
 <body>
 <header><a class="brand" href="./">jiajia accessories</a><nav><a href="./#shop">商品</a><a href="quiz.html">測驗</a></nav></header>
 <main>
-  <h1>買家專屬刮刮樂<br>頭獎 <em>直接 1 折</em></h1>
-  <p class="lead">在 jiajia accessories 買飾品，包裹裡會附一張刮刮卡序號。輸入序號，用手指刮開銀色那層，刮到的優惠下次買就能用。</p>
+  <h1>刮刮樂</h1>
+  <p class="lead">輸入包裹裡小卡上的序號，刮開金色那層。刮到的折扣下次買可以用，頭獎 1 折。</p>
 
   <form class="ticket" id="tform" autocomplete="off">
     <label for="tin">刮刮卡序號</label>
     <input id="tin" placeholder="MF-XXXX-XXXX" maxlength="14" autocapitalize="characters" spellcheck="false" inputmode="latin">
   </form>
-  <button class="drawbtn" id="draw">拿出我的刮刮卡</button>
+  <button class="drawbtn" id="draw">開始刮</button>
   <p class="next hidden" id="next"></p>
-  <p class="next" id="nobuy">還沒有刮刮卡？<a href="./#shop" style="color:var(--peach-deep)">逛逛店裡的飾品</a>，每筆訂單都送一張。</p>
+  <p class="next" id="nobuy">每筆訂單附一張刮刮卡。還沒買過？<a href="./#shop" style="color:var(--peach-deep)">看看商品</a></p>
 
   <div class="sc" id="sc">
     <div class="sc-top"><b>jiajia Lucky</b><span id="scNo">MF-····-····</span></div>
@@ -272,7 +273,7 @@ async function draw(e) {
     $("sc").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
   } catch (err) {
     note("連線有點問題，稍等一下再試一次。", true);
-  } finally { busy = false; $("draw").disabled = false; $("draw").textContent = "換一張刮刮卡"; }
+  } finally { busy = false; $("draw").disabled = false; $("draw").textContent = "刮另一張"; }
 }
 $("draw").onclick = draw;
 $("tform").onsubmit = draw;

@@ -27,8 +27,6 @@ html { background: var(--milk); }
 body {
   margin: 0; color: var(--cocoa); font-family: var(--font); font-size: 15.5px; line-height: 1.75;
   background:
-    radial-gradient(420px 320px at 100% -40px, #ffe1e7 0, transparent 70%),
-    radial-gradient(360px 300px at -60px 260px, #fff1c9 0, transparent 70%),
     var(--milk);
   min-height: 100%;
 }
@@ -47,7 +45,7 @@ section { display: grid; gap: 18px; animation: rise .45s ease both; }
 .brand { white-space: nowrap; font-family: var(--num); font-style: italic; font-size: 1.05rem; color: var(--peach-deep); }
 .ig { font-size: .8rem; color: var(--soft); background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; }
 
-.hero h1 em { font-style: normal; background: linear-gradient(transparent 62%, var(--butter) 62%); padding: 0 2px; }
+.hero h1 em { font-style: normal; color: var(--peach-deep); }
 .ladder { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
 .ladder li { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 10px 2px 8px; text-align: center; display: grid; gap: 1px; }
 .ladder li:last-child { background: var(--peach); border-color: var(--peach); color: #fff; }
@@ -56,33 +54,33 @@ section { display: grid; gap: 18px; animation: rise .45s ease both; }
 .ladder span { font-size: .68rem; color: var(--soft); }
 
 /* 上傳：透明的 input 直接蓋在按鈕上，手機點哪裡都會開相機 */
-.upload { position: relative; display: grid; justify-items: center; gap: 6px; text-align: center; background: #fff; border-radius: 28px; padding: 26px 18px 24px; box-shadow: 0 10px 30px -12px rgba(217, 96, 122, .35); overflow: hidden; }
+.upload { border: 1px solid #f0e2e5; position: relative; display: grid; justify-items: center; gap: 6px; text-align: center; background: #fff; border-radius: 14px; padding: 26px 18px 24px; box-shadow: none; overflow: hidden; }
 .upload input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2; font-size: 0; }
 .upload .cam { width: 64px; height: 64px; border-radius: 50%; background: var(--blush); display: grid; place-items: center; }
 .upload b { font-weight: 400; font-size: 1.15rem; }
-.pillbtn { display: inline-block; background: var(--peach); color: #fff; border-radius: 999px; padding: 11px 26px; font-size: 1rem; box-shadow: 0 6px 16px -6px var(--peach-deep); }
+.pillbtn { display: inline-block; background: var(--cocoa); color: #fff; border-radius: 12px; padding: 11px 26px; font-size: 1rem; box-shadow: none; }
 .upload:focus-within { outline: 3px solid var(--butter); outline-offset: 3px; }
 .tips { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
 .tips span { font-size: .76rem; background: var(--milk); border-radius: 999px; padding: 2px 10px; color: var(--soft); }
 .status { background: var(--butter); border-radius: 16px; padding: 10px 14px; font-size: .92rem; }
 
 button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
-.go { justify-self: stretch; background: var(--peach); color: #fff; border-radius: 999px; padding: 14px 24px; font-size: 1.05rem; box-shadow: 0 8px 18px -8px var(--peach-deep); transition: transform .12s; }
+.go { justify-self: stretch; background: var(--cocoa); color: #fff; border-radius: 12px; padding: 14px 24px; font-size: 1.05rem; box-shadow: none; transition: transform .12s; }
 .go:active { transform: scale(.97); }
-.link { color: var(--soft); font-size: .86rem; text-decoration: underline; text-underline-offset: 4px; justify-self: center; }
+.link { color: var(--peach-deep); font-size: .86rem; text-decoration: none; justify-self: center; }
 button:focus-visible { outline: 3px solid var(--butter); outline-offset: 3px; }
 
 /* 拱門照片框 */
-.arch { justify-self: center; width: min(70%, 260px); aspect-ratio: 3 / 4; border-radius: 999px 999px 28px 28px; overflow: hidden; border: 6px solid #fff; box-shadow: 0 14px 34px -14px rgba(217, 96, 122, .5); position: relative; background: var(--blush); }
+.arch { justify-self: center; width: min(70%, 260px); aspect-ratio: 3 / 4; border-radius: 999px 999px 28px 28px; overflow: hidden; border: 6px solid #fff; box-shadow: none; position: relative; background: var(--blush); }
 .arch canvas { width: 100%; height: 100%; object-fit: cover; display: block; }
-.bubble { background: #fff; border-radius: 22px 22px 22px 6px; padding: 14px 16px; box-shadow: 0 6px 20px -12px rgba(74, 50, 56, .3); }
+.bubble { background: #fff; border-radius: 14px 22px 22px 6px; padding: 14px 16px; box-shadow: none; }
 
 .qhead { display: grid; gap: 10px; }
 .track { height: 8px; border-radius: 99px; background: #fff; overflow: hidden; border: 1px solid var(--line); }
 .track i { display: block; height: 100%; width: 0; border-radius: 99px; background: linear-gradient(90deg, var(--peach), #ffb4a2); transition: width .35s ease; }
 .counter { font-family: var(--num); font-style: italic; color: var(--peach-deep); font-size: 1rem; }
 .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.choices button { background: #fff; border-radius: 22px; padding: 16px 12px; display: grid; justify-items: center; gap: 6px; text-align: center; font-size: 1rem; border: 2px solid transparent; box-shadow: 0 4px 14px -10px rgba(74, 50, 56, .35); transition: transform .12s, border-color .12s; }
+.choices button { background: #fff; border-radius: 14px; padding: 16px 12px; display: grid; justify-items: center; gap: 6px; text-align: center; font-size: 1rem; border: 2px solid #f2e4e7; box-shadow: none; transition: transform .12s, border-color .12s; }
 .choices button:active { transform: scale(.97); }
 .choices button:hover { border-color: var(--blush); }
 .choices button small { display: block; color: var(--soft); font-size: .76rem; line-height: 1.5; margin-top: 2px; }
@@ -92,7 +90,7 @@ button:focus-visible { outline: 3px solid var(--butter); outline-offset: 3px; }
 .choices.one button { justify-items: start; text-align: left; padding: 16px 18px; }
 
 /* 對答案 */
-.scorecard { background: #fff; border-radius: 30px; padding: 22px; display: grid; justify-items: center; gap: 8px; box-shadow: 0 14px 34px -16px rgba(217, 96, 122, .45); }
+.scorecard { border: 1px solid #f0e2e5; background: #fff; border-radius: 14px; padding: 22px; display: grid; justify-items: center; gap: 8px; box-shadow: none; }
 #ring { --p: 0; width: 148px; height: 148px; border-radius: 50%; display: grid; place-items: center; transition: --p 1.2s ease;
   background: conic-gradient(var(--peach) calc(var(--p) * 1%), var(--blush) 0); }
 @property --p { syntax: "<number>"; inherits: true; initial-value: 0; }
@@ -114,7 +112,7 @@ button:focus-visible { outline: 3px solid var(--butter); outline-offset: 3px; }
 .stamp.miss { background: var(--milk); color: var(--soft); }
 
 /* 票券 */
-.ticket { position: relative; background: linear-gradient(135deg, #ffd6dc, #ffe9c8); border-radius: 24px; padding: 20px 22px; display: grid; gap: 6px; }
+.ticket { position: relative; background: linear-gradient(135deg, #ffd6dc, #ffe9c8); border-radius: 14px; padding: 20px 22px; display: grid; gap: 6px; }
 .ticket::before, .ticket::after { content: ""; position: absolute; top: 50%; width: 22px; height: 22px; margin-top: -11px; border-radius: 50%; background: var(--milk); }
 .ticket::before { left: -11px; } .ticket::after { right: -11px; }
 .ticket .off { font-family: var(--num); font-style: italic; font-weight: 600; font-size: 2.2rem; line-height: 1.1; color: var(--peach-deep); }
@@ -122,7 +120,7 @@ button:focus-visible { outline: 3px solid var(--butter); outline-offset: 3px; }
 .ticket .copy { justify-self: start; background: #fff; border-radius: 999px; padding: 6px 16px; font-size: .86rem; }
 
 .picks { display: grid; gap: 10px; }
-.pick { background: #fff; border-radius: 22px; padding: 10px; display: grid; grid-template-columns: 84px 1fr; gap: 12px; align-items: center; }
+.pick { background: #fff; border-radius: 14px; padding: 10px; display: grid; grid-template-columns: 84px 1fr; gap: 12px; align-items: center; }
 .pick svg, .pick img { width: 84px; height: 84px; border-radius: 18px; object-fit: cover; display: block; }
 .pick .nm { font-size: 1.02rem; }
 .pick .why { color: var(--soft); font-size: .78rem; line-height: 1.55; }
@@ -130,14 +128,14 @@ button:focus-visible { outline: 3px solid var(--butter); outline-offset: 3px; }
 .pick .pr { font-variant-numeric: tabular-nums; margin-top: 2px; }
 .pick .pr s { color: var(--soft); font-size: .8rem; margin-right: 6px; }
 .pick .pr b { font-weight: 400; color: var(--peach-deep); }
-.sign { background: var(--blush); border-radius: 22px; padding: 16px 18px; display: grid; gap: 6px; }
+.sign { background: var(--blush); border-radius: 14px; padding: 16px 18px; display: grid; gap: 6px; }
 .sign span { font-family: var(--num); font-style: italic; color: var(--peach-deep); justify-self: end; }
 
 input[type=text] { font: inherit; width: 100%; border: 2px solid var(--line); border-radius: 16px; padding: 12px 14px; background: #fff; font-family: ui-monospace, Menlo, Consolas, monospace; }
 footer { margin-top: 56px; text-align: center; }
 footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
 @media (prefers-reduced-motion: reduce) { section, .sheet.in .pair { animation: none; } #ring, .track i, .go, .choices button { transition: none; } }
-.rule { background: #fff; border-radius: 22px; padding: 14px 18px; display: grid; gap: 4px; border-left: 5px solid var(--peach); box-shadow: 0 6px 20px -14px rgba(74, 50, 56, .35); }
+.rule { background: #fff; border-radius: 14px; padding: 14px 18px; display: grid; gap: 4px; border-left: 5px solid var(--peach); box-shadow: none; }
 .rule b { font-weight: 400; font-size: 1.12rem; color: var(--peach-deep); }
 .rule span { font-size: .9rem; color: var(--soft); line-height: 1.65; }
 .tease { justify-self: start; background: var(--butter); border-radius: 18px 18px 18px 4px; padding: 6px 14px; font-size: .88rem; animation: pop .35s ease both; }
@@ -150,10 +148,10 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
 .persona small { color: var(--soft); font-size: .75rem; }
 .persona b { font-weight: 400; font-size: 1.5rem; color: var(--peach-deep); }
 .persona span { font-size: .86rem; color: var(--soft); max-width: 30ch; }
-.tryon { justify-self: center; width: min(88%, 340px); border-radius: 26px; overflow: hidden; border: 6px solid #fff; box-shadow: 0 14px 34px -14px rgba(217, 96, 122, .5); background: var(--blush); }
+.tryon { justify-self: center; width: min(88%, 340px); border-radius: 14px; overflow: hidden; border: 6px solid #fff; box-shadow: none; background: var(--blush); }
 .tryon canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: grab; }
 .tryon canvas:active { cursor: grabbing; }
-.aligner { justify-self: center; width: min(88%, 340px); border-radius: 26px; overflow: hidden; border: 6px solid #fff; box-shadow: 0 14px 34px -14px rgba(217, 96, 122, .5); background: var(--blush); }
+.aligner { justify-self: center; width: min(88%, 340px); border-radius: 14px; overflow: hidden; border: 6px solid #fff; box-shadow: none; background: var(--blush); }
 .aligner canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: grab; }
 .occ { display: grid; gap: 10px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -172,7 +170,7 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
 .choices.three { grid-template-columns: 1fr 1fr 1fr; }
 @media (prefers-reduced-motion: reduce) { .tease, .two .me.open, .pair.done .stamp { animation: none; } }
 .left { display: inline-block; font-size: .72rem; color: #fff; background: var(--peach-deep); border-radius: 999px; padding: 0 9px; margin-top: 3px; }
-.friend { background: #fff; border-radius: 26px; padding: 20px; display: grid; gap: 12px; }
+.friend { background: #fff; border-radius: 14px; padding: 20px; display: grid; gap: 12px; }
 .friend code { font-size: .78rem; word-break: break-all; background: var(--milk); border-radius: 12px; padding: 8px 10px; }
 .friend .copy { justify-self: start; background: var(--blush); border-radius: 999px; padding: 6px 16px; font-size: .86rem; }
 .vs { display: flex; align-items: center; gap: 22px; }
@@ -188,6 +186,7 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
 @media (prefers-reduced-motion: reduce) { .confetti { display: none; } }
 .qname { margin: 0 0 4px; font-size: .86rem; letter-spacing: .14em; color: #d9607a; }
 .alnote { margin: 10px auto 0; max-width: 32ch; text-align: center; color: #c8475f; font-size: .92rem; line-height: 1.5; }
+a { text-decoration: none; }
 </style>
 </head>
 <body>
@@ -196,19 +195,18 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
 
 <section id="open" class="hero">
   <p class="qname">滿分女主・匹配測驗</p>
-  <h1>你覺得你<br><em>適合什麼</em>？</h1>
-  <p>拍一張正臉給我，我會先偷偷看出你的臉型、膚色和適合的飾品，但先不說。接著換你回答：你覺得自己是什麼樣子、適合戴什麼？</p>
-  <div class="rule"><b>你越懂自己，折扣越多</b><span>最後我們來對答案。你的答案跟我看到的越接近，匹配分數就越高，結帳的折扣也越大。</span></div>
+  <h1>你覺得你<br>適合什麼？</h1>
+  <p>先拍一張正臉，我看完不說。換你回答幾題「你覺得自己是怎樣的」，最後對答案：越像，分數越高，折扣越多。</p>
   <div class="upload">
     <input type="file" id="photoInput" accept="image/*" aria-label="拍一張正臉">
     <span class="cam"><svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="#d9607a" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5a2.5 2.5 0 0 1 2.5-2.5h3l2-3h7l2 3h3a2.5 2.5 0 0 1 2.5 2.5v11a2.5 2.5 0 0 1-2.5 2.5h-17A2.5 2.5 0 0 1 4 21.5z"/><circle cx="15" cy="15.5" r="4.5"/></svg></span>
     <b>拍一張正臉</b>
-    <div class="tips"><span>頭髮撥到耳後</span><span>站窗邊</span><span>不開濾鏡</span></div>
-    <span class="pillbtn">點我拍照</span>
+    <span class="soft" style="font-size:.84rem">頭髮撥到耳後、光線亮一點、不要濾鏡</span>
+    <span class="pillbtn">拍照或選照片</span>
   </div>
   <p id="status" class="status hidden"></p>
   <p class="soft" style="text-align:center">照片不會上傳，只在你的手機裡看</p>
-  <button class="link" id="demo">點不開？先用範例臉試玩</button>
+  <button class="link" id="demo">不想拍？用範例臉玩玩看</button>
 </section>
 
 <section id="align" class="hidden">
@@ -224,7 +222,7 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
 
 <section id="seen" class="hidden">
   <div class="arch"><canvas id="canvas"></canvas></div>
-  <div class="bubble">好，我看完了！答案我先藏起來。<br>換你回答你覺得自己是什麼樣子，跟我想的越像，分數越高、折扣越多～</div>
+  <div class="bubble">看好了，答案先不說。<br>換你回答：你覺得自己是怎樣的？</div>
   <button class="go" id="start">換我回答</button>
   <button class="link" id="again">換一張照片</button>
 </section>
@@ -619,7 +617,7 @@ const QS = [
       : [["貼頸頸鍊", "choker", ico(`<path d="M14 8q12 14 24 0"/>`)], ["鎖骨鍊", "short", ico(`<path d="M10 8q16 28 32 0"/>`)], ["長鍊", "long_n", ico(`<path d="M8 6q18 46 36 0"/>`)]] },
   { key: "piece", q: "最後一題！這幾件裡面，你覺得哪件最適合你？", pieces: true, opts: () => pieceOptions(answers.cat).map(it => [it.name, it.id, pieceSvg(it)]) }
 ];
-const TEASE = ["嗯哼～記下來了", "這題我很有把握喔", "先不說，等等對答案", "有意思", "我在偷笑（不是笑你）", "好，下一題", "你確定？開玩笑的啦", "跟我想的…先保密", "快好了！"];
+const TEASE = ["記下來了", "嗯，好", "先不說", "下一題", "這題有意思", "快好了"];
 function renderQ() {
   const list = friend ? FQS() : QS;
   const Q = list[qi];
