@@ -187,6 +187,7 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
 @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
 @media (prefers-reduced-motion: reduce) { .confetti { display: none; } }
 .qname { margin: 0 0 4px; font-size: .86rem; letter-spacing: .14em; color: #d9607a; }
+.alnote { margin: 10px auto 0; max-width: 32ch; text-align: center; color: #c8475f; font-size: .92rem; line-height: 1.5; }
 </style>
 </head>
 <body>
@@ -216,6 +217,7 @@ footer a { color: #e9cfd3; font-size: .72rem; text-decoration: none; }
   <div class="aligner"><canvas id="alignCanvas" width="600" height="800"></canvas></div>
   <div class="tryctl"><label for="alZoom">大小</label><input type="range" id="alZoom" min="50" max="300" value="100"></div>
   <div class="tryctl"><label for="alRot">轉正</label><input type="range" id="alRot" min="-25" max="25" value="0" step="0.5"></div>
+  <p class="alnote hidden" id="alNote" role="status"></p>
   <button class="go" id="alOk">好了，幫我看</button>
   <button class="link" id="alBack">換一張照片</button>
 </section>
@@ -507,7 +509,7 @@ function read(p, ctx) {
   if (h < 0) h += 360;
   const metal = h > 25 ? "gold" : h < 17 ? "silver" : "rose";
   const yaw = dist(p[30], p[0]) / dist(p[30], p[16]);
-  return { face, vol, line, metal, eyes, brows, chin, age, lips, elen, nlen, turned: yaw > 1.45 || yaw < 1 / 1.45 };
+  return { face, vol, line, metal, eyes, brows, chin, age, lips, elen, nlen, turned: yaw > 2.4 || yaw < 1 / 2.4 };
 }
 function note(msg) { $("status").textContent = msg; $("status").classList.remove("hidden"); }
 
@@ -542,7 +544,7 @@ $("photoInput").addEventListener("change", async e => {
   const c = $("alignCanvas");
   Object.assign(AL, { img, s: 1, ox: 0, oy: 0, rot: 0, base: Math.max(c.width / img.width, c.height / img.height) });
   $("alZoom").value = 100; $("alRot").value = 0;
-  $("status").classList.add("hidden");
+  $("status").classList.add("hidden"); $("alNote").classList.add("hidden");
   show("align"); drawAlign();
   loadModels().catch(() => {});   // 先在背景載入，按確定時比較快
 });
@@ -552,15 +554,22 @@ $("alOk").onclick = async () => {
   drawAlign(false, c);
   const ctx = c.getContext("2d", { willReadFrequently: true });
   $("alOk").textContent = "我看一下喔…"; $("alOk").disabled = true;
-  const fail = msg => { show("open"); note(msg); };
+  // 失敗時留在調整畫面（不用重選照片），把提示寫在按鈕上面
+  const fail = msg => { $("alNote").textContent = msg; $("alNote").classList.remove("hidden"); };
+  $("alNote").classList.add("hidden");
   try {
     await loadModels();
-    const det = await faceapi.detectSingleFace(c, new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: .4 })).withFaceLandmarks();
-    if (!det) { fail("我找不到你的臉耶，換一張正面一點、亮一點的。"); return; }
+    // 多試幾種設定：小臉、暗光、側一點的照片也比較容易抓到
+    let det = null;
+    for (const [size, thr] of [[416, .3], [512, .2], [320, .2], [608, .12]]) {
+      det = await faceapi.detectSingleFace(c, new faceapi.TinyFaceDetectorOptions({ inputSize: size, scoreThreshold: thr })).withFaceLandmarks();
+      if (det) break;
+    }
+    if (!det) { fail("我還找不到你的臉，試試把照片放大一點、讓臉在框框中間；或按下面換一張亮一點的。"); return; }
     pts = det.landmarks.positions.map(q => ({ x: q.x, y: q.y }));
     delete masks.front;
     mine = read(pts, ctx);
-    if (mine.turned) { fail("臉有點側到了，正對鏡頭再拍一張，我才看得準。"); mine = null; pts = null; return; }
+    if (mine.turned) { fail("這張側得有點多，換一張比較正面的照片我會看得比較準（按下面「換一張照片」）。"); mine = null; pts = null; return; }
     show("seen");
   } catch (err) {
     fail("你的手機好像跑不動，換個瀏覽器（Chrome 或 Safari）再試一次。");
