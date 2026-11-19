@@ -159,8 +159,8 @@ footer a { color: var(--soft); text-decoration: none; }
 <section class="hero">
   <div class="wrap">
     <div>
-      <h1>耳環、項鍊<br>每款只有一件</h1>
-      <p>家裡收了很多飾品，一件一件整理出來賣。不知道挑哪個，可以先做個小測驗，順便拿折扣。</p>
+      <h1>耳環、項鍊<br>挑一件喜歡的</h1>
+      <p>不知道挑哪個，可以先做個小測驗，順便拿折扣。</p>
       <div class="actions">
         <a class="btn ghost" href="#shop">看商品</a>
         <a class="btn primary" href="quiz.html">做測驗</a>
@@ -189,7 +189,7 @@ footer a { color: var(--soft); text-decoration: none; }
       <li><b>點商品，按「到賣貨便購買」。</b>7-11 取貨，到店再付錢。</li>
       <li><b>有優惠碼的話</b>，結帳時填在「賣場折扣碼」，滿 300 可用。</li>
       <li><b>包裹裡有刮刮卡</b>，到<a href="lucky.html">這裡</a>輸入序號，刮到的折扣下次用。</li>
-      <li>每款通常只有一件，顯示「已售完」就是真的沒了。</li>
+      <li>網站會定時跟賣貨便對庫存，顯示「已售完」就是沒貨了。</li>
     </ol>
   </div>
 </section>
@@ -255,7 +255,7 @@ function render() {
   if (!list.length) { $("grid").innerHTML = `<div class="empty">新貨整理中，過幾天再來看看～</div>`; return; }
   $("grid").innerHTML = list.map(p => {
     const sold = isSold(p), st = stockOf(p);
-    const tag = sold ? `<span class="tag out">已售完</span>` : st !== null && st > 1 && st <= 3 ? `<span class="tag">剩 ${st} 件</span>` : "";
+    const tag = sold ? `<span class="tag out">已售完</span>` : "";
     return `<button class="item${sold ? " sold" : ""}" data-id="${esc(p.id)}" aria-label="${esc(p.name)}">
       <div class="ph"><img src="${esc(p.images[0])}" alt="" loading="lazy">${p.images[1] ? `<img src="${esc(p.images[1])}" alt="" loading="lazy">` : ""}${tag}</div>
       <div class="info"><span class="nm">${esc(p.name)}</span>
@@ -271,7 +271,7 @@ function open(p) {
   $("dName").textContent = p.name;
   $("dPrice").innerHTML = `<small>NT$</small>${priceOf(p)}`;
   const st = stockOf(p), sold = isSold(p);
-  $("dLeft").textContent = sold ? "已售完" : st === 1 ? "只有這一件" : st ? `剩 ${st} 件` : "";
+  $("dLeft").textContent = sold ? "已售完" : st && st <= 3 ? `剩 ${st} 件` : "";
   $("dDesc").textContent = p.desc || "";
   $("dSpecs").innerHTML = (p.specs || []).map(s => `<li>${esc(s)}</li>`).join("");
   const setMain = i => { $("dMain").src = p.images[i]; $("dMain").alt = p.name; $("dThumbs").querySelectorAll("button").forEach((b, j) => b.classList.toggle("on", i === j)); };
