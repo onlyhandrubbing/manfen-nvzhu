@@ -9,5 +9,5 @@
 4. **推上 GitHub**：沙盒不能 git push。用 Claude in Chrome 開 https://github.com/onlyhandrubbing/manfen-nvzhu/upload/main ，read_page 找 "Choose your files" 的 ref，用 file_upload 上傳 p-/t- 圖，等上傳完再用 javascript_tool 點 Commit changes。用 gh api 確認 commit 有進去。
 5. **開賣貨便賣場**：開新分頁到 https://myship.7-11.com.tw/general/maintain ，把 tools/myship.js 的內容貼進 javascript_tool 執行，再 `await YQ.STORE({...})`，出現「儲存成功」點「確認」，再 `await YQ.PRODUCT({...})`，成功後點「完成賣場設定」，到 /myship/list1 讀新的 GM 編號。
 6. **加到網站**：products.json 加一筆（照既有格式：id, name, category, price, status:"on", link, images:["p-<id>-1.jpg"], desc, specs, metal, addedAt, sync, fit{shape,size,line,metal}, tryon{l,r[,n]}）。fit.shape 耳環用 stud/hoop/drop/long/geo/pearl，項鍊（fit.nshape）用 choker/short/long_n/pendant。新的放最前面。inbox.json 對應項目改 status:"done", pid:<id>。兩個檔一起用步驟 4 的方法上傳。
-7. **IG（@yachi6505，名稱 jiajia accessories，Chrome 已登入）**：發一則新品貼文：照片用 p-<id>-1.jpg，文案含名稱、價格、「連結在個人檔案」與 hashtag。
+7. **IG（@jiajia.accessories.tw，名稱 jiajia accessories，Chrome 已登入）**：發一則新品貼文：照片用 p-<id>-1.jpg，文案含名稱、價格、「連結在個人檔案」與 hashtag。
 8. **回報**：用一兩句話說新上架了什麼、價格、賣貨便連結。遇到卡住（Chrome 沒開、視窗縮小、違規字改不過）就停下來說明，不要硬試。
